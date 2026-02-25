@@ -22,10 +22,16 @@ scale: {
 const game = new Phaser.Game(config);
 
 function preload() {
+    this.load.image("Tidus","../Images/Tidus.png");
+    this.load.image("Lunafreya","../Images/Lunafreya.png");
+    this.load.image("Sora","../Images/Sora.png");
 
 }
 
 function create() {
+    this.add.sprite(280,600, "Tidus");
+    this.add.sprite(200,350, "Lunafreya");
+    this.add.sprite(250,850, "Sora");
 
 }
 
