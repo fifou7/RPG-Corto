@@ -17,9 +17,19 @@ scale: {
         width: '100%',
         height: '100%'
     },
+
+physics : {
+    default : "arcade",
+    arcade : {
+        debug : true,
+        gravity : {y:0}
+    }
+}
 };
 
 const game = new Phaser.Game(config);
+
+
 
 function preload() {
     this.load.image("Tidus","../Images/Tidus.png");
@@ -37,6 +47,7 @@ function preload() {
 }
 
 function create() {
+    
     this.anims.create({
         key : "Tidus-atk",
         frames : [
@@ -50,7 +61,7 @@ function create() {
             {key : "Tidus"}
         ],
         frameRate : 10,
-        repeat : -1
+        repeat : 0
     })
 
     var backgroundImage = this.add.sprite(0,0, "background-fight");
@@ -64,7 +75,8 @@ function create() {
     var Sora = this.add.sprite(440,860, "Sora");   
     Sora.setScale(1.25);
 
-
+    
+    
 }
 
 function update(time, delta) {
