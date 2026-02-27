@@ -72,7 +72,7 @@ function create() {
             {key : "Tidus"}
         ],
         frameRate : 10,
-        repeat : 1
+        repeat : 0
     })
 
 //  Background-fight
@@ -81,21 +81,24 @@ function create() {
     backgroundImage.setPosition(config.width/2, config.height/2);
 
 //  Tidus
-    var Tidus = this.add.sprite(795,595, "Tidus");
+    var Tidus = this.add.sprite(895,595, "Tidus");
     Tidus.setScale(1.25);
     Tidus.anims.play("Tidus-atk");
 
 //  Lunafreya
-    var Lunafreya = this.add.sprite(700,350, "Lunafreya");
+    var Lunafreya = this.add.sprite(800,350, "Lunafreya");
     Lunafreya.setScale(1.25);
 
 //  Sora
-    var Sora = this.add.sprite(740,860, "Sora");   
+    var Sora = this.add.sprite(840,860, "Sora");   
     Sora.setScale(1.25);
 
 //  Mob
     var Bombo = this.add.sprite(2000,450, "Bombo");
     var Bombo = this.add.sprite(2000,800, "Bombo");
+
+
+    
 
 }
 

@@ -11,6 +11,38 @@ body, html {
     width: 100vw;
     height: 100vh;
     display: flex;
+    position: relative;
     justify-content: center;
     align-items: center;
+}
+
+.ActionBar {
+    position: absolute;
+    bottom: 0;
+    left: 400px;
+    right: 400px;  
+    height: 370px;
+    /* width: 99%; */
+    background-color:#004094;
+    border-radius: 40px;
+    border: white solid 7px;
+}
+
+.persoNameListe {
+    position: absolute;
+    top: 22%;   
+    left: 150px;
+    /* right: 70px; */
+    display: flex;
+    flex-direction: column;
+    gap: 30px; 
+}
+
+.NamePerso {
+    color: white;
+    font-size: 40px;
+    font-weight: bold;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding-left: 25px;
 }
