@@ -32,6 +32,7 @@ const game = new Phaser.Game(config);
 
 
 function preload() {
+//  Tidus
     this.load.image("Tidus","../Images/Tidus.png");
     this.load.image("Tidus-atk-1","../Images/Tidus-atk-1.png");
     this.load.image("Tidus-atk-2","../Images/Tidus-atk-2.png");
@@ -40,14 +41,24 @@ function preload() {
     this.load.image("Tidus-atk-5","../Images/Tidus-atk-5.png");
     this.load.image("Tidus-atk-6","../Images/Tidus-atk-6.png");
     this.load.image("Tidus-atk-7","../Images/Tidus-atk-7.png");
+
+//  Lunafreya
     this.load.image("Lunafreya","../Images/Lunafreya.png");
+
+//  Sora
     this.load.image("Sora","../Images/Sora.png");
+
+//  Background-fight
     this.load.image("background-fight","../Images/image-de-fond-fight.png");
+
+//  Mob
+    this.load.image("Bombo","../Images/Bombo.png");
 
 }
 
 function create() {
     
+//  Animation d'attaque de Tidus 
     this.anims.create({
         key : "Tidus-atk",
         frames : [
@@ -61,22 +72,31 @@ function create() {
             {key : "Tidus"}
         ],
         frameRate : 10,
-        repeat : 0
+        repeat : 1
     })
 
+//  Background-fight
     var backgroundImage = this.add.sprite(0,0, "background-fight");
     backgroundImage.setDisplaySize(config.width, config.height);
     backgroundImage.setPosition(config.width/2, config.height/2);
-    var Tidus = this.add.sprite(495,595, "Tidus");
+
+//  Tidus
+    var Tidus = this.add.sprite(795,595, "Tidus");
     Tidus.setScale(1.25);
     Tidus.anims.play("Tidus-atk");
-    var Lunafreya = this.add.sprite(400,350, "Lunafreya");
+
+//  Lunafreya
+    var Lunafreya = this.add.sprite(700,350, "Lunafreya");
     Lunafreya.setScale(1.25);
-    var Sora = this.add.sprite(440,860, "Sora");   
+
+//  Sora
+    var Sora = this.add.sprite(740,860, "Sora");   
     Sora.setScale(1.25);
 
-    
-    
+//  Mob
+    var Bombo = this.add.sprite(2000,450, "Bombo");
+    var Bombo = this.add.sprite(2000,800, "Bombo");
+
 }
 
 function update(time, delta) {
