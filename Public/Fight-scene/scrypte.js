@@ -72,7 +72,7 @@ function create() {
             {key : "Tidus"}
         ],
         frameRate : 10,
-        repeat : 0
+        repeat : -1
     })
 
 //  Background-fight
