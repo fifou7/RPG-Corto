@@ -1,8 +1,7 @@
 const express = require("express");
 const cors = require("cors");
-const e = require("cors");
 const app = express();
-port = 3000;
+let port = 3000;
 const getUsersRouter = require("./routes/getUser");
 const getMobsRouter = require("./routes/getMobs");
 

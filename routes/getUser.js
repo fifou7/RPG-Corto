@@ -1,19 +1,14 @@
-const db = require("./db");
-const helper = require("../helper");
-const config = require("../config");
+const express = require("express");
+const router = express.Router();
+const getUsers = require("../services/getUser");
 
-async function getMultiple(page = 1) {
-  const offset = helper.getOffset(page, config.listPerPage);
-  const rows = await db.query(`SELECT * FROM characters`);
-  const data = helper.emptyOrRows(rows);
-  const meta = { page };
+router.get("/", async function (req, res, next) {
+  try {
+    res.json(await getUsers.getMultiple(req.query.page));
+  } catch (err) {
+    console.error(`Error while getting the users`, err.message);
+    next(err);
+  }
+});
 
-  return {
-    data,
-    meta,
-  };
-}
-
-module.exports = {
-  getMultiple,
-};
+module.exports = router;
