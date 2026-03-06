@@ -3,6 +3,8 @@ const cors = require("cors");
 const e = require("cors");
 const app = express();
 port = 3000;
+const getUsersRouter = require("./routes/getUser");
+const getMobsRouter = require("./routes/getMobs");
 
 const corsOptions = {
   origin: "*",
@@ -16,6 +18,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // routes
+app.use("/users", getUsersRouter);
+app.use("/mobs", getMobsRouter);
 // app.get("/", (req, res) => {
 //   res.send("Bonjour");
 // });
