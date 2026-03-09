@@ -10,13 +10,13 @@ scene : {
     create : create,
     update : update
 },
-scale: {
 
-        mode: Phaser.Scale.RESIZE,
-        autoCenter: Phaser.Scale.CENTER_BOTH,
-        width: '100%',
-        height: '100%'
-    },
+scale: {
+    mode: Phaser.Scale.RESIZE,
+    autoCenter: Phaser.Scale.CENTER_BOTH,
+    width: '1920px',
+    height: '1080px'
+},
 
 physics : {
     default : "arcade",
@@ -72,7 +72,7 @@ function create() {
             {key : "Tidus"}
         ],
         frameRate : 10,
-        repeat : -1
+        repeat : 1
     })
 
 //  Background-fight
