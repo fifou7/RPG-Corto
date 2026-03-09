@@ -14,6 +14,13 @@ var config = {
     create: create,
     update: update,
   },
+
+  scale: {
+    mode: Phaser.Scale.RESIZE,
+    autoCenter: Phaser.Scale.CENTER_BOTH,
+    width: "1920px",
+    height: "1080px",
+  },
 };
 
 var game = new Phaser.Game(config);
@@ -24,6 +31,7 @@ function preload() {
 }
 
 function create() {
+  //size
   const mapScale = 2.4;
 
   this.mapImage = this.add.image(0, 0, "map").setOrigin(0).setScale(mapScale);
@@ -32,14 +40,7 @@ function create() {
   this.player.setScale(0.5);
   this.player.setCollideWorldBounds(true);
 
-  // Ajuste la hitbox du perso si besoin
-  this.player.body.setSize(this.player.width * 0.35, this.player.height * 0.55);
-  this.player.body.setOffset(
-    this.player.width * 0.32,
-    this.player.height * 0.4,
-  );
-
-  // Taille réelle de la map une fois agrandie
+  // size map with scale
   const mapWidth = this.mapImage.width * mapScale;
   const mapHeight = this.mapImage.height * mapScale;
 
