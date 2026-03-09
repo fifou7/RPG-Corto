@@ -59,7 +59,12 @@ function preload() {
 
 //  Sora
     this.load.image("Sora","../Images/Sora.png");
-
+    this.load.image("Sora-atk-1","../Images/Sora-atk-1.png");
+    this.load.image("Sora-atk-2","../Images/Sora-atk-2.png");
+    this.load.image("Sora-atk-3","../Images/Sora-atk-3.png");
+    this.load.image("Sora-atk-4","../Images/Sora-atk-4.png");
+    this.load.image("Sora-atk-5","../Images/Sora-atk-5.png");
+    
 //  Background-fight
     this.load.image("background-fight","../Images/image-de-fond-fight.png");
 
@@ -89,6 +94,20 @@ chara = {
             {key : chara.image}
         ],
         frameRate : 10,
+        repeat : 0
+    })
+
+    this.anims.create({
+        key : "Sora-atk",
+        frames : [
+            {key : "Sora-atk-1"},
+            {key : "Sora-atk-2"},
+            {key : "Sora-atk-3"},
+            {key : "Sora-atk-4"},
+            {key : "Sora-atk-5"},
+            {key : "Sora"}
+        ],
+        frameRate : 10,
         repeat : 1
     })
 
@@ -109,6 +128,7 @@ chara = {
 //  Sora
     var Sora = this.add.sprite(840,860, "Sora");   
     Sora.setScale(1.25);
+    Sora.anims.play("Sora-atk");
 
 //  Mob
     var Bombo = this.add.sprite(2000,450, "Bombo");
