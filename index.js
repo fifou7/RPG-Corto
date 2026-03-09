@@ -4,7 +4,6 @@ const app = express();
 let port = 3000;
 const getUsersRouter = require("./routes/getUser");
 const getMobsRouter = require("./routes/getMobs");
-const getVillageMapRouter = require("./routes/getMap");
 
 const corsOptions = {
   origin: "*",
@@ -20,7 +19,7 @@ app.use(express.urlencoded({ extended: true }));
 // routes
 app.use("/users", getUsersRouter);
 app.use("/mobs", getMobsRouter);
-app.use("/village-map", getVillageMapRouter);
+
 // app.get("/", (req, res) => {
 //   res.send("Bonjour");
 // });
