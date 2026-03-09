@@ -8,15 +8,26 @@ parent: 'game-container',
 scene : {
     preload : preload,
     create : create,
-    update : update
+    update : update 
 },
 
 scale: {
+    // Or set parent divId here
+    parent: "game-container",
+
     mode: Phaser.Scale.RESIZE,
     autoCenter: Phaser.Scale.CENTER_BOTH,
-    width: '1920px',
-    height: '1080px'
+    width: '100%',
+    height: '100%',
+    zoom: 1,  // Size of game canvas = game size * zoom
 },
+
+// scale: {
+//     mode: Phaser.Scale.RESIZE,
+//     autoCenter: Phaser.Scale.CENTER_BOTH,
+//     width: '100%',
+//     height: '100%'
+// },
 
 physics : {
     default : "arcade",
@@ -29,6 +40,7 @@ physics : {
 
 const game = new Phaser.Game(config);
 
+console.log(game);
 
 
 function preload() {
@@ -59,17 +71,22 @@ function preload() {
 function create() {
     
 //  Animation d'attaque de Tidus 
+chara = {
+    name: "SuuS",
+    image: "Tidus"
+}
+
     this.anims.create({
-        key : "Tidus-atk",
+        key : chara.image +"-atk",
         frames : [
-            {key : "Tidus-atk-1"},
-            {key : "Tidus-atk-2"},
-            {key : "Tidus-atk-3"},
-            {key : "Tidus-atk-4"},
-            {key : "Tidus-atk-5"},
-            {key : "Tidus-atk-6"},
-            {key : "Tidus-atk-7"},
-            {key : "Tidus"}
+            {key : chara.image +"-atk-1"},
+            {key : chara.image +"-atk-2"},
+            {key : chara.image +"-atk-3"},
+            {key : chara.image +"-atk-4"},
+            {key : chara.image +"-atk-5"},
+            {key : chara.image +"-atk-6"},
+            {key : chara.image +"-atk-7"},
+            {key : chara.image}
         ],
         frameRate : 10,
         repeat : 1
