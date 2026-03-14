@@ -27,6 +27,7 @@ var game = new Phaser.Game(config);
 
 function preload() {
   this.load.image("map", "Level_0.png");
+  this.load.image("map2", "Level_1.png");
   this.load.image("player", "../../Images/Tidus.png");
 }
 
@@ -34,19 +35,24 @@ function create() {
   //size
   const mapScale = 2.4;
 
-  this.mapImage = this.add.image(0, 0, "map").setOrigin(0).setScale(mapScale);
+  this.map1 = this.add.image(0, 0, "map").setOrigin(0).setScale(mapScale);
+
+  this.map2 = this.add
+    .image(this.map1.displayWidth, 0, "map2")
+    .setOrigin(0)
+    .setScale(mapScale);
 
   this.player = this.physics.add.sprite(120, 220, "player");
-  this.player.setScale(0.5);
+  this.player.setScale(0.45);
   this.player.setCollideWorldBounds(true);
 
   // size map with scale
-  const mapWidth = this.mapImage.width * mapScale;
-  const mapHeight = this.mapImage.height * mapScale;
+  const mapWidth = this.map1.displayWidth + this.map2.displayWidth;
+  const mapHeight = this.map1.displayHeight;
 
   this.physics.world.setBounds(0, 0, mapWidth, mapHeight);
 
-  // Groupe de collisions invisibles
+  // collision group
   this.walls = this.add.group();
 
   const addWall = (x, y, width, height) => {
@@ -56,20 +62,20 @@ function create() {
     return wall;
   };
 
-  // Bordures de la map
-  addWall(mapWidth / 2, 5, mapWidth, 65); // haut
-  addWall(5, mapHeight / 2, 65, mapHeight); // gauche
-  addWall(mapWidth - 20, mapHeight / 2, 39, mapHeight); // droite
-  addWall(mapWidth / 2, mapHeight - 5, mapWidth, 10); // bas
+  // Map 1 border
+  addWall(325, 0, 575, 80); // Up
+  addWall(0, 306, 74, 616); // Left
+  addWall(595, 122, 40, 165); // top-right
+  addWall(595, 500, 40, 230); // bottom-right
 
-  // rond d'herbe
+  // Round of grass
   addWall(325, 250, 112, 90);
 
-  // Grand mur d'entrée gauche
-  addWall(156, 551, 238, 105);
+  // Great wall left
+  addWall(156, 557, 238, 116);
 
-  // Grand mur d'entrée droite
-  addWall(477, 551, 196, 105);
+  // Great wall right
+  addWall(477, 557, 196, 116);
 
   // Collision joueur <-> murs
   this.walls.children.each((wall) => {
@@ -82,6 +88,10 @@ function create() {
     down: Phaser.Input.Keyboard.KeyCodes.S,
     right: Phaser.Input.Keyboard.KeyCodes.D,
   });
+
+  // Camera
+  this.cameras.main.setBounds(0, 0, mapWidth, mapHeight);
+  this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
 }
 
 function update() {
