@@ -33,7 +33,7 @@ function preload() {
 
 function create() {
   //size
-  const mapScale = 2.4;
+  const mapScale = 3.1;
 
   this.map1 = this.add.image(0, 0, "map").setOrigin(0).setScale(mapScale);
 
@@ -43,7 +43,7 @@ function create() {
     .setScale(mapScale);
 
   this.player = this.physics.add.sprite(120, 220, "player");
-  this.player.setScale(0.45);
+  this.player.setScale(0.6);
   this.player.setCollideWorldBounds(true);
 
   // size map with scale
@@ -63,19 +63,19 @@ function create() {
   };
 
   // Map 1 border
-  addWall(325, 0, 575, 80); // Up
-  addWall(0, 306, 74, 616); // Left
-  addWall(595, 122, 40, 165); // top-right
-  addWall(595, 500, 40, 230); // bottom-right
+  addWall(419, 0, 744, 95); // Up
+  addWall(0, 400, 94, 800); // Left
+  addWall(769, 158, 45, 220); // top-right
+  addWall(769, 643, 45, 294); // bottom-right
 
   // Round of grass
-  addWall(325, 250, 112, 90);
+  addWall(420, 321, 145, 116);
 
   // Great wall left
-  addWall(156, 557, 238, 116);
+  addWall(199, 718, 305, 146);
 
   // Great wall right
-  addWall(477, 557, 196, 116);
+  addWall(619, 718, 255, 146);
 
   // Collision joueur <-> murs
   this.walls.children.each((wall) => {
