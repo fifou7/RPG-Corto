@@ -28,10 +28,33 @@ var game = new Phaser.Game(config);
 function preload() {
   this.load.image("map", "Level_0.png");
   this.load.image("map2", "Level_1.png");
+
+  //static frames
+
   this.load.image("tidus_right", "../../Images/Tidus_static_right.png");
   this.load.image("tidus_left", "../../Images/Tidus_static_left.png");
   this.load.image("tidus_front", "../../Images/Tidus_static_front.png");
   this.load.image("tidus_back", "../../Images/Tidus_static_back.png");
+
+  //load frames
+
+  this.load.image("tidus_right_t1", "../../Images/Tidus_walking_right_t1.png");
+  this.load.image("tidus_right_t2", "../../Images/Tidus_walking_right_t2.png");
+  this.load.image("tidus_right_t3", "../../Images/Tidus_walking_right_t3.png");
+  this.load.image("tidus_right_t4", "../../Images/Tidus_walking_right_t4.png");
+
+  this.load.image("tidus_left_t1", "../../Images/Tidus_walking_left_t1.png");
+  this.load.image("tidus_left_t2", "../../Images/Tidus_walking_left_t2.png");
+  this.load.image("tidus_left_t3", "../../Images/Tidus_walking_left_t3.png");
+  this.load.image("tidus_left_t4", "../../Images/Tidus_walking_left_t4.png");
+
+  this.load.image("tidus_front_t1", "../../Images/Tidus_walking_front_t1.png");
+  this.load.image("tidus_front_t2", "../../Images/Tidus_walking_front_t2.png");
+  this.load.image("tidus_front_t3", "../../Images/Tidus_walking_front_t3.png");
+
+  this.load.image("tidus_back_t1", "../../Images/Tidus_walking_back_t1.png");
+  this.load.image("tidus_back_t2", "../../Images/Tidus_walking_back_t2.png");
+  this.load.image("tidus_back_t3", "../../Images/Tidus_walking_back_t3.png");
 }
 
 function create() {
@@ -45,9 +68,15 @@ function create() {
     .setOrigin(0)
     .setScale(mapScale);
 
+  //player
+
   this.player = this.physics.add.sprite(120, 220, "tidus_right");
   this.player.setScale(0.6);
   this.player.setCollideWorldBounds(true);
+  this.direction = "right";
+  this.frameIndex = 1;
+  this.frameTimer = 0;
+  this.frameDelay = 80;
 
   // size map with scale
   const mapWidth = this.map1.displayWidth + this.map2.displayWidth;
@@ -97,24 +126,50 @@ function create() {
   this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
 }
 
-function update() {
-  const speed = 150;
+function update(time, delta) {
+  const speed = 200;
+  let moving = false;
 
   this.player.setVelocity(0);
 
   if (this.keys.left.isDown) {
     this.player.setVelocityX(-speed);
-    this.player.setTexture("tidus_left");
+    this.direction = "left";
+    moving = true;
   } else if (this.keys.right.isDown) {
     this.player.setVelocityX(speed);
-    this.player.setTexture("tidus_right");
+    this.direction = "right";
+    moving = true;
   }
 
   if (this.keys.up.isDown) {
     this.player.setVelocityY(-speed);
-    this.player.setTexture("tidus_back");
+    this.direction = "back";
+    moving = true;
   } else if (this.keys.down.isDown) {
     this.player.setVelocityY(speed);
-    this.player.setTexture("tidus_front");
+    this.direction = "front";
+    moving = true;
+  }
+
+  if (moving) {
+    this.frameTimer += delta;
+
+    if (this.frameTimer > this.frameDelay) {
+      this.frameTimer = 0;
+      this.frameIndex++;
+
+      if (this.direction === "left" || this.direction === "right") {
+        if (this.frameIndex > 4) this.frameIndex = 1;
+      } else {
+        if (this.frameIndex > 3) this.frameIndex = 1;
+      }
+    }
+
+    this.player.setTexture(`tidus_${this.direction}_t${this.frameIndex}`);
+  } else {
+    this.frameIndex = 1;
+    this.frameTimer = 0;
+    this.player.setTexture(`tidus_${this.direction}`);
   }
 }
