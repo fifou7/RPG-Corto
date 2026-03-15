@@ -105,7 +105,7 @@ function create() {
   };
 
   // Map 1 border
-  addWall(419, 0, 744, 95); // Up
+  addWall(419, 24, 744, 48); // Up
   addWall(0, 400, 94, 800); // Left
   addWall(769, 158, 45, 220); // top-right
   addWall(769, 643, 45, 294); // bottom-right
@@ -118,6 +118,31 @@ function create() {
 
   // Great wall right
   addWall(619, 718, 255, 146);
+
+  // Map 2 border
+  addWall(1188, 5, 795, 12); // Up
+  addWall(1188, 785, 795, 12); // Bottom
+  addWall(1580, 461, 12, 636); // Right
+
+  // bush
+  addWall(843, 245, 100, 95);
+  addWall(843, 492, 100, 95);
+
+  addWall(1190, 245, 100, 95);
+  addWall(1190, 492, 100, 95);
+
+  addWall(1536, 245, 100, 95);
+  addWall(1536, 492, 100, 95);
+
+  // cliff
+  addWall(1190, 104, 283, 187);
+
+  // rock
+  addWall(998, 54, 101, 87);
+
+  // broken trees
+  addWall(1165, 647, 145, 98);
+  addWall(1490, 645, 100, 100);
 
   // player collision
   this.walls.children.each((wall) => {
