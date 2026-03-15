@@ -28,7 +28,10 @@ var game = new Phaser.Game(config);
 function preload() {
   this.load.image("map", "Level_0.png");
   this.load.image("map2", "Level_1.png");
-  this.load.image("player", "../../Images/Tidus.png");
+  this.load.image("tidus_right", "../../Images/Tidus_static_right.png");
+  this.load.image("tidus_left", "../../Images/Tidus_static_left.png");
+  this.load.image("tidus_front", "../../Images/Tidus_static_front.png");
+  this.load.image("tidus_back", "../../Images/Tidus_static_back.png");
 }
 
 function create() {
@@ -42,7 +45,7 @@ function create() {
     .setOrigin(0)
     .setScale(mapScale);
 
-  this.player = this.physics.add.sprite(120, 220, "player");
+  this.player = this.physics.add.sprite(120, 220, "tidus_right");
   this.player.setScale(0.6);
   this.player.setCollideWorldBounds(true);
 
@@ -101,13 +104,17 @@ function update() {
 
   if (this.keys.left.isDown) {
     this.player.setVelocityX(-speed);
+    this.player.setTexture("tidus_left");
   } else if (this.keys.right.isDown) {
     this.player.setVelocityX(speed);
+    this.player.setTexture("tidus_right");
   }
 
   if (this.keys.up.isDown) {
     this.player.setVelocityY(-speed);
+    this.player.setTexture("tidus_back");
   } else if (this.keys.down.isDown) {
     this.player.setVelocityY(speed);
+    this.player.setTexture("tidus_front");
   }
 }
