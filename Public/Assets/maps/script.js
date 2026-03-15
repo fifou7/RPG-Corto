@@ -28,6 +28,7 @@ var game = new Phaser.Game(config);
 function preload() {
   this.load.image("map", "Level_0.png");
   this.load.image("map2", "Level_1.png");
+  this.load.image("map3", "Level_2.png");
 
   //static frames
 
@@ -36,7 +37,7 @@ function preload() {
   this.load.image("tidus_front", "../../Images/Tidus_static_front.png");
   this.load.image("tidus_back", "../../Images/Tidus_static_back.png");
 
-  //load frames
+  // animated frames
 
   this.load.image("tidus_right_t1", "../../Images/Tidus_walking_right_t1.png");
   this.load.image("tidus_right_t2", "../../Images/Tidus_walking_right_t2.png");
@@ -58,13 +59,19 @@ function preload() {
 }
 
 function create() {
-  //size
+  // img map size
   const mapScale = 3.1;
 
+  // map installation
   this.map1 = this.add.image(0, 0, "map").setOrigin(0).setScale(mapScale);
 
   this.map2 = this.add
     .image(this.map1.displayWidth, 0, "map2")
+    .setOrigin(0)
+    .setScale(mapScale);
+
+  this.map3 = this.add
+    .image(this.map1.displayWidth + this.map2.displayWidth, -650, "map3")
     .setOrigin(0)
     .setScale(mapScale);
 
@@ -78,18 +85,21 @@ function create() {
   this.frameTimer = 0;
   this.frameDelay = 80;
 
-  // size map with scale
-  const mapWidth = this.map1.displayWidth + this.map2.displayWidth;
-  const mapHeight = this.map1.displayHeight;
+  // size world
+  const worldX = 0;
+  const worldY = -700;
+  const worldWidth =
+    this.map1.displayWidth + this.map2.displayWidth + this.map3.displayWidth;
+  const worldHeight = this.map1.displayHeight + 700;
 
-  this.physics.world.setBounds(0, 0, mapWidth, mapHeight);
+  this.physics.world.setBounds(worldX, worldY, worldWidth, worldHeight);
 
-  // collision group
+  // collision walls
   this.walls = this.add.group();
 
   const addWall = (x, y, width, height) => {
     const wall = this.add.rectangle(x, y, width, height, 0xff0000, 0.3);
-    this.physics.add.existing(wall, true); // true = statique
+    this.physics.add.existing(wall, true);
     this.walls.add(wall);
     return wall;
   };
@@ -109,10 +119,12 @@ function create() {
   // Great wall right
   addWall(619, 718, 255, 146);
 
-  // Collision joueur <-> murs
+  // player collision
   this.walls.children.each((wall) => {
     this.physics.add.collider(this.player, wall);
   });
+
+  // keys
 
   this.keys = this.input.keyboard.addKeys({
     up: Phaser.Input.Keyboard.KeyCodes.Z,
@@ -122,7 +134,17 @@ function create() {
   });
 
   // Camera
-  this.cameras.main.setBounds(0, 0, mapWidth, mapHeight);
+
+  this.normalCameraTop = 0;
+  this.caveCameraTop = -700;
+  this.cameraUnlockedForCave = false;
+
+  this.cameras.main.setBounds(
+    0,
+    this.normalCameraTop,
+    worldWidth,
+    this.map1.displayHeight,
+  );
   this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
 }
 
@@ -131,6 +153,8 @@ function update(time, delta) {
   let moving = false;
 
   this.player.setVelocity(0);
+
+  // walking animation
 
   if (this.keys.left.isDown) {
     this.player.setVelocityX(-speed);
@@ -171,5 +195,28 @@ function update(time, delta) {
     this.frameIndex = 1;
     this.frameTimer = 0;
     this.player.setTexture(`tidus_${this.direction}`);
+  }
+
+  // State 2 cave camera
+
+  const nearCave =
+    this.player.x > this.map1.displayWidth + 650 && this.player.y < 250;
+
+  if (nearCave && !this.cameraUnlockedForCave) {
+    this.cameraUnlockedForCave = true;
+    this.cameras.main.setBounds(
+      0,
+      this.caveCameraTop,
+      this.physics.world.bounds.width,
+      this.map1.displayHeight + 700,
+    );
+  } else if (!nearCave && this.cameraUnlockedForCave) {
+    this.cameraUnlockedForCave = false;
+    this.cameras.main.setBounds(
+      0,
+      this.normalCameraTop,
+      this.physics.world.bounds.width,
+      this.map1.displayHeight,
+    );
   }
 }
