@@ -147,7 +147,21 @@ function create() {
   // Map 3 border
   addWall(1983, -630, 790, 45); // Up
   addWall(1983, 135, 795, 20); // Bottom
-  addWall(2355, -250, 45, 600); // Right
+  addWall(2355, -241, 45, 732); // Right
+  addWall(1609, -300, 45, 615); // Left
+
+  // Pillars
+  addWall(1760, -352, 52, 100);
+  addWall(1760, -154, 52, 100);
+  addWall(2206, -352, 52, 100);
+  addWall(2206, -154, 52, 100);
+
+  // broken pillars
+  addWall(1760, -30, 52, 50);
+  addWall(2206, -30, 52, 50);
+
+  // hero statue
+  addWall(1982, -518, 80, 130);
 
   // player collision
   this.walls.children.each((wall) => {
