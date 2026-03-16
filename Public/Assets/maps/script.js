@@ -144,6 +144,11 @@ function create() {
   addWall(1165, 647, 145, 98);
   addWall(1490, 645, 100, 100);
 
+  // Map 3 border
+  addWall(1983, -630, 790, 45); // Up
+  addWall(1983, 135, 795, 20); // Bottom
+  addWall(2355, -250, 45, 600); // Right
+
   // player collision
   this.walls.children.each((wall) => {
     this.physics.add.collider(this.player, wall);
