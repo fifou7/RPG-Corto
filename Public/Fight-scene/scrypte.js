@@ -81,21 +81,21 @@ chara = {
     image: "Tidus"
 }
 
-    this.anims.create({
-        key : chara.image +"-atk",
-        frames : [
-            {key : chara.image +"-atk-1"},
-            {key : chara.image +"-atk-2"},
-            {key : chara.image +"-atk-3"},
-            {key : chara.image +"-atk-4"},
-            {key : chara.image +"-atk-5"},
-            {key : chara.image +"-atk-6"},
-            {key : chara.image +"-atk-7"},
-            {key : chara.image}
-        ],
-        frameRate : 10,
-        repeat : 0
-    })
+   this.anims.create({
+         key : chara.image +"-atk",
+         frames : [
+        {key : chara.image +"-atk-1"},
+        {key : chara.image +"-atk-2"},
+        {key : chara.image +"-atk-3"},
+        {key : chara.image +"-atk-4"},
+        {key : chara.image +"-atk-5"},
+        {key : chara.image +"-atk-6"},
+        {key : chara.image +"-atk-7"},
+        {key : chara.image}
+     ],
+     frameRate : 10,
+     repeat : 0
+ })
 
     this.anims.create({
         key : "Sora-atk",
@@ -108,7 +108,7 @@ chara = {
             {key : "Sora"}
         ],
         frameRate : 10,
-        repeat : 1
+        repeat : 2
     })
 
 //  Background-fight
