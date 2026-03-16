@@ -40,14 +40,6 @@ con.connect(function (err) {
   );
 
   con.query(
-    "CREATE TABLE IF NOT EXISTS npc (id int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT, name varchar(25), gender enum('Man', 'Woman', 'Other'), image varchar(255), role varchar(25), dialogue text(255));",
-    function (err) {
-      if (err) throw err;
-      console.log("Table created");
-    },
-  );
-
-  con.query(
     "CREATE TABLE IF NOT EXISTS Ost (id int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT, Name varchar(50), track varchar(255));",
     function (err) {
       if (err) throw err;
@@ -64,7 +56,23 @@ con.connect(function (err) {
   );
 
   con.query(
-    "CREATE TABLE IF NOT EXISTS worldmap (id int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT, name varchar(25), image varchar(255), cycle enum('day', 'night'), type_zone enum('City', 'Land', 'Cave', 'Desert'));",
+    "CREATE TABLE IF NOT EXISTS npc (id int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT, name varchar(25), gender enum('Man', 'Woman', 'Other'), image varchar(255), role varchar(25));",
+    function (err) {
+      if (err) throw err;
+      console.log("Table created");
+    },
+  );
+
+  con.query(
+    "CREATE TABLE IF NOT EXISTS dialogues (id int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT, npc_id int(11), text text(255), step int(11), FOREIGN KEY (npc_id) REFERENCES npc(id));",
+    function (err) {
+      if (err) throw err;
+      console.log("Table created");
+    },
+  );
+
+  con.query(
+    "CREATE TABLE IF NOT EXISTS progression (id int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT, name varchar(25), existance boolean);",
     function (err) {
       if (err) throw err;
       console.log("Table created");
