@@ -16,7 +16,7 @@ con.connect(function (err) {
   );
 
   con.query(
-    "CREATE TABLE IF NOT EXISTS items (id int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT, name varchar(50), category enum('key_item', 'weapon', 'armor', 'consumable', 'spell'), description text(255), image varchar(255), ATK_bonus int(11), DEF_bonus int(11), MANA_bonus int(11), Health_bonus int(11), Speed_bonus int(11));",
+    "CREATE TABLE IF NOT EXISTS items (id int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT, name varchar(50), category enum('weapon', 'armor', 'consumable'), description text(255), image varchar(255), ATK_bonus int(11), DEF_bonus int(11), MANA_bonus int(11), Health_bonus int(11), Speed_bonus int(11));",
     function (err) {
       if (err) throw err;
       console.log("Table created");
