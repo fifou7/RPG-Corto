@@ -123,19 +123,19 @@ chara = {
     Tidus.anims.play("Tidus-atk");
 
 //  Lunafreya
-    var Lunafreya = this.add.sprite(config.width*0.22,300, "Lunafreya");
+    var Lunafreya = this.add.sprite(config.width*0.22,290, "Lunafreya");
     Lunafreya.setScale(0.7);
 
 //  Sora
-    var Sora = this.add.sprite(config.width*0.24, 450, "Sora");   
+    var Sora = this.add.sprite(config.width*0.24, 420, "Sora");   
     Sora.setScale(0.7);
     Sora.anims.play("Sora-atk");
 
 //  Mob
     var Bombo1 = this.add.sprite(config.width*0.75,150, "Bombo1");
     var Bombo2 = this.add.sprite(config.width*0.75,400, "Bombo2");
-    Bombo1.setScale(0.7);
-    Bombo2.setScale(0.7);
+    Bombo1.setScale(0.6);
+    Bombo2.setScale(0.6);
 
   
 
