@@ -25,7 +25,7 @@ body, html {
     height: 25vh;
     background-color: #004094;
     border-radius: 40px;
-    border: white solid 7px;
+    border: white solid 4px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -77,14 +77,58 @@ body, html {
     margin-left: 10px;
 }
 
-.jaugeATB {
+.jaugeATB-container {
+    width: 100px;
+    height: 15px;
+    background-color: rgb(50, 50, 50);
+    border-radius: 48px;
+    border: white solid 3px;
+    margin-left: 10px;
+    overflow: hidden;
+}
+
+.jaugeATBSora, .jaugeATBTidus, .jaugeATBLuna {
+    height: 100%;
+    width: 0%;
+    background-color: rgb(238, 0, 238);
+    border-radius: 48px;
+}
+
+/* .jaugeATBTidus {
     background-color: rgb(238, 0, 238);
     border-radius: 48px;
     border: white solid 3px;
-    flex: 1.5;
     height: 15px;
     margin-left: 10px;
+    width: 0px;          
+    max-width: 15%;
+    transition: none;
 }
+
+.jaugeATBLuna {
+    background-color: rgb(238, 0, 238);
+    border-radius: 48px;
+    border: white solid 3px;
+    height: 15px;
+    margin-left: 10px;
+    width: 0px;          
+    max-width: 15%;
+    transition: none;
+}
+
+.jaugeATBSora {
+    background-color: rgb(238, 0, 238);
+    border-radius: 48px;
+    border: white solid 3px;
+    height: 15px;
+    margin-left: 10px;
+    width: 0px;          
+    max-width: 15%;
+    transition: none;
+} */
+
+
+
 
 .cursor {
     position: absolute;
