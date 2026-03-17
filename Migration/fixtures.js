@@ -86,7 +86,6 @@ con.connect(function (err) {
 
   // fixtures dialogues
 
-  // fixtures dialogues
   let sqlDialogues = "INSERT INTO dialogues (npc_id, text, step) VALUES ?";
   let dialogueValues = [
     [1, "Bonjour voyageur.", 1],
@@ -109,6 +108,39 @@ con.connect(function (err) {
   con.query(sqlDialogues, [dialogueValues], function (err) {
     if (err) throw err;
     console.log("Dialogues fixtures inserted");
+  });
+
+  // fixtures items
+  let sqlItems =
+    "INSERT INTO items (name, category, description, image, ATK_bonus, DEF_bonus, MANA_bonus, Health_bonus, Speed_bonus) VALUES ?";
+  let itemValues = [
+    [
+      "Gants de voyageur",
+      "armor",
+      "Une paire de gants donnée aux voyageurs pour partir à l'aventure.",
+      "gloves.png",
+      5,
+      5,
+      0,
+      0,
+      0,
+    ],
+    [
+      "Epée de l'ancien héros",
+      "weapon",
+      "Une épée très cool utilisée par un ancien héros.",
+      "cool-sword.png",
+      15,
+      0,
+      0,
+      0,
+      0,
+    ],
+  ];
+
+  con.query(sqlItems, [itemValues], function (err) {
+    if (err) throw err;
+    console.log("Items fixtures inserted");
   });
 });
 
