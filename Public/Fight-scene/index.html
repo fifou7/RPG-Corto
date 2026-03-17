@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fight Scene</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/phaser/3.90.0/phaser.min.js"></script>
-    <script src="scrypte.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -20,21 +19,27 @@
             </p>
             <div class="BarrePV"></div>
             <div class="BarreHP"></div>
-            <div class="jaugeATB"></div>
+         <div class="jaugeATB-container">
+            <div class="jaugeATBTidus"></div>
+        </div>
         </div>
 
         <div class="perso-ligne">
             <p class="NamePerso">Tidus</p>
             <div class="BarrePV"></div>
             <div class="BarreHP"></div>
-            <div class="jaugeATB"></div>
+        <div class="jaugeATB-container">
+            <div class="jaugeATBLuna"></div>
+        </div>
         </div>
 
         <div class="perso-ligne">
             <p class="NamePerso">Sora</p>
             <div class="BarrePV"></div>
             <div class="BarreHP"></div>
-            <div class="jaugeATB"></div>
+        <div class="jaugeATB-container">
+            <div class="jaugeATBSora"></div>
+        </div>
         </div>
 
     </div>
@@ -42,5 +47,7 @@
 
 
 </div>
+<script src="scrypte.js" defer></script>
 </body>
+
 </html>
