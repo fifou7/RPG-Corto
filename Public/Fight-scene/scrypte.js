@@ -15,7 +15,7 @@ scale: {
     // Or set parent divId here
     parent: "game-container",
 
-    mode: Phaser.Scale.RESIZE,
+    mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH,
     width: '100%',
     height: '100%',
@@ -69,7 +69,8 @@ function preload() {
     this.load.image("background-fight","../Images/image-de-fond-fight.png");
 
 //  Mob
-    this.load.image("Bombo","../Images/Bombo.png");
+    this.load.image("Bombo1","../Images/Bombo.png");
+    this.load.image("Bombo2","../Images/Bombo.png");
 
 }
 
@@ -117,22 +118,26 @@ chara = {
     backgroundImage.setPosition(config.width/2, config.height/2);
 
 //  Tidus
-    var Tidus = this.add.sprite(895,595, "Tidus");
-    Tidus.setScale(1.25);
+    var Tidus = this.add.sprite(config.width*0.28, 150, "Tidus");
+    Tidus.setScale(0.7);
     Tidus.anims.play("Tidus-atk");
 
 //  Lunafreya
-    var Lunafreya = this.add.sprite(800,350, "Lunafreya");
-    Lunafreya.setScale(1.25);
+    var Lunafreya = this.add.sprite(config.width*0.22,300, "Lunafreya");
+    Lunafreya.setScale(0.7);
 
 //  Sora
-    var Sora = this.add.sprite(840,860, "Sora");   
-    Sora.setScale(1.25);
+    var Sora = this.add.sprite(config.width*0.24, 450, "Sora");   
+    Sora.setScale(0.7);
     Sora.anims.play("Sora-atk");
 
 //  Mob
-    var Bombo = this.add.sprite(2000,450, "Bombo");
-    var Bombo = this.add.sprite(2000,800, "Bombo");
+    var Bombo1 = this.add.sprite(config.width*0.75,150, "Bombo1");
+    var Bombo2 = this.add.sprite(config.width*0.75,400, "Bombo2");
+    Bombo1.setScale(0.7);
+    Bombo2.setScale(0.7);
+
+  
 
 
     
