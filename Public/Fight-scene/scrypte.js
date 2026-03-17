@@ -56,6 +56,14 @@ function preload() {
 
 //  Lunafreya
     this.load.image("Lunafreya","../Images/Lunafreya.png");
+    this.load.image("Lunafreya-atk-1","../Images/Lunafreya-atk-1.png");
+    this.load.image("Lunafreya-atk-2","../Images/Lunafreya-atk-2.png");
+    this.load.image("Lunafreya-atk-3","../Images/Lunafreya-atk-3.png");
+    this.load.image("Lunafreya-atk-4","../Images/Lunafreya-atk-4.png");
+    this.load.image("Lunafreya-atk-5","../Images/Lunafreya-atk-5.png");
+    this.load.image("Lunafreya-atk-6","../Images/Lunafreya-atk-6.png");
+    this.load.image("Lunafreya-atk-7","../Images/Lunafreya-atk-7.png");
+
 
 //  Sora
     this.load.image("Sora","../Images/Sora.png");
@@ -95,9 +103,9 @@ chara = {
         {key : chara.image}
      ],
      frameRate : 10,
-    //  repeat : 0
  })
 
+//  Animation d'attaque de Sora
     this.anims.create({
         key : "Sora-atk",
         frames : [
@@ -109,8 +117,26 @@ chara = {
             {key : "Sora"}
         ],
         frameRate : 10,
-        // repeat : 0
     })
+
+//  Animation d'attaque de Sora
+
+this.anims.create({
+        key : "Lunafreya-atk",
+        frames : [
+            {key : "Lunafreya-atk-1"},
+            {key : "Lunafreya-atk-2"},
+            {key : "Lunafreya-atk-3"},
+            {key : "Lunafreya-atk-4"},
+            {key : "Lunafreya-atk-5"},
+            {key : "Lunafreya-atk-7"},
+            // {key : "Lunafreya-atk-6"},
+            {key : "Lunafreya"}
+        ],
+        frameRate : 6,
+    })
+
+
 
 //  Background-fight
     var backgroundImage = this.add.sprite(0,0, "background-fight");
@@ -125,6 +151,7 @@ chara = {
 //  Lunafreya
     Lunafreya = this.add.sprite(config.width*0.22,290, "Lunafreya");
     Lunafreya.setScale(0.7);
+    Lunafreya.anims.play("Lunafreya-atk");
 
 //  Sora
     Sora = this.add.sprite(config.width*0.24, 420, "Sora");   
@@ -137,12 +164,31 @@ chara = {
     Bombo1.setScale(0.6);
     Bombo2.setScale(0.6);
 
-  
-
-
-    
-
 }
+
+
+// Fonction pour déplacer le curseur
+function moveCursor(persoName) {
+    // Retire le curseur de tous les persos
+    document.querySelectorAll('.perso-ligne').forEach(ligne => {
+        const cursor = ligne.querySelector('.cursor');
+        if (cursor) cursor.remove();
+    });
+
+    // Trouve la bonne ligne et ajoute le curseur
+    document.querySelectorAll('.perso-ligne').forEach(ligne => {
+        const name = ligne.querySelector('.NamePerso');
+        if (name && name.textContent.trim().includes(persoName)) {
+            const img = document.createElement('img');
+            img.className = 'cursor';
+            img.src = '../Images/cursor.png';
+            name.prepend(img);
+        }
+    });
+}
+
+
+
 // Variables globales
 let soraATB = 0;
 let tidusATB = 0;
@@ -167,6 +213,7 @@ function update(time, delta) {
         soraAttacking = true;
         soraATB = 0;
         document.querySelector('.jaugeATBSora').style.width = '0%';
+        moveCursor('Sora');
         Sora.anims.play("Sora-atk");
 
         Sora.once('animationcomplete', () => {
@@ -185,6 +232,7 @@ if (!tidusAttacking) {
         tidusAttacking = true;
         tidusATB = 0;
         document.querySelector('.jaugeATBTidus').style.width = '0%';
+        moveCursor('Tidus');
         Tidus.anims.play("Tidus-atk");
 
         Tidus.once('animationcomplete', () => {
@@ -194,7 +242,7 @@ if (!tidusAttacking) {
     }
 }
 
-// --- LUNA (pas d'anim d'attaque pour l'instant, juste la jauge) ---
+
 if (!lunaAttacking) {
     lunaATB += LUNA_SPEED * dt;
     document.querySelector('.jaugeATBLuna').style.width = Math.min(lunaATB, ATB_MAX) + '%';
@@ -202,7 +250,13 @@ if (!lunaAttacking) {
     if (lunaATB >= ATB_MAX) {
         lunaATB = 0;
         document.querySelector('.jaugeATBLuna').style.width = '0%';
-        // Pas d'anim pour Luna, on relance direct
+         moveCursor('Lunafreya');
+        Lunafreya.anims.play("Lunafreya-atk");
+
+        Lunafreya.once('animationcomplete', () => {
+            Lunafreya.setTexture("Lunafreya");
+            lunaAttacking = false;
+        });
     }
 }
 }
