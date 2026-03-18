@@ -82,100 +82,102 @@ function preload() {
 
 }
 
-function create() {
-    
-//  Animation d'attaque de Tidus 
-chara = {
-    name: "SuuS",
-    image: "Tidus"
-}
+async function create() {
 
-   this.anims.create({
-         key : chara.image +"-atk",
-         frames : [
-        {key : chara.image +"-atk-1"},
-        {key : chara.image +"-atk-2"},
-        {key : chara.image +"-atk-3"},
-        {key : chara.image +"-atk-4"},
-        {key : chara.image +"-atk-5"},
-        {key : chara.image +"-atk-6"},
-        {key : chara.image +"-atk-7"},
-        {key : chara.image}
-     ],
-     frameRate : 10,
- })
+    const response = await fetch("http://localhost:3000/characters");
+    const characters = await response.json();
+    console.log(characters);
 
-//  Animation d'attaque de Sora
+    // Récupérer chaque perso par son nom
+    const tidusData = characters.find(c => c.name === "Tidus");
+    const soraData = characters.find(c => c.name === "Sora");
+    const lunaData = characters.find(c => c.name === "Lunafreya");
+
+    // Stocker les speeds pour l'ATB 
+    TIDUS_SPEED = 100 / tidusData.atb_jauge;
+    SORA_SPEED = 100 / soraData.atb_jauge;
+    LUNA_SPEED = 100 / lunaData.atb_jauge;
+
+    // Animations d'atk Tidus
     this.anims.create({
-        key : "Sora-atk",
-        frames : [
-            {key : "Sora-atk-1"},
-            {key : "Sora-atk-2"},
-            {key : "Sora-atk-3"},
-            {key : "Sora-atk-4"},
-            {key : "Sora-atk-5"},
-            {key : "Sora"}
+        key: "Tidus-atk",
+        frames: [
+        {key: "Tidus-atk-1"},
+        {key: "Tidus-atk-2"},
+        {key: "Tidus-atk-3"},
+        {key: "Tidus-atk-4"},
+        {key: "Tidus-atk-5"},
+        {key: "Tidus-atk-6"},
+        {key: "Tidus-atk-7"},
+        {key: "Tidus"}
         ],
-        frameRate : 10,
-    })
+        frameRate: 10,
+    });
 
-//  Animation d'attaque de Sora
-
-this.anims.create({
-        key : "Lunafreya-atk",
-        frames : [
-            {key : "Lunafreya-atk-1"},
-            {key : "Lunafreya-atk-2"},
-            {key : "Lunafreya-atk-3"},
-            {key : "Lunafreya-atk-4"},
-            {key : "Lunafreya-atk-5"},
-            {key : "Lunafreya-atk-7"},
-            // {key : "Lunafreya-atk-6"},
-            {key : "Lunafreya"}
+    // Animations d'atk Sora
+    this.anims.create({
+        key: "Sora-atk",
+        frames: [
+            {key: "Sora-atk-1"},
+            {key: "Sora-atk-2"},
+            {key: "Sora-atk-3"},
+            {key: "Sora-atk-4"},
+            {key: "Sora-atk-5"},
+            {key: "Sora"}
         ],
-        frameRate : 6,
-    })
+        frameRate: 10,
+    });
 
+    // Animations d'atk Lunafreya 
+    this.anims.create({
+        key: "Lunafreya-atk",
+        frames: [
+            {key: "Lunafreya-atk-1"},
+            {key: "Lunafreya-atk-2"},
+            {key: "Lunafreya-atk-3"},
+            {key: "Lunafreya-atk-4"},
+            {key: "Lunafreya-atk-5"},
+            {key: "Lunafreya-atk-7"},
+            {key: "Lunafreya"}
+        ],
+        frameRate: 6,
+    });
 
-
-//  Background-fight
-    var backgroundImage = this.add.sprite(0,0, "background-fight");
+    // Background 
+    var backgroundImage = this.add.sprite(0, 0, "background-fight");
     backgroundImage.setDisplaySize(config.width, config.height);
-    backgroundImage.setPosition(config.width/2, config.height/2);
+    backgroundImage.setPosition(config.width / 2, config.height / 2);
 
-//  Tidus
-    Tidus = this.add.sprite(config.width*0.26, 150, "Tidus");
+    // Tidus
+    Tidus = this.add.sprite(config.width * 0.26, 150, "Tidus");
     Tidus.setScale(0.7);
-    Tidus.anims.play("Tidus-atk");
+    Tidus.data = tidusData; // pour stocker les stats sur le sprite
 
-//  Lunafreya
-    Lunafreya = this.add.sprite(config.width*0.22,290, "Lunafreya");
+    // Lunafreya
+    Lunafreya = this.add.sprite(config.width * 0.22, 290, "Lunafreya");
     Lunafreya.setScale(0.7);
-    Lunafreya.anims.play("Lunafreya-atk");
+    Lunafreya.data = lunaData;
 
-//  Sora
-    Sora = this.add.sprite(config.width*0.24, 420, "Sora");   
+    // Sora
+    Sora = this.add.sprite(config.width * 0.24, 420, "Sora");
     Sora.setScale(0.7);
-    Sora.anims.play("Sora-atk");
+    Sora.data = soraData;
 
-//  Mob
-    var Bombo1 = this.add.sprite(config.width*0.75,150, "Bombo1");
-    var Bombo2 = this.add.sprite(config.width*0.75,400, "Bombo2");
+    // Mobs 
+    var Bombo1 = this.add.sprite(config.width * 0.75, 150, "Bombo1");
+    var Bombo2 = this.add.sprite(config.width * 0.75, 400, "Bombo2");
     Bombo1.setScale(0.6);
     Bombo2.setScale(0.6);
-
 }
 
 
 // Fonction pour déplacer le curseur
 function moveCursor(persoName) {
-    // Retire le curseur de tous les persos
     document.querySelectorAll('.perso-ligne').forEach(ligne => {
         const cursor = ligne.querySelector('.cursor');
         if (cursor) cursor.remove();
     });
 
-    // Trouve la bonne ligne et ajoute le curseur
     document.querySelectorAll('.perso-ligne').forEach(ligne => {
         const name = ligne.querySelector('.NamePerso');
         if (name && name.textContent.trim().includes(persoName)) {
@@ -188,15 +190,13 @@ function moveCursor(persoName) {
 }
 
 
-
-// Variables globales
 let soraATB = 0;
 let tidusATB = 0;
 let lunaATB = 0;
 const ATB_MAX = 100;
-const SORA_SPEED = 100 / 5;   // 5 sec
-const TIDUS_SPEED = 100 / 4;  // 4 sec
-const LUNA_SPEED = 100 / 6;   // 6 sec
+let SORA_SPEED = 100 / 5;   // 5 sec
+let TIDUS_SPEED = 100 / 4;  // 4 sec
+let LUNA_SPEED = 100 / 6;   // 6 sec
 
 let soraAttacking = false;
 let tidusAttacking = false;
@@ -204,6 +204,8 @@ let lunaAttacking = false;
 
 function update(time, delta) {
     let dt = delta / 1000;
+
+// SORA ATB
 
    if (!soraAttacking) {
     soraATB += SORA_SPEED * dt;
@@ -223,7 +225,8 @@ function update(time, delta) {
     }
 }
 
-// --- TIDUS ---
+// TIDUS ATB
+
 if (!tidusAttacking) {
     tidusATB += TIDUS_SPEED * dt;
     document.querySelector('.jaugeATBTidus').style.width = Math.min(tidusATB, ATB_MAX) + '%';
@@ -242,6 +245,7 @@ if (!tidusAttacking) {
     }
 }
 
+// LUNAFREYA ATB
 
 if (!lunaAttacking) {
     lunaATB += LUNA_SPEED * dt;
