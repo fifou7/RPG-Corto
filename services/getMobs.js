@@ -4,16 +4,18 @@ const config = require("../config");
 
 async function getMultiple(page = 1, id) {
   const offset = helper.getOffset(page, config.listPerPage);
-  const rows = await db.query(`SELECT * FROM mobs WHERE id = ${id}`);
+  let rows;
+
+  if (id && id !== undefined) {
+    rows = await db.query("SELECT * FROM mobs WHERE id = ?", [id]);
+  } else {
+    rows = await db.query("SELECT * FROM mobs LIMIT ?,?", [offset, config.listPerPage]);
+  }
+
   const data = helper.emptyOrRows(rows);
   const meta = { page };
 
-  return {
-    data,
-    meta,
-  };
+  return { data, meta };
 }
 
-module.exports = {
-  getMultiple,
-};
+module.exports = { getMultiple };
