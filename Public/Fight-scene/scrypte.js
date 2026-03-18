@@ -13,6 +13,7 @@ class Characters {
 }
 
 let Tidus = new Characters();
+let Sora = new Characters();
 let Bombo1 = new Characters();
 let Bombo2 = new Characters();
 
@@ -68,6 +69,9 @@ function preload() {
   this.load.image("Tidus-atk-5", "../Images/Tidus-atk-5.png");
   this.load.image("Tidus-atk-6", "../Images/Tidus-atk-6.png");
   this.load.image("Tidus-atk-7", "../Images/Tidus-atk-7.png");
+  this.load.image("Tidus-run", "../Images/Tidus-sprinte.png");
+  this.load.image("Tidus-back", "../Images/Tidus-atk-7.png");
+
 
   //  Lunafreya
   this.load.image("Lunafreya", "../Images/Lunafreya.png");
@@ -86,6 +90,8 @@ function preload() {
   this.load.image("Sora-atk-3", "../Images/Sora-atk-3.png");
   this.load.image("Sora-atk-4", "../Images/Sora-atk-4.png");
   this.load.image("Sora-atk-5", "../Images/Sora-atk-5.png");
+  this.load.image("Sora-run","../Images/Sora-run.png");
+  this.load.image("Sora-back", "../Images/Sora-atk-5.png");
 
 
   //  Background-fight
@@ -166,18 +172,17 @@ async function create() {
 
 // Animations d'atk Bombo
   this.anims.create({
-    key: "Bombo-atk",
+    key: "fireball-anim",
     frames: [
-      { key: "Bombo1-atk-1" },
-      { key: "Bombo1-atk-2" },
-      { key: "Bombo1-atk-3" },
-      { key: "Bombo1-atk-4" },
-      { key: "Bombo1-atk-5" },
-      { key: "Bombo1-atk-1" },
-      { key: "Bombo1" }
+        { key: "Bombo1-atk-1" },
+        { key: "Bombo1-atk-2" },
+        { key: "Bombo1-atk-3" },
+        { key: "Bombo1-atk-4" },
+        { key: "Bombo1-atk-5" }
     ],
     frameRate: 10,
-  });
+    repeat: -1
+});
 
   
   // Background
@@ -196,15 +201,15 @@ async function create() {
   Lunafreya.data = lunaData;
 
   // Sora
-  Sora = this.add.sprite(config.width * 0.24, 420, "Sora");
-  Sora.setScale(0.7);
+  Sora.sprite = this.add.sprite(config.width * 0.24, 420, "Sora");
+  Sora.sprite.setScale(0.7);
   Sora.data = soraData;
 
   // Mobs
   Bombo1.sprite = this.add.sprite(config.width * 0.75, 150, "Bombo1");
-  var Bombo2 = this.add.sprite(config.width * 0.75, 400, "Bombo2");
+  Bombo2.sprite = this.add.sprite(config.width * 0.75, 400, "Bombo2");
   Bombo1.sprite.setScale(0.6);
-  Bombo2.setScale(0.6);
+  Bombo2.sprite.setScale(0.6);
 
   this.tweens.add({
     targets: Bombo1.sprite,
@@ -216,8 +221,8 @@ async function create() {
 });
 
 this.tweens.add({
-    targets: Bombo2,
-    x: Bombo2.x + 10,
+    targets: Bombo2.sprite,  
+    x: Bombo2.sprite.x + 10, 
     duration: 1800,
     yoyo: true,
     repeat: -1,
@@ -248,7 +253,7 @@ function getRandomHero() {
     const heroes = [
         { sprite: Tidus.sprite, name: "Tidus" },
         { sprite: Lunafreya, name: "Lunafreya" },
-        { sprite: Sora, name: "Sora" }
+        { sprite: Sora.sprite, name: "Sora" }
     ];
     return heroes[Math.floor(Math.random() * heroes.length)];
 }
@@ -283,52 +288,94 @@ function update(time, delta) {
     soraATB += SORA_SPEED * dt;
     document.querySelector(".jaugeATBSora").style.width =
       Math.min(soraATB, ATB_MAX) + "%";
+}
 
-    if (soraATB >= ATB_MAX) {
-      soraAttacking = true;
-      soraATB = 0;
-      document.querySelector(".jaugeATBSora").style.width = "0%";
-      moveCursor("Sora");
-      Sora.anims.play("Sora-atk");
+if (soraATB >= ATB_MAX) {
+    soraAttacking = true;
 
-      Sora.once("animationcomplete", () => {
-        Sora.setTexture("Sora"); // retour sprite statique
-        soraAttacking = false;
-      });
+    // ALLER vers le mob
+    if (Sora.isMovingToAttack) {
+      if (Sora.stepsMade === 0) {
+        Sora.sprite.setTexture("Sora-run");
+      }
+
+      Sora.sprite.x += 5;
+      Sora.stepsMade += 1;
+
+      if (Sora.stepsMade >= 100) {
+        Sora.isMovingToAttack = false;
+        Sora.stepsMade = 0;
+        Sora.sprite.anims.play("Sora-atk");
+
+        Sora.sprite.once("animationcomplete", () => {
+          Sora.sprite.setTexture("Sora-back");
+          Sora.isRetreating = true;
+        });
+      }
     }
-  }
+
+    // RETOUR vers la position initiale
+    if (Sora.isRetreating) {
+      Sora.sprite.x -= 5;
+      Sora.stepsMade += 1;
+
+      if (Sora.stepsMade >= 100) {
+        Sora.sprite.setTexture("Sora");
+        document.querySelector(".jaugeATBSora").style.width = "0%";
+        moveCursor("Sora");
+        Sora.stepsMade = 0;
+        soraATB = 0;
+        soraAttacking = false;
+        Sora.isRetreating = false;
+        Sora.isMovingToAttack = true;
+      }
+    }
+}
+
 
   // TIDUS ATB
 
-  if (!tidusAttacking) {
+if (!tidusAttacking) {
     tidusATB += TIDUS_SPEED * dt;
     document.querySelector(".jaugeATBTidus").style.width =
       Math.min(tidusATB, ATB_MAX) + "%";
-  }
+}
 
-  if (tidusATB >= ATB_MAX) {
+if (tidusATB >= ATB_MAX) {
     tidusAttacking = true;
-    // Tidus commence par faire 100px
+
+    //  Tous permet d'aller vers le bombo1 
     if (Tidus.isMovingToAttack) {
+      // Change le sprite permet de donner l'illusion 
+      if (Tidus.stepsMade === 0) {
+        Tidus.sprite.setTexture("Tidus-run");
+      }
+
       Tidus.sprite.x += 5;
       Tidus.stepsMade += 1;
+
       if (Tidus.stepsMade >= 100) {
         Tidus.isMovingToAttack = false;
         Tidus.stepsMade = 0;
+        // Lance l'anim d'attaque
         Tidus.sprite.anims.play("Tidus-atk");
-      }
-    } else {
-      Tidus.sprite.once("animationcomplete", () => {
-        Tidus.sprite.setTexture("Tidus");
 
-        Tidus.isRetreating = true;
-      });
+        Tidus.sprite.once("animationcomplete", () => {
+          // Passe en sprite de retour
+          Tidus.sprite.setTexture("Tidus-back");
+          Tidus.isRetreating = true;
+        });
+      }
     }
 
+    // RETOUR vers la position initiale
     if (Tidus.isRetreating) {
       Tidus.sprite.x -= 5;
       Tidus.stepsMade += 1;
+
       if (Tidus.stepsMade >= 100) {
+        // Remet le sprite idle
+        Tidus.sprite.setTexture("Tidus");
         document.querySelector(".jaugeATBTidus").style.width = "0%";
         moveCursor("Tidus");
         Tidus.stepsMade = 0;
@@ -338,13 +385,14 @@ function update(time, delta) {
         Tidus.isMovingToAttack = true;
       }
     }
-    // Permet de récupérer la distance entre deux éléments
+}
+
+
+// Permet de récupérer la distance entre deux éléments
     // Je te laisse ça là, ça pourra t'être utile
     // console.log(
     //   Phaser.Math.Distance.BetweenPoints(Tidus.sprite, Bombo1.sprite)
     // );
-  }
-
   // LUNAFREYA ATB
 
   if (!lunaAttacking) {
@@ -365,7 +413,7 @@ function update(time, delta) {
     }
   }
 
-// BOMBO1 ATB
+
 // BOMBO1 ATB
 if (!bombo1Attacking) {
     bombo1ATB += BOMBO1_SPEED * dt;
@@ -377,27 +425,13 @@ if (!bombo1Attacking) {
         // Pas d'anim sur le Bombo ! On crée directement le feu
         let target = getRandomHero();
 
-        let fireball = gameScene.add.sprite(
-            Bombo1.sprite.x,
-            Bombo1.sprite.y,
-            "Bombo1-atk-1"
-        );
-        fireball.setScale(0.5);
-
-        // Anim de feu sur le PROJECTILE, pas sur le Bombo
-        gameScene.anims.create({
-            key: "fireball-anim",
-            frames: [
-                { key: "Bombo1-atk-1" },
-                { key: "Bombo1-atk-2" },
-                { key: "Bombo1-atk-3" },
-                { key: "Bombo1-atk-4" },
-                { key: "Bombo1-atk-5" }
-            ],
-            frameRate: 10,
-            repeat: -1
-        });
-        fireball.anims.play("fireball-anim");
+    let fireball = gameScene.add.sprite(
+    Bombo1.sprite.x,
+    Bombo1.sprite.y,
+    "Bombo1-atk-1"
+);
+fireball.setScale(0.5);
+fireball.anims.play("fireball-anim");
 
         // Le feu se déplace vers la cible
         gameScene.tweens.add({
@@ -413,6 +447,43 @@ if (!bombo1Attacking) {
                 });
                 fireball.destroy();
                 bombo1Attacking = false;
+            }
+        });
+    }
+}
+
+
+// BOMBO2 ATB
+if (!bombo2Attacking) {
+    bombo2ATB += BOMBO2_SPEED * dt;
+
+    if (bombo2ATB >= ATB_MAX) {
+        bombo2Attacking = true;
+        bombo2ATB = 0;
+
+        let target = getRandomHero();
+
+        let fireball2 = gameScene.add.sprite(
+            Bombo2.sprite.x,
+            Bombo2.sprite.y,
+            "Bombo1-atk-1"
+        );
+        fireball2.setScale(0.5);
+        fireball2.anims.play("fireball-anim");
+
+        gameScene.tweens.add({
+            targets: fireball2,
+            x: target.sprite.x,
+            y: target.sprite.y,
+            duration: 600,
+            ease: 'Power2',
+            onComplete: () => {
+                target.sprite.setTint(0xff0000);
+                gameScene.time.delayedCall(300, () => {
+                    target.sprite.clearTint();
+                });
+                fireball2.destroy();
+                bombo2Attacking = false;
             }
         });
     }
