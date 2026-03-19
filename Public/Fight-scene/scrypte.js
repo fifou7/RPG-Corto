@@ -258,6 +258,10 @@ function getRandomHero() {
     return heroes[Math.floor(Math.random() * heroes.length)];
 }
 
+function getRandomBombo() {
+    return Math.random() < 0.5 ? Bombo1 : Bombo2;
+}
+
 let soraATB = 0;
 let tidusATB = 0;
 let lunaATB = 0;
@@ -293,21 +297,43 @@ function update(time, delta) {
 if (soraATB >= ATB_MAX) {
     soraAttacking = true;
 
+    // Sauvegarde la position de départ (une seule fois)
+    if (!Sora.startX) {
+      Sora.startX = Sora.sprite.x;
+      Sora.startY = Sora.sprite.y;
+      Sora.attackTarget = getRandomBombo();
+      Sora.targetX = Sora.attackTarget.sprite.x - 120;
+      Sora.targetY = Sora.attackTarget.sprite.y;
+    }
+
     // ALLER vers le mob
     if (Sora.isMovingToAttack) {
       if (Sora.stepsMade === 0) {
         Sora.sprite.setTexture("Sora-run");
       }
 
-      Sora.sprite.x += 5;
-      Sora.stepsMade += 1;
+      // Déplacement vers la cible
+      let dx = Sora.targetX - Sora.sprite.x;
+      let dy = Sora.targetY - Sora.sprite.y;
+      let dist = Math.sqrt(dx * dx + dy * dy);
 
-      if (Sora.stepsMade >= 100) {
+      if (dist > 5) {
+        Sora.sprite.x += (dx / dist) * 5;
+        Sora.sprite.y += (dy / dist) * 5;
+        Sora.stepsMade += 1;
+      } else {
+        // Arrivé au contact !
         Sora.isMovingToAttack = false;
         Sora.stepsMade = 0;
         Sora.sprite.anims.play("Sora-atk");
 
         Sora.sprite.once("animationcomplete", () => {
+          // Flash rouge sur le Bombo
+          Sora.attackTarget.sprite.setTint(0xff0000);
+          gameScene.time.delayedCall(300, () => {
+            Sora.attackTarget.sprite.clearTint();
+          });
+
           Sora.sprite.setTexture("Sora-back");
           Sora.isRetreating = true;
         });
@@ -316,14 +342,21 @@ if (soraATB >= ATB_MAX) {
 
     // RETOUR vers la position initiale
     if (Sora.isRetreating) {
-      Sora.sprite.x -= 5;
-      Sora.stepsMade += 1;
+      let dx = Sora.startX - Sora.sprite.x;
+      let dy = Sora.startY  - Sora.sprite.y; // position Y d'origine
+      let dist = Math.sqrt(dx * dx + dy * dy);
 
-      if (Sora.stepsMade >= 100) {
+      if (dist > 5) {
+        Sora.sprite.x += (dx / dist) * 5;
+        Sora.sprite.y += (dy / dist) * 5;
+      } else {
+        Sora.sprite.x = Sora.startX;
+        Sora.sprite.y = 420;
         Sora.sprite.setTexture("Sora");
         document.querySelector(".jaugeATBSora").style.width = "0%";
         moveCursor("Sora");
         Sora.stepsMade = 0;
+        Sora.startX = null;
         soraATB = 0;
         soraAttacking = false;
         Sora.isRetreating = false;
@@ -344,41 +377,61 @@ if (!tidusAttacking) {
 if (tidusATB >= ATB_MAX) {
     tidusAttacking = true;
 
-    //  Tous permet d'aller vers le bombo1 
+   if (!Tidus.startX) {
+      Tidus.startX = Tidus.sprite.x;
+      Tidus.startY = Tidus.sprite.y;
+      Tidus.attackTarget = getRandomBombo();
+      Tidus.targetX = Tidus.attackTarget.sprite.x - 120;
+      Tidus.targetY = Tidus.attackTarget.sprite.y;
+    }
+
     if (Tidus.isMovingToAttack) {
-      // Change le sprite permet de donner l'illusion 
       if (Tidus.stepsMade === 0) {
         Tidus.sprite.setTexture("Tidus-run");
       }
 
-      Tidus.sprite.x += 5;
-      Tidus.stepsMade += 1;
+      let dx = Tidus.targetX - Tidus.sprite.x;
+      let dy = Tidus.targetY - Tidus.sprite.y;
+      let dist = Math.sqrt(dx * dx + dy * dy);
 
-      if (Tidus.stepsMade >= 100) {
+      if (dist > 5) {
+        Tidus.sprite.x += (dx / dist) * 5;
+        Tidus.sprite.y += (dy / dist) * 5;
+        Tidus.stepsMade += 1;
+      } else {
         Tidus.isMovingToAttack = false;
         Tidus.stepsMade = 0;
-        // Lance l'anim d'attaque
         Tidus.sprite.anims.play("Tidus-atk");
 
         Tidus.sprite.once("animationcomplete", () => {
-          // Passe en sprite de retour
+          // Flash rouge sur le Bombo
+          Tidus.attackTarget.sprite.setTint(0xff0000);
+          gameScene.time.delayedCall(300, () => {
+            Tidus.attackTarget.sprite.clearTint();
+          });
+
           Tidus.sprite.setTexture("Tidus-back");
           Tidus.isRetreating = true;
         });
       }
     }
 
-    // RETOUR vers la position initiale
     if (Tidus.isRetreating) {
-      Tidus.sprite.x -= 5;
-      Tidus.stepsMade += 1;
+      let dx = Tidus.startX - Tidus.sprite.x;
+      let dy = Tidus.startY - Tidus.sprite.y; // position Y d'origine
+      let dist = Math.sqrt(dx * dx + dy * dy);
 
-      if (Tidus.stepsMade >= 100) {
-        // Remet le sprite idle
+      if (dist > 5) {
+        Tidus.sprite.x += (dx / dist) * 5;
+        Tidus.sprite.y += (dy / dist) * 5;
+      } else {
+        Tidus.sprite.x = Tidus.startX;
+        Tidus.sprite.y = 150;
         Tidus.sprite.setTexture("Tidus");
         document.querySelector(".jaugeATBTidus").style.width = "0%";
         moveCursor("Tidus");
         Tidus.stepsMade = 0;
+        Tidus.startX = null;
         tidusATB = 0;
         tidusAttacking = false;
         Tidus.isRetreating = false;
@@ -386,6 +439,7 @@ if (tidusATB >= ATB_MAX) {
       }
     }
 }
+
 
 
 // Permet de récupérer la distance entre deux éléments
