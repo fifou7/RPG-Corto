@@ -109,21 +109,22 @@ function preload() {
 
 async function create() {
 
+  // fetch 
   const response = await fetch("http://localhost:3000/characters");
   const characters = await response.json();
 
-  // NOUVEAU : fetch des mobs
+  // fetch des mobs
   const responseMobs = await fetch("http://localhost:3000/mobs");
   const mobsRaw = await responseMobs.json();
   const mobs = Array.isArray(mobsRaw) ? mobsRaw : mobsRaw.mobs || mobsRaw.data || [];
 
   console.log(characters, mobs);
   gameScene = this;
-
+  // Verification
   const tidusData = characters.find(c => c.name === "Tidus");
   const soraData = characters.find(c => c.name === "Sora");
   const lunaData = characters.find(c => c.name === "Lunafreya");
-  const bombo1Data = mobs.find(m => m.name === "mibombo");
+  const bombo1Data = mobs.find  (m => m.name === "mibombo");
   const bombo2Data = mobs.find(m => m.name === "Mibombo");
 
   // ATB speeds
