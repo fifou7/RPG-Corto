@@ -20,7 +20,7 @@ con.connect(function (err) {
       "5",
       "20",
       "30",
-      "450",
+      "2500",
       "250",
       "40",
       "7",
@@ -37,7 +37,7 @@ con.connect(function (err) {
       "5",
       "15",
       "20",
-      "400",
+      "2500",
       "350",
       "30",
       "9",
@@ -54,7 +54,7 @@ con.connect(function (err) {
       "5",
       "10",
       "25",
-      "350",
+      "2500",
       "550",
       "20",
       "12",
@@ -143,20 +143,32 @@ con.connect(function (err) {
     console.log("Items fixtures inserted");
   });
 
+  // Bombo
+  let sqlMobs =
+    "INSERT INTO mobs (name, gender, image, category, level, ATK, DEF, Health, MANA, speed, atb_jauge, magic, spirit, dodge, accuracy, DMG) VALUES ?";
+  let mobValues = [
+    [
+      "Mibombo",
+      "Other",
+      "Bombo.png",
+      "Enemy",
+      2,
+      10,
+      20,
+      500,
+      100,
+      20,
+      7,
+      35,
+      10,
+      10,
+      40,
+      60,
+    ],
+  ];
 
-
-// Bombo
-let sqlMobs =
-  "INSERT INTO mobs (name, gender, image, category, level, ATK, DEF, Health, MANA, speed, atb_jauge, magic, spirit, dodge, accuracy, DMG) VALUES ?";
-let mobValues = [
-  ["Mibombo", "Other", "Bombo.png", "Enemy", 2, 10, 20, 500, 100, 20, 7, 35, 10, 10, 40, 60],
-];
-
-con.query(sqlMobs, [mobValues], function (err) {
-  if (err) throw err;
-  console.log("Mobs fixtures inserted");
+  con.query(sqlMobs, [mobValues], function (err) {
+    if (err) throw err;
+    console.log("Mobs fixtures inserted");
+  });
 });
-
-
-});
-
