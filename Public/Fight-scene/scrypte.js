@@ -82,6 +82,8 @@ function preload() {
   this.load.image("Lunafreya-atk-5", "../Images/Lunafreya-atk-5.png");
   this.load.image("Lunafreya-atk-6", "../Images/Lunafreya-atk-6.png");
   this.load.image("Lunafreya-atk-7", "../Images/Lunafreya-atk-7.png");
+  this.load.image("Lunafreya-atk-8", "../Images/Lunafreya-atk-8.png");
+  this.load.image("Lunafreya-atk-9", "../Images/Lunafreya-atk-9.png");
 
   //  Sora
   this.load.image("Sora", "../Images/Sora.png");
@@ -169,6 +171,16 @@ async function create() {
     ],
     frameRate: 6
   });
+
+this.anims.create({
+    key: "luna-magic-effect",
+    frames: [
+        { key: "Lunafreya-atk-8" },
+        { key: "Lunafreya-atk-9" }
+    ],
+    frameRate: 6,
+    repeat: 1
+});
 
 // Animations d'atk Bombo
   this.anims.create({
@@ -447,8 +459,8 @@ if (tidusATB >= ATB_MAX) {
     // console.log(
     //   Phaser.Math.Distance.BetweenPoints(Tidus.sprite, Bombo1.sprite)
     // );
-  // LUNAFREYA ATB
 
+    // LUNAFREYA ATB
   if (!lunaAttacking) {
     lunaATB += LUNA_SPEED * dt;
     document.querySelector(".jaugeATBLuna").style.width =
@@ -456,16 +468,39 @@ if (tidusATB >= ATB_MAX) {
 
     if (lunaATB >= ATB_MAX) {
       lunaATB = 0;
+      lunaAttacking = true;
       document.querySelector(".jaugeATBLuna").style.width = "0%";
       moveCursor("Lunafreya");
+      
+      let target = getRandomBombo();
+      
       Lunafreya.anims.play("Lunafreya-atk");
 
       Lunafreya.once("animationcomplete", () => {
         Lunafreya.setTexture("Lunafreya");
-        lunaAttacking = false;
+
+        // Créer l'effet magique directement SUR le Bombo
+        let magicEffect = gameScene.add.sprite(
+            target.sprite.x,
+            target.sprite.y,
+            "Lunafreya-atk-8"
+        );
+        magicEffect.setScale(0.7);
+        magicEffect.anims.play("luna-magic-effect");
+
+        magicEffect.once("animationcomplete", () => {
+            // Flash rouge sur le Bombo
+            target.sprite.setTint(0xff0000);
+            gameScene.time.delayedCall(300, () => {
+                target.sprite.clearTint();
+            });
+            magicEffect.destroy();
+            lunaAttacking = false;
+        });
       });
     }
   }
+
 
 
 // BOMBO1 ATB
