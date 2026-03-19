@@ -207,7 +207,7 @@ async function create() {
       { key: "Sora-win-9" },
       { key: "Sora-win-10"}
     ],
-    frameRate: 10,
+    frameRate: 5,
     repeat: 0
   });
 
@@ -259,7 +259,7 @@ async function create() {
       { key: "Lunafreya-atk-6" },
       { key: "Lunafreya-atk-7" }
     ],
-    frameRate: 10,
+    frameRate: 6,
     repeat: 0
   });
 
