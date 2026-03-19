@@ -1,6 +1,8 @@
 console.log("yo");
 
 let gameScene;
+let sceneReady = false;
+victoryStarted = false;
 
 class Characters {
   constructor() {
@@ -108,6 +110,8 @@ function preload() {
 }
 
 async function create() {
+
+    gameScene = this;
 
   // fetch 
   const response = await fetch("http://localhost:3000/characters");
@@ -248,7 +252,6 @@ async function create() {
   Bombo2.currentHP = bombo2Data.Health;
   Bombo2.alive = true;
 
-
   this.tweens.add({
     targets: Bombo1.sprite,
     x: Bombo1.sprite.x + 10,
@@ -266,7 +269,7 @@ async function create() {
     repeat: -1,
     ease: 'Sine.easeInOut'
   });
-
+ sceneReady = true;
 }
 
 //afficher dmg
@@ -290,12 +293,17 @@ function showDamage(scene, target, damage) {
   });
 }
 
-function calculateDamage(attackerATK, defenderDEF) {
-  let damage = attackerATK - defenderDEF;
-  if (damage < 1) damage = 1; // minimum 1 de dégât
-  //  variation aléatoire 
-  let variation = 0.8 + Math.random() * 0.4;
-  return Math.round(damage * variation);
+const ATTACK_TABLE = {
+  'Tidus': { min: 150, max: 200 },
+  'Sora': { min: 120, max: 170 },
+  'Lunafreya': { min: 180, max: 250 },
+  'mibombo': { min: 30, max: 50 },
+  'Mibombo': { min: 40, max: 60 }
+};
+
+function calculateDamage(attackerName) {
+  let range = ATTACK_TABLE[attackerName];
+  return Math.floor(Math.random() * (range.max - range.min + 1)) + range.min;
 }
 
 function killMob(scene, mob) {
@@ -306,7 +314,7 @@ function killMob(scene, mob) {
     alpha: 0,
     duration: 300,
     yoyo: true,
-    repeat: 3, // clignote 4 fois
+    repeat: 3,
     onComplete: () => {
       mob.sprite.setVisible(false);
       mob.sprite.destroy();
@@ -343,6 +351,7 @@ function getRandomBombo() {
   if (Bombo2.alive) aliveMobs.push(Bombo2);
   if (aliveMobs.length === 0) return null;
   return aliveMobs[Math.floor(Math.random() * aliveMobs.length)];
+
 }
 
 let soraATB = 0;
@@ -365,7 +374,13 @@ let lunaAttacking = false;
 let bombo1Attacking = false;
 let bombo2Attacking = false;
 
+
+
+
+
 function update(time, delta)  {
+    if (!sceneReady) return;
+    if (!gameScene) return;
   let dt = delta / 1000;
 
   // SORA ATB
@@ -417,7 +432,7 @@ function update(time, delta)  {
 
         Sora.sprite.once("animationcomplete", () => {
           // CALCUL DES DÉGÂTS
-          let damage = calculateDamage(Sora.stats.ATK, Sora.attackTarget.stats.DEF);
+          let damage = calculateDamage('Sora');
           Sora.attackTarget.currentHP -= damage;
 
           // AFFICHER LES DÉGÂTS
@@ -511,7 +526,7 @@ function update(time, delta)  {
         Tidus.sprite.anims.play("Tidus-atk");
 
         Tidus.sprite.once("animationcomplete", () => {
-          let damage = calculateDamage(Tidus.stats.ATK, Tidus.attackTarget.stats.DEF);
+          let damage = calculateDamage('Tidus');
           Tidus.attackTarget.currentHP -= damage;
           showDamage(gameScene, Tidus.attackTarget, damage);
 
@@ -598,7 +613,7 @@ function update(time, delta)  {
         magicEffect.anims.play("luna-magic-effect");
 
         magicEffect.once("animationcomplete", () => {
-          let damage = calculateDamage(Lunafreya.stats.magic, target.stats.DEF);
+          let damage = calculateDamage('Lunafreya');
           target.currentHP -= damage;
           showDamage(gameScene, target, damage);
 
@@ -693,5 +708,80 @@ function update(time, delta)  {
       });
     }
   }
+
+  // Détecte fin de combat
+let allMobsDead = !Bombo1.alive && !Bombo2.alive;
+console.log("Bombo1.alive:", Bombo1.alive, "Bombo2.alive:", Bombo2.alive);
+
+if (allMobsDead && !victoryStarted) {
+  victoryStarted = true;
+
+  // Stopper tous les ATB
+  soraAttacking = true;
+  tidusAttacking = true;
+  lunaAttacking = true;
+
+  // Positions initiales
+  let tidusHomeX = config.width * 0.26, tidusHomeY = 150;
+  let soraHomeX = config.width * 0.24, soraHomeY = 420;
+  let lunaHomeX = config.width * 0.22, lunaHomeY = 290;
+
+  // Repositionner les persos
+  gameScene.tweens.add({
+    targets: Tidus.sprite,
+    x: tidusHomeX, y: tidusHomeY,
+    duration: 500,
+    onComplete: () => Tidus.sprite.setTexture("Tidus")
+  });
+
+  gameScene.tweens.add({
+    targets: Sora.sprite,
+    x: soraHomeX, y: soraHomeY,
+    duration: 500,
+    onComplete: () => Sora.sprite.setTexture("Sora")
+  });
+
+  gameScene.tweens.add({
+    targets: Lunafreya.sprite,
+    x: lunaHomeX, y: lunaHomeY,
+    duration: 500,
+    onComplete: () => Lunafreya.sprite.setTexture("Lunafreya")
+  });
+
+  // Après repositionnement : animation victoire
+  gameScene.time.delayedCall(800, () => {
+    // Masquer le HUD 
+    let hud = document.querySelector(".ActionBar");
+    if (hud) hud.style.display = "none";
+
+    // Texte VICTORY 
+    let victoryText = gameScene.add.text(
+      config.width / 2, config.height / 2 - 80,
+      "VICTORY!",
+      {
+        fontSize: "64px",
+        fontFamily: "Arial",
+        color: "#FFD700",
+        stroke: "#000",
+        strokeThickness: 6
+      }
+    ).setOrigin(0.5);
+
+    victoryText.setScale(0);
+    gameScene.tweens.add({
+      targets: victoryText,
+      scale: 1,
+      duration: 600,
+      ease: "Back.easeOut"
+    });
+
+    // Transition 
+    gameScene.time.delayedCall(3000, () => {
+      // window.location.href = "ta-page-suivante.html";
+    });
+  });
+}
+
+
 
 }
