@@ -142,20 +142,21 @@ con.connect(function (err) {
     if (err) throw err;
     console.log("Items fixtures inserted");
   });
+
+
+
+// Bombo
+let sqlMobs =
+  "INSERT INTO mobs (name, gender, image, category, level, ATK, DEF, Health, MANA, speed, atb_jauge, magic, spirit, dodge, accuracy, DMG) VALUES ?";
+let mobValues = [
+  ["Mibombo", "Other", "Bombo.png", "Enemy", 2, 10, 20, 500, 100, 20, 7, 35, 10, 10, 40, 60],
+];
+
+con.query(sqlMobs, [mobValues], function (err) {
+  if (err) throw err;
+  console.log("Mobs fixtures inserted");
 });
 
-// con.connect(function (err) {
-//   if (err) throw err;
-//   console.log("Connected!");
 
-//   let sql =  "INSERT INTO mobs (name, gender, image, category, level, ATK, DEF, Health, MANA, speed, atb_jauge, magic, spirit, dodge, accuracy, DMG) VALUES ?";
-//   let values= [
-//     ["mibombo","Other","Bombo.png","Enemy","2","10","20","500","100","20","7","35","10","10","40","60"],
-//   ];
+});
 
-// con.query (sql,[values], function (err) {
-//      if (err) throw err;
-//  console.log("Table created");
-//  });
-
-// });
