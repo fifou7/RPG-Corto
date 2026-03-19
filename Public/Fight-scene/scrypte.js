@@ -32,22 +32,13 @@ const config = {
   },
 
   scale: {
-    // Or set parent divId here
     parent: "game-container",
-
     mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH,
     width: "100%",
     height: "100%",
-    zoom: 1 // Size of game canvas = game size * zoom
+    zoom: 1
   },
-
-  // scale: {
-  //     mode: Phaser.Scale.RESIZE,
-  //     autoCenter: Phaser.Scale.CENTER_BOTH,
-  //     width: '100%',
-  //     height: '100%'
-  // },
 
   physics: {
     default: "arcade",
@@ -62,6 +53,14 @@ const game = new Phaser.Game(config);
 
 console.log(game);
 
+// Fonction helper pour récupérer le bon sprite idle (normal ou mid-life)
+function getIdleTexture(character) {
+  if (character.currentHP <= character.stats.Health / 2 && character.currentHP > 0) {
+    return character.stats.name + "-mid-life";
+  }
+  return character.stats.name;
+}
+
 function preload() {
   //  Tidus
   this.load.image("Tidus", "../Images/Tidus.png");
@@ -74,6 +73,7 @@ function preload() {
   this.load.image("Tidus-atk-7", "../Images/Tidus-atk-7.png");
   this.load.image("Tidus-run", "../Images/Tidus-sprinte.png");
   this.load.image("Tidus-back", "../Images/Tidus-atk-7.png");
+  this.load.image("Tidus-mid-life", "../Images/Tidus-mid-life.png");
   this.load.image("Tidus-win-1", "../Images/Tidus-win-1.png");
   this.load.image("Tidus-win-2", "../Images/Tidus-win-2.png");
   this.load.image("Tidus-win-3", "../Images/Tidus-win-3.png");
@@ -97,6 +97,7 @@ function preload() {
   this.load.image("Lunafreya-atk-7", "../Images/Lunafreya-atk-7.png");
   this.load.image("Lunafreya-atk-8", "../Images/Lunafreya-atk-8.png");
   this.load.image("Lunafreya-atk-9", "../Images/Lunafreya-atk-9.png");
+  this.load.image("Lunafreya-mid-life", "../Images/Lunafreya-mid-life.png");
   this.load.image("Lunafreya-win-1", "../Images/Lunafreya-win-1.png");
   this.load.image("Lunafreya-win-2", "../Images/Lunafreya-win-2.png");
   this.load.image("Lunafreya-win-3", "../Images/Lunafreya-win-3.png");
@@ -115,6 +116,7 @@ function preload() {
   this.load.image("Sora-atk-5", "../Images/Sora-atk-5.png");
   this.load.image("Sora-run", "../Images/Sora-run.png");
   this.load.image("Sora-back", "../Images/Sora-atk-5.png");
+  this.load.image("Sora-mid-life", "../Images/Sora-mid-life.png");
   this.load.image("Sora-win-1", "../Images/Sora-win-1.png");
   this.load.image("Sora-win-2", "../Images/Sora-win-2.png");
   this.load.image("Sora-win-3", "../Images/Sora-win-3.png");
@@ -381,8 +383,8 @@ const ATTACK_TABLE = {
   'Tidus': { min: 150, max: 200 },
   'Sora': { min: 120, max: 170 },
   'Lunafreya': { min: 180, max: 250 },
-  'mibombo': { min: 50, max: 200 },
-  'Mibombo': { min: 50, max: 200 }
+  'mibombo': { min: 1000, max: 1500 },
+  'Mibombo': { min: 1000, max: 1500 }
 };
 
 function calculateDamage(attackerName) {
@@ -496,6 +498,20 @@ function checkDeath(character) {
   }
 }
 
+// Vérifie et applique le sprite mid-life 
+function checkMidLife(character) {
+  if (!character.alive) return;
+  if (character.currentHP <= character.stats.Health / 2 && character.currentHP > 0) {
+    // Seulement changer si en idle
+    let currentTexture = character.sprite.texture.key;
+    let idleName = character.stats.name;
+    // Si le sprite actuel est le idle normal
+    if (currentTexture === idleName) {
+      character.sprite.setTexture(idleName + "-mid-life");
+    }
+  }
+}
+
 function update(time, delta) {
   if (!sceneReady) return;
   if (!gameScene) return;
@@ -503,6 +519,11 @@ function update(time, delta) {
   checkDeath(Tidus);
   checkDeath(Sora);
   checkDeath(Lunafreya);
+
+  // Vérifier mid-life en continu pour les persos au repos
+  checkMidLife(Tidus);
+  checkMidLife(Sora);
+  checkMidLife(Lunafreya);
 
   let dt = delta / 1000;
 
@@ -595,7 +616,8 @@ function update(time, delta) {
         } else {
           Sora.sprite.x = Sora.startX;
           Sora.sprite.y = Sora.startY;
-          Sora.sprite.setTexture("Sora");
+          // Sprite idle : normal ou mid-life selon les PV
+          Sora.sprite.setTexture(getIdleTexture(Sora));
           document.querySelector(".jaugeATBSora").style.width = "0%";
           moveCursor("Sora");
           Sora.stepsMade = 0;
@@ -688,7 +710,8 @@ function update(time, delta) {
         } else {
           Tidus.sprite.x = Tidus.startX;
           Tidus.sprite.y = 150;
-          Tidus.sprite.setTexture("Tidus");
+          // Sprite idle : normal ou mid-life selon les PV
+          Tidus.sprite.setTexture(getIdleTexture(Tidus));
           document.querySelector(".jaugeATBTidus").style.width = "0%";
           moveCursor("Tidus");
           Tidus.stepsMade = 0;
@@ -776,7 +799,8 @@ function update(time, delta) {
             // Vérifier encore avant de remettre le sprite idle
             if (!Lunafreya.alive) { lunaAttacking = false; return; }
 
-            Lunafreya.sprite.setTexture("Lunafreya");
+            // Sprite idle check si normal ou mid-life selon les PV
+            Lunafreya.sprite.setTexture(getIdleTexture(Lunafreya));
             lunaAttacking = false;
           });
         });
