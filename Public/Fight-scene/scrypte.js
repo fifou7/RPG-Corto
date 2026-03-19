@@ -3,14 +3,14 @@ console.log("yo");
 let gameScene;
 let sceneReady = false;
 let defeatStarted = false;
-victoryStarted = false;
+let victoryStarted = false;
 
 class Characters {
   constructor() {
-    ((this.isMovingToAttack = true),
-      (this.isRetreating = false),
-      (this.stepsMade = 0),
-      (this.sprite = undefined));
+    this.isMovingToAttack = true;
+    this.isRetreating = false;
+    this.stepsMade = 0;
+    this.sprite = undefined;
   }
 }
 
@@ -84,7 +84,7 @@ function preload() {
   this.load.image("Tidus-win-8", "../Images/Tidus-win-8.png");
   this.load.image("Tidus-win-9", "../Images/Tidus-win-9.png");
   this.load.image("Tidus-win-10", "../Images/Tidus-win-10.png");
-
+  this.load.image("Tidus-death", "../Images/Tidus-death.png");
 
   //  Lunafreya
   this.load.image("Lunafreya", "../Images/Lunafreya.png");
@@ -104,7 +104,7 @@ function preload() {
   this.load.image("Lunafreya-win-5", "../Images/Lunafreya-win-5.png");
   this.load.image("Lunafreya-win-6", "../Images/Lunafreya-win-6.png");
   this.load.image("Lunafreya-win-7", "../Images/Lunafreya-win-7.png");
-
+  this.load.image("Lunafreya-death", "../Images/Lunafreya-death.png");
 
   //  Sora
   this.load.image("Sora", "../Images/Sora.png");
@@ -113,7 +113,7 @@ function preload() {
   this.load.image("Sora-atk-3", "../Images/Sora-atk-3.png");
   this.load.image("Sora-atk-4", "../Images/Sora-atk-4.png");
   this.load.image("Sora-atk-5", "../Images/Sora-atk-5.png");
-  this.load.image("Sora-run","../Images/Sora-run.png");
+  this.load.image("Sora-run", "../Images/Sora-run.png");
   this.load.image("Sora-back", "../Images/Sora-atk-5.png");
   this.load.image("Sora-win-1", "../Images/Sora-win-1.png");
   this.load.image("Sora-win-2", "../Images/Sora-win-2.png");
@@ -125,7 +125,7 @@ function preload() {
   this.load.image("Sora-win-8", "../Images/Sora-win-8.png");
   this.load.image("Sora-win-9", "../Images/Sora-win-9.png");
   this.load.image("Sora-win-10", "../Images/Sora-win-10.png");
-
+  this.load.image("Sora-death", "../Images/Sora-death.png");
 
   //  Background-fight
   this.load.image("background-fight", "../Images/image-de-fond-fight.png");
@@ -141,10 +141,9 @@ function preload() {
 }
 
 async function create() {
+  gameScene = this;
 
-    gameScene = this;
-
-  // fetch 
+  // fetch
   const response = await fetch("http://localhost:3000/characters");
   const characters = await response.json();
 
@@ -154,12 +153,12 @@ async function create() {
   const mobs = Array.isArray(mobsRaw) ? mobsRaw : mobsRaw.mobs || mobsRaw.data || [];
 
   console.log(characters, mobs);
-  gameScene = this;
+
   // Verification
   const tidusData = characters.find(c => c.name === "Tidus");
   const soraData = characters.find(c => c.name === "Sora");
   const lunaData = characters.find(c => c.name === "Lunafreya");
-  const bombo1Data = mobs.find  (m => m.name === "mibombo");
+  const bombo1Data = mobs.find(m => m.name === "mibombo");
   const bombo2Data = mobs.find(m => m.name === "Mibombo");
 
   // ATB speeds
@@ -169,13 +168,14 @@ async function create() {
   BOMBO1_SPEED = 100 / bombo1Data.atb_jauge;
   BOMBO2_SPEED = 100 / bombo2Data.atb_jauge;
 
-
   // Background
   var backgroundImage = this.add.sprite(0, 0, "background-fight");
   backgroundImage.setDisplaySize(config.width, config.height);
   backgroundImage.setPosition(config.width / 2, config.height / 2);
 
-
+  Tidus.alive = true;
+  Sora.alive = true;
+  Lunafreya.alive = true;
 
   // ANIMATIONS
 
@@ -193,7 +193,7 @@ async function create() {
     repeat: 0
   });
 
-// Sora win
+  // Sora win
   this.anims.create({
     key: "Sora-win",
     frames: [
@@ -206,12 +206,11 @@ async function create() {
       { key: "Sora-win-7" },
       { key: "Sora-win-8" },
       { key: "Sora-win-9" },
-      { key: "Sora-win-10"}
+      { key: "Sora-win-10" }
     ],
     frameRate: 5,
     repeat: 0
   });
-
 
   // Tidus attaque
   this.anims.create({
@@ -229,26 +228,26 @@ async function create() {
     repeat: 0
   });
 
-// Tidus win
- this.anims.create({
-  key: "Tidus-win",
-  frames: [
-    { key: "Tidus-win-1" },
-    { key: "Tidus-win-2" },
-    { key: "Tidus-win-3" },
-    { key: "Tidus-win-4" },
-    { key: "Tidus-win-5" },
-    { key: "Tidus-win-6" },
-    { key: "Tidus-win-7" },
-    { key: "Tidus-win-8" },
-    { key: "Tidus-win-9" },
-    { key: "Tidus-win-10" }
-  ],
-  frameRate: 6,
-  repeat: 0
-}); 
+  // Tidus win
+  this.anims.create({
+    key: "Tidus-win",
+    frames: [
+      { key: "Tidus-win-1" },
+      { key: "Tidus-win-2" },
+      { key: "Tidus-win-3" },
+      { key: "Tidus-win-4" },
+      { key: "Tidus-win-5" },
+      { key: "Tidus-win-6" },
+      { key: "Tidus-win-7" },
+      { key: "Tidus-win-8" },
+      { key: "Tidus-win-9" },
+      { key: "Tidus-win-10" }
+    ],
+    frameRate: 6,
+    repeat: 0
+  });
 
-  // Lunafreya attaque 
+  // Lunafreya attaque
   this.anims.create({
     key: "Lunafreya-atk",
     frames: [
@@ -264,22 +263,21 @@ async function create() {
     repeat: 0
   });
 
-// Lunafreya win
- this.anims.create({
-  key: "Lunafreya-win",
-  frames: [
-    { key: "Lunafreya-win-1" },
-    { key: "Lunafreya-win-2" },
-    { key: "Lunafreya-win-3" },
-    { key: "Lunafreya-win-4" },
-    { key: "Lunafreya-win-5" },
-    { key: "Lunafreya-win-6" },
-    { key: "Lunafreya-win-7" },
-  ],
-  frameRate: 10,
-  repeat: 0
-}); 
-
+  // Lunafreya win
+  this.anims.create({
+    key: "Lunafreya-win",
+    frames: [
+      { key: "Lunafreya-win-1" },
+      { key: "Lunafreya-win-2" },
+      { key: "Lunafreya-win-3" },
+      { key: "Lunafreya-win-4" },
+      { key: "Lunafreya-win-5" },
+      { key: "Lunafreya-win-6" },
+      { key: "Lunafreya-win-7" }
+    ],
+    frameRate: 10,
+    repeat: 0
+  });
 
   // Effet magique de Luna sur le mob
   this.anims.create({
@@ -305,8 +303,6 @@ async function create() {
     frameRate: 10,
     repeat: 0
   });
-
-
 
   // Tidus
   Tidus.sprite = this.add.sprite(config.width * 0.26, 150, "Tidus");
@@ -356,7 +352,8 @@ async function create() {
     repeat: -1,
     ease: 'Sine.easeInOut'
   });
- sceneReady = true;
+
+  sceneReady = true;
 }
 
 //afficher dmg
@@ -384,8 +381,8 @@ const ATTACK_TABLE = {
   'Tidus': { min: 150, max: 200 },
   'Sora': { min: 120, max: 170 },
   'Lunafreya': { min: 180, max: 250 },
-  'mibombo': { min: 30, max: 50 },
-  'Mibombo': { min: 40, max: 60 }
+  'mibombo': { min: 50, max: 200 },
+  'Mibombo': { min: 50, max: 200 }
 };
 
 function calculateDamage(attackerName) {
@@ -428,8 +425,9 @@ function moveCursor(persoName) {
 }
 
 function getRandomHero() {
-  const heroes = [Tidus, Lunafreya, Sora];
-  return heroes[Math.floor(Math.random() * heroes.length)];
+  let aliveHeroes = [Tidus, Sora, Lunafreya].filter(h => h.alive);
+  if (aliveHeroes.length === 0) return null;
+  return aliveHeroes[Math.floor(Math.random() * aliveHeroes.length)];
 }
 
 function getRandomBombo() {
@@ -438,7 +436,6 @@ function getRandomBombo() {
   if (Bombo2.alive) aliveMobs.push(Bombo2);
   if (aliveMobs.length === 0) return null;
   return aliveMobs[Math.floor(Math.random() * aliveMobs.length)];
-
 }
 
 let soraATB = 0;
@@ -449,11 +446,11 @@ let bombo2ATB = -30;
 
 const ATB_MAX = 100;
 
-let BOMBO1_SPEED = 100 / 8;  
-let BOMBO2_SPEED = 100 / 10; 
-let SORA_SPEED = 100 / 5; 
-let TIDUS_SPEED = 100 / 4; 
-let LUNA_SPEED = 100 / 6; 
+let BOMBO1_SPEED = 100 / 8;
+let BOMBO2_SPEED = 100 / 10;
+let SORA_SPEED = 100 / 5;
+let TIDUS_SPEED = 100 / 4;
+let LUNA_SPEED = 100 / 6;
 
 let soraAttacking = false;
 let tidusAttacking = false;
@@ -461,199 +458,246 @@ let lunaAttacking = false;
 let bombo1Attacking = false;
 let bombo2Attacking = false;
 
+function checkDeath(character) {
+  if (character.currentHP <= 0 && character.alive) {
+    character.alive = false;
+    character.currentHP = 0;
 
+    // Stopper TOUT
+    gameScene.tweens.killTweensOf(character.sprite);
+    if (character.sprite.anims) character.sprite.anims.stop();
 
+    // Retour position initiale + sprite mort
+    let homeX, homeY;
+    if (character === Tidus) {
+      homeX = config.width * 0.26; homeY = 150;
+      tidusAttacking = true; tidusATB = 0;
+      Tidus.isMovingToAttack = true; Tidus.isRetreating = false; Tidus.startX = null; Tidus.stepsMade = 0;
+    }
+    if (character === Sora) {
+      homeX = config.width * 0.24; homeY = 420;
+      soraAttacking = true; soraATB = 0;
+      Sora.isMovingToAttack = true; Sora.isRetreating = false; Sora.startX = null; Sora.stepsMade = 0;
+    }
+    if (character === Lunafreya) {
+      homeX = config.width * 0.22; homeY = 290;
+      lunaAttacking = true; lunaATB = 0;
+      Lunafreya.isMovingToAttack = true; Lunafreya.isRetreating = false; Lunafreya.startX = null; Lunafreya.stepsMade = 0;
+    }
 
+    character.sprite.setPosition(homeX, homeY);
+    character.sprite.setTexture(character.stats.name + "-death");
 
-function update(time, delta)  {
-    if (!sceneReady) return;
-    if (!gameScene) return;
+    // Barre PV à 0
+    let barre = document.querySelector(".jaugePV" + character.stats.name);
+    if (barre) barre.style.width = "0%";
+    let barreATB = document.querySelector(".jaugeATB" + character.stats.name);
+    if (barreATB) barreATB.style.width = "0%";
+  }
+}
+
+function update(time, delta) {
+  if (!sceneReady) return;
+  if (!gameScene) return;
+
+  checkDeath(Tidus);
+  checkDeath(Sora);
+  checkDeath(Lunafreya);
+
   let dt = delta / 1000;
 
-  // SORA ATB
-
-  if (!soraAttacking) {
-    soraATB += SORA_SPEED * dt;
-    document.querySelector(".jaugeATBSora").style.width =
-      Math.min(soraATB, ATB_MAX) + "%";
-  }
-
-  if (soraATB >= ATB_MAX) {
-    soraAttacking = true;
-
-    if (!Bombo1.alive && !Bombo2.alive) {
-      soraATB = 0;
-      soraAttacking = false;
-      return;
+  // ==================== SORA ATB ====================
+  if (Sora.alive) {
+    if (!soraAttacking) {
+      soraATB += SORA_SPEED * dt;
+      if (soraATB > ATB_MAX) soraATB = ATB_MAX;
+      document.querySelector(".jaugeATBSora").style.width = soraATB + "%";
     }
 
-    // Sauvegarde la position de départ 
-    if (!Sora.startX) {
-      Sora.startX = Sora.sprite.x;
-      Sora.startY = Sora.sprite.y;
-      Sora.attackTarget = getRandomBombo();
-      Sora.targetX = Sora.attackTarget.sprite.x - 120;
-      Sora.targetY = Sora.attackTarget.sprite.y;
-    }
-
-    // ALLER vers le mob
-    if (Sora.isMovingToAttack) {
-      if (Sora.stepsMade === 0) {
-        Sora.sprite.setTexture("Sora-run");
-      }
-
-      // Déplacement vers la cible
-      let dx = Sora.targetX - Sora.sprite.x;
-      let dy = Sora.targetY - Sora.sprite.y;
-      let dist = Math.sqrt(dx * dx + dy * dy);
-
-      if (dist > 5) {
-        Sora.sprite.x += (dx / dist) * 5;
-        Sora.sprite.y += (dy / dist) * 5;
-        Sora.stepsMade += 1;
-      } else {
-        // Arrivé au contact 
-        Sora.isMovingToAttack = false;
-        Sora.stepsMade = 0;
-        Sora.sprite.anims.play("Sora-atk");
-
-        Sora.sprite.once("animationcomplete", () => {
-          // CALCUL DES DÉGÂTS
-          let damage = calculateDamage('Sora');
-          Sora.attackTarget.currentHP -= damage;
-
-          // AFFICHER LES DÉGÂTS
-          showDamage(gameScene, Sora.attackTarget, damage);
-
-          // Flash rouge
-          Sora.attackTarget.sprite.setTint(0xff0000);
-          gameScene.time.delayedCall(300, () => {
-            if (Sora.attackTarget.sprite && Sora.attackTarget.sprite.active) {
-              Sora.attackTarget.sprite.clearTint();
-            }
-          });
-
-          // MOB MORT ?
-          if (Sora.attackTarget.currentHP <= 0) {
-            killMob(gameScene, Sora.attackTarget);
-          }
-
-          Sora.sprite.setTexture("Sora-back");
-          Sora.isRetreating = true;
-        });
-      }
-    }
-
-    // RETOUR vers la position initiale
-    if (Sora.isRetreating) {
-      let dx = Sora.startX - Sora.sprite.x;
-      let dy = Sora.startY - Sora.sprite.y;
-      let dist = Math.sqrt(dx * dx + dy * dy);
-
-      if (dist > 5) {
-        Sora.sprite.x += (dx / dist) * 5;
-        Sora.sprite.y += (dy / dist) * 5;
-      } else {
-        Sora.sprite.x = Sora.startX;
-        Sora.sprite.y = 420;
-        Sora.sprite.setTexture("Sora");
-        document.querySelector(".jaugeATBSora").style.width = "0%";
-        moveCursor("Sora");
-        Sora.stepsMade = 0;
-        Sora.startX = null;
+    if (soraATB >= ATB_MAX && !soraAttacking) {
+      if (!Bombo1.alive && !Bombo2.alive) {
         soraATB = 0;
         soraAttacking = false;
-        Sora.isRetreating = false;
-        Sora.isMovingToAttack = true;
-      }
-    }
-  }
-
-  // TIDUS ATB
-
-  if (!tidusAttacking) {
-    tidusATB += TIDUS_SPEED * dt;
-    document.querySelector(".jaugeATBTidus").style.width =
-      Math.min(tidusATB, ATB_MAX) + "%";
-  }
-
-  if (tidusATB >= ATB_MAX) {
-    tidusAttacking = true;
-
-    if (!Bombo1.alive && !Bombo2.alive) {
-      tidusATB = 0;
-      tidusAttacking = false;
-      return;
-    }
-
-    if (!Tidus.startX) {
-      Tidus.startX = Tidus.sprite.x;
-      Tidus.startY = Tidus.sprite.y;
-      Tidus.attackTarget = getRandomBombo();
-      Tidus.targetX = Tidus.attackTarget.sprite.x - 120;
-      Tidus.targetY = Tidus.attackTarget.sprite.y;
-    }
-
-    if (Tidus.isMovingToAttack) {
-      if (Tidus.stepsMade === 0) {
-        Tidus.sprite.setTexture("Tidus-run");
-      }
-
-      let dx = Tidus.targetX - Tidus.sprite.x;
-      let dy = Tidus.targetY - Tidus.sprite.y;
-      let dist = Math.sqrt(dx * dx + dy * dy);
-
-      if (dist > 5) {
-        Tidus.sprite.x += (dx / dist) * 5;
-        Tidus.sprite.y += (dy / dist) * 5;
-        Tidus.stepsMade += 1;
       } else {
-        Tidus.isMovingToAttack = false;
-        Tidus.stepsMade = 0;
-        Tidus.sprite.anims.play("Tidus-atk");
+        soraAttacking = true;
 
-        Tidus.sprite.once("animationcomplete", () => {
-          let damage = calculateDamage('Tidus');
-          Tidus.attackTarget.currentHP -= damage;
-          showDamage(gameScene, Tidus.attackTarget, damage);
+        // Sauvegarde la position de départ
+        if (!Sora.startX) {
+          Sora.startX = Sora.sprite.x;
+          Sora.startY = Sora.sprite.y;
+          Sora.attackTarget = getRandomBombo();
+          Sora.targetX = Sora.attackTarget.sprite.x - 120;
+          Sora.targetY = Sora.attackTarget.sprite.y;
+        }
+      }
+    }
 
-          Tidus.attackTarget.sprite.setTint(0xff0000);
-          gameScene.time.delayedCall(300, () => {
-            if (Tidus.attackTarget.sprite && Tidus.attackTarget.sprite.active) {
-              Tidus.attackTarget.sprite.clearTint();
+    if (soraAttacking && Sora.startX) {
+      // ALLER vers le mob
+      if (Sora.isMovingToAttack) {
+        if (Sora.stepsMade === 0) {
+          Sora.sprite.setTexture("Sora-run");
+        }
+
+        // Déplacement vers la cible
+        let dx = Sora.targetX - Sora.sprite.x;
+        let dy = Sora.targetY - Sora.sprite.y;
+        let dist = Math.sqrt(dx * dx + dy * dy);
+
+        if (dist > 5) {
+          Sora.sprite.x += (dx / dist) * 5;
+          Sora.sprite.y += (dy / dist) * 5;
+          Sora.stepsMade += 1;
+        } else {
+          // Arrivé au contact
+          Sora.isMovingToAttack = false;
+          Sora.stepsMade = 0;
+          Sora.sprite.anims.play("Sora-atk");
+
+          Sora.sprite.once("animationcomplete", () => {
+            if (!Sora.alive) return;
+
+            // CALCUL DES DÉGÂTS
+            let damage = calculateDamage('Sora');
+            Sora.attackTarget.currentHP -= damage;
+
+            // AFFICHER LES DÉGÂTS
+            showDamage(gameScene, Sora.attackTarget, damage);
+
+            // Flash rouge
+            Sora.attackTarget.sprite.setTint(0xff0000);
+            gameScene.time.delayedCall(300, () => {
+              if (Sora.attackTarget.sprite && Sora.attackTarget.sprite.active) {
+                Sora.attackTarget.sprite.clearTint();
+              }
+            });
+
+            // MOB MORT ?
+            if (Sora.attackTarget.currentHP <= 0) {
+              killMob(gameScene, Sora.attackTarget);
             }
+
+            Sora.sprite.setTexture("Sora-back");
+            Sora.isRetreating = true;
           });
+        }
+      }
 
-          if (Tidus.attackTarget.currentHP <= 0) {
-            killMob(gameScene, Tidus.attackTarget);
-          }
+      // RETOUR vers la position initiale
+      if (Sora.isRetreating) {
+        let dx = Sora.startX - Sora.sprite.x;
+        let dy = Sora.startY - Sora.sprite.y;
+        let dist = Math.sqrt(dx * dx + dy * dy);
 
-          Tidus.sprite.setTexture("Tidus-back");
-          Tidus.isRetreating = true;
-        });
+        if (dist > 5) {
+          Sora.sprite.x += (dx / dist) * 5;
+          Sora.sprite.y += (dy / dist) * 5;
+        } else {
+          Sora.sprite.x = Sora.startX;
+          Sora.sprite.y = Sora.startY;
+          Sora.sprite.setTexture("Sora");
+          document.querySelector(".jaugeATBSora").style.width = "0%";
+          moveCursor("Sora");
+          Sora.stepsMade = 0;
+          Sora.startX = null;
+          soraATB = 0;
+          soraAttacking = false;
+          Sora.isRetreating = false;
+          Sora.isMovingToAttack = true;
+        }
       }
     }
+  }
 
-    if (Tidus.isRetreating) {
-      let dx = Tidus.startX - Tidus.sprite.x;
-      let dy = Tidus.startY - Tidus.sprite.y;
-      let dist = Math.sqrt(dx * dx + dy * dy);
+  // ==================== TIDUS ATB ====================
+  if (Tidus.alive) {
+    if (!tidusAttacking) {
+      tidusATB += TIDUS_SPEED * dt;
+      if (tidusATB > ATB_MAX) tidusATB = ATB_MAX;
+      document.querySelector(".jaugeATBTidus").style.width = tidusATB + "%";
+    }
 
-      if (dist > 5) {
-        Tidus.sprite.x += (dx / dist) * 5;
-        Tidus.sprite.y += (dy / dist) * 5;
-      } else {
-        Tidus.sprite.x = Tidus.startX;
-        Tidus.sprite.y = 150;
-        Tidus.sprite.setTexture("Tidus");
-        document.querySelector(".jaugeATBTidus").style.width = "0%";
-        moveCursor("Tidus");
-        Tidus.stepsMade = 0;
-        Tidus.startX = null;
+    if (tidusATB >= ATB_MAX && !tidusAttacking) {
+      if (!Bombo1.alive && !Bombo2.alive) {
         tidusATB = 0;
         tidusAttacking = false;
-        Tidus.isRetreating = false;
-        Tidus.isMovingToAttack = true;
+      } else {
+        tidusAttacking = true;
+
+        if (!Tidus.startX) {
+          Tidus.startX = Tidus.sprite.x;
+          Tidus.startY = Tidus.sprite.y;
+          Tidus.attackTarget = getRandomBombo();
+          Tidus.targetX = Tidus.attackTarget.sprite.x - 120;
+          Tidus.targetY = Tidus.attackTarget.sprite.y;
+        }
+      }
+    }
+
+    if (tidusAttacking && Tidus.startX) {
+      if (Tidus.isMovingToAttack) {
+        if (Tidus.stepsMade === 0) {
+          Tidus.sprite.setTexture("Tidus-run");
+        }
+
+        let dx = Tidus.targetX - Tidus.sprite.x;
+        let dy = Tidus.targetY - Tidus.sprite.y;
+        let dist = Math.sqrt(dx * dx + dy * dy);
+
+        if (dist > 5) {
+          Tidus.sprite.x += (dx / dist) * 5;
+          Tidus.sprite.y += (dy / dist) * 5;
+          Tidus.stepsMade += 1;
+        } else {
+          Tidus.isMovingToAttack = false;
+          Tidus.stepsMade = 0;
+          Tidus.sprite.anims.play("Tidus-atk");
+
+          Tidus.sprite.once("animationcomplete", () => {
+            if (!Tidus.alive) return;
+
+            let damage = calculateDamage('Tidus');
+            Tidus.attackTarget.currentHP -= damage;
+            showDamage(gameScene, Tidus.attackTarget, damage);
+
+            Tidus.attackTarget.sprite.setTint(0xff0000);
+            gameScene.time.delayedCall(300, () => {
+              if (Tidus.attackTarget.sprite && Tidus.attackTarget.sprite.active) {
+                Tidus.attackTarget.sprite.clearTint();
+              }
+            });
+
+            if (Tidus.attackTarget.currentHP <= 0) {
+              killMob(gameScene, Tidus.attackTarget);
+            }
+
+            Tidus.sprite.setTexture("Tidus-back");
+            Tidus.isRetreating = true;
+          });
+        }
+      }
+
+      if (Tidus.isRetreating) {
+        let dx = Tidus.startX - Tidus.sprite.x;
+        let dy = Tidus.startY - Tidus.sprite.y;
+        let dist = Math.sqrt(dx * dx + dy * dy);
+
+        if (dist > 5) {
+          Tidus.sprite.x += (dx / dist) * 5;
+          Tidus.sprite.y += (dy / dist) * 5;
+        } else {
+          Tidus.sprite.x = Tidus.startX;
+          Tidus.sprite.y = 150;
+          Tidus.sprite.setTexture("Tidus");
+          document.querySelector(".jaugeATBTidus").style.width = "0%";
+          moveCursor("Tidus");
+          Tidus.stepsMade = 0;
+          Tidus.startX = null;
+          tidusATB = 0;
+          tidusAttacking = false;
+          Tidus.isRetreating = false;
+          Tidus.isMovingToAttack = true;
+        }
       }
     }
   }
@@ -664,65 +708,83 @@ function update(time, delta)  {
   //   Phaser.Math.Distance.BetweenPoints(Tidus.sprite, Bombo1.sprite)
   // );
 
-  // LUNAFREYA ATB
-  if (!lunaAttacking) {
-    lunaATB += LUNA_SPEED * dt;
-    document.querySelector(".jaugeATBLuna").style.width =
-      Math.min(lunaATB, ATB_MAX) + "%";
+  // ==================== LUNAFREYA ATB ====================
+  if (Lunafreya.alive) {
+    if (!lunaAttacking) {
+      lunaATB += LUNA_SPEED * dt;
+      if (lunaATB > ATB_MAX) lunaATB = ATB_MAX;
+      let barreLuna = document.querySelector(".jaugeATBLuna");
+      if (barreLuna) barreLuna.style.width = lunaATB + "%";
+    }
 
-    if (lunaATB >= ATB_MAX) {
-
+    if (lunaATB >= ATB_MAX && !lunaAttacking) {
       if (!Bombo1.alive && !Bombo2.alive) {
         lunaATB = 0;
         lunaAttacking = false;
-        return;
-      }
+      } else {
+        lunaATB = 0;
+        lunaAttacking = true;
+        document.querySelector(".jaugeATBLuna").style.width = "0%";
+        moveCursor("Lunafreya");
 
-      lunaATB = 0;
-      lunaAttacking = true;
-      document.querySelector(".jaugeATBLuna").style.width = "0%";
-      moveCursor("Lunafreya");
+        let target = getRandomBombo();
 
-      let target = getRandomBombo();
+        // Luna lance son animation d'attaque sur place
+        Lunafreya.sprite.anims.play("Lunafreya-atk");
 
-      Lunafreya.sprite.anims.play("Lunafreya-atk");
+        Lunafreya.sprite.once('animationcomplete', () => {
+          // Vérifier si Luna est toujours vivante après l'anim
+          if (!Lunafreya.alive) { lunaAttacking = false; return; }
 
-      Lunafreya.sprite.once("animationcomplete", () => {
-        Lunafreya.sprite.setTexture("Lunafreya");
+          // Créer l'effet magique sur le mob
+          let magicEffect = gameScene.add.sprite(
+            target.sprite.x,
+            target.sprite.y,
+            "Lunafreya-atk-8"
+          );
+          magicEffect.setScale(0.5);
+          magicEffect.anims.play("luna-magic-effect");
 
-        // Créer l'effet magique directement SUR le Bombo
-        let magicEffect = gameScene.add.sprite(
-          target.sprite.x,
-          target.sprite.y,
-          "Lunafreya-atk-8"
-        );
-        magicEffect.setScale(0.7);
-        magicEffect.anims.play("luna-magic-effect");
-
-        magicEffect.once("animationcomplete", () => {
-          let damage = calculateDamage('Lunafreya');
-          target.currentHP -= damage;
-          showDamage(gameScene, target, damage);
-
-          target.sprite.setTint(0xff0000);
-          gameScene.time.delayedCall(300, () => {
-            if (target.sprite && target.sprite.active) {
-              target.sprite.clearTint();
+          magicEffect.once('animationcomplete', () => {
+            // Vérifier encore si Luna est vivante
+            if (!Lunafreya.alive) {
+              magicEffect.destroy();
+              lunaAttacking = false;
+              return;
             }
+
+            let damage = calculateDamage(Lunafreya.stats.name);
+            target.currentHP -= damage;
+            showDamage(gameScene, target, damage);
+
+            target.sprite.setTint(0xff0000);
+            gameScene.time.delayedCall(300, () => {
+              if (target.sprite && target.sprite.active) target.sprite.clearTint();
+            });
+
+            let hpPercent = Math.max(0, (target.currentHP / target.stats.Health) * 100);
+            let barreClass = ".jaugePV" + target.stats.name;
+            let barre = document.querySelector(barreClass);
+            if (barre) barre.style.width = hpPercent + "%";
+
+            if (target.currentHP <= 0) {
+              killMob(gameScene, target);
+            }
+
+            magicEffect.destroy();
+
+            // Vérifier encore avant de remettre le sprite idle
+            if (!Lunafreya.alive) { lunaAttacking = false; return; }
+
+            Lunafreya.sprite.setTexture("Lunafreya");
+            lunaAttacking = false;
           });
-
-          if (target.currentHP <= 0) {
-            killMob(gameScene, target);
-          }
-
-          magicEffect.destroy();
-          lunaAttacking = false;
         });
-      });
+      }
     }
   }
 
-  // BOMBO1 ATB
+  // ==================== BOMBO1 ATB ====================
   if (Bombo1.alive && !bombo1Attacking) {
     bombo1ATB += BOMBO1_SPEED * dt;
 
@@ -730,8 +792,8 @@ function update(time, delta)  {
       bombo1Attacking = true;
       bombo1ATB = 0;
 
-      
       let target = getRandomHero();
+      if (!target) { bombo1Attacking = false; return; }
 
       let fireball = gameScene.add.sprite(
         Bombo1.sprite.x,
@@ -750,33 +812,35 @@ function update(time, delta)  {
         ease: 'Power2',
 
         onComplete: () => {
-  // Calcul dégâts
-  let damage = calculateDamage(Bombo1.stats.name);
-  target.currentHP -= damage;
+          // Calcul dégâts
+          let damage = calculateDamage(Bombo1.stats.name);
+          target.currentHP -= damage;
+          showDamage(gameScene, target, damage);
+          checkDeath(target);
 
-  // Afficher les dégâts
-  showDamage(gameScene, target, damage);
+          // Flash rouge
+          if (target.sprite && target.sprite.active) {
+            target.sprite.setTint(0xff0000);
+            gameScene.time.delayedCall(300, () => {
+              if (target.sprite && target.sprite.active) {
+                target.sprite.clearTint();
+              }
+            });
+          }
 
-  // Flash rouge
-  target.sprite.setTint(0xff0000);
-  gameScene.time.delayedCall(300, () => {
-    target.sprite.clearTint();
-  });
+          let hpPercent = Math.max(0, (target.currentHP / target.stats.Health) * 100);
+          let barreClass = ".jaugePV" + target.stats.name;
+          let barre = document.querySelector(barreClass);
+          if (barre) barre.style.width = hpPercent + "%";
 
-  // Mettre à jour la barre de PV
-  let hpPercent = Math.max(0, (target.currentHP / target.stats.Health) * 100);
-  let barreClass = ".jaugePV" + target.stats.name; // .jaugePVTidus, .jaugePVSora, .jaugePVLunafreya
-  let barre = document.querySelector(barreClass);
-  if (barre) barre.style.width = hpPercent + "%";
-
-  fireball.destroy();
-  bombo1Attacking = false;
-}
+          fireball.destroy();
+          bombo1Attacking = false;
+        }
       });
     }
   }
 
-  // BOMBO2 ATB
+  // ==================== BOMBO2 ATB ====================
   if (Bombo2.alive && !bombo2Attacking) {
     bombo2ATB += BOMBO2_SPEED * dt;
 
@@ -785,6 +849,7 @@ function update(time, delta)  {
       bombo2ATB = 0;
 
       let target = getRandomHero();
+      if (!target) { bombo2Attacking = false; return; }
 
       let fireball2 = gameScene.add.sprite(
         Bombo2.sprite.x,
@@ -802,148 +867,149 @@ function update(time, delta)  {
         ease: 'Power2',
 
         onComplete: () => {
-  let damage = calculateDamage(Bombo2.stats.name);
-  target.currentHP -= damage;
+          let damage = calculateDamage(Bombo2.stats.name);
+          target.currentHP -= damage;
+          showDamage(gameScene, target, damage);
+          checkDeath(target);
 
-  showDamage(gameScene, target, damage);
+          if (target.sprite && target.sprite.active) {
+            target.sprite.setTint(0xff0000);
+            gameScene.time.delayedCall(300, () => {
+              if (target.sprite && target.sprite.active) {
+                target.sprite.clearTint();
+              }
+            });
+          }
 
-  target.sprite.setTint(0xff0000);
-  gameScene.time.delayedCall(300, () => {
-    target.sprite.clearTint();
-  });
+          let hpPercent = Math.max(0, (target.currentHP / target.stats.Health) * 100);
+          let barreClass = ".jaugePV" + target.stats.name;
+          let barre = document.querySelector(barreClass);
+          if (barre) barre.style.width = hpPercent + "%";
 
-  let hpPercent = Math.max(0, (target.currentHP / target.stats.Health) * 100);
-  let barreClass = ".jaugePV" + target.stats.name;
-  let barre = document.querySelector(barreClass);
-  if (barre) barre.style.width = hpPercent + "%";
-
-  fireball2.destroy();
-  bombo2Attacking = false;
-}
-
+          fireball2.destroy();
+          bombo2Attacking = false;
+        }
       });
     }
   }
 
-  // Détecte fin de combat
-let allMobsDead = !Bombo1.alive && !Bombo2.alive;
-console.log("Bombo1.alive:", Bombo1.alive, "Bombo2.alive:", Bombo2.alive);
+  // ==================== Détecte fin de combat ====================
+  let allMobsDead = !Bombo1.alive && !Bombo2.alive;
+  console.log("Bombo1.alive:", Bombo1.alive, "Bombo2.alive:", Bombo2.alive);
 
-if (allMobsDead && !victoryStarted) {
-  victoryStarted = true;
+  if (allMobsDead && !victoryStarted) {
+    victoryStarted = true;
 
-  // Stopper tous les ATB
-  soraAttacking = true;
-  tidusAttacking = true;
-  lunaAttacking = true;
+    // Stopper tous les ATB
+    soraAttacking = true;
+    tidusAttacking = true;
+    lunaAttacking = true;
 
-  // Positions initiales
-  let tidusHomeX = config.width * 0.26, tidusHomeY = 150;
-  let soraHomeX = config.width * 0.24, soraHomeY = 420;
-  let lunaHomeX = config.width * 0.22, lunaHomeY = 290;
+    // Positions initiales
+    let tidusHomeX = config.width * 0.26, tidusHomeY = 150;
+    let soraHomeX = config.width * 0.24, soraHomeY = 420;
+    let lunaHomeX = config.width * 0.22, lunaHomeY = 290;
 
-  // Repositionner les persos
-  gameScene.tweens.add({
-    targets: Tidus.sprite,
-    x: tidusHomeX, y: tidusHomeY,
-    duration: 200,
-    onComplete: () => Tidus.sprite.anims.play("Tidus-win")
-  });
+    // Repositionner les persos
+    gameScene.tweens.add({
+      targets: Tidus.sprite,
+      x: tidusHomeX, y: tidusHomeY,
+      duration: 200,
+      onComplete: () => Tidus.sprite.anims.play("Tidus-win")
+    });
 
-  gameScene.tweens.add({
-    targets: Sora.sprite,
-    x: soraHomeX, y: soraHomeY,
-    duration: 200,
-   onComplete: () => Sora.sprite.anims.play("Sora-win")
-  });
+    gameScene.tweens.add({
+      targets: Sora.sprite,
+      x: soraHomeX, y: soraHomeY,
+      duration: 200,
+      onComplete: () => Sora.sprite.anims.play("Sora-win")
+    });
 
-  gameScene.tweens.add({
-    targets: Lunafreya.sprite,
-    x: lunaHomeX, y: lunaHomeY,
-    duration: 300,
-   onComplete: () => Lunafreya.sprite.anims.play("Lunafreya-win")
-  });
+    gameScene.tweens.add({
+      targets: Lunafreya.sprite,
+      x: lunaHomeX, y: lunaHomeY,
+      duration: 300,
+      onComplete: () => Lunafreya.sprite.anims.play("Lunafreya-win")
+    });
 
-  // Après repositionnement : animation victoire
-  gameScene.time.delayedCall(800, () => {
-    // Masquer le HUD 
+    // Après repositionnement : animation victoire
+    gameScene.time.delayedCall(800, () => {
+      // Masquer le HUD
+      let hud = document.querySelector(".ActionBar");
+      if (hud) hud.style.display = "none";
+
+      // Texte VICTORY
+      let victoryText = gameScene.add.text(
+        config.width / 2, config.height / 2 - 80,
+        "VICTORY!",
+        {
+          fontSize: "64px",
+          fontFamily: "Arial",
+          color: "#FFD700",
+          stroke: "#000",
+          strokeThickness: 6
+        }
+      ).setOrigin(0.5);
+
+      victoryText.setScale(0);
+      gameScene.tweens.add({
+        targets: victoryText,
+        scale: 1,
+        duration: 600,
+        ease: "Back.easeOut"
+      });
+
+      // Transition
+      gameScene.time.delayedCall(3000, () => {
+        // window.location.href = "ta-page-suivante.html";
+      });
+    });
+  }
+
+  // Détecte défaite
+  let allHeroesDead =
+    (Tidus.currentHP <= 0) &&
+    (Sora.currentHP <= 0) &&
+    (Lunafreya.currentHP <= 0);
+
+  if (allHeroesDead && !victoryStarted && !defeatStarted) {
+    defeatStarted = true;
+
+    // Stopper tous les ATB
+    soraAttacking = true;
+    tidusAttacking = true;
+    lunaAttacking = true;
+    bombo1Attacking = true;
+    bombo2Attacking = true;
+
+    // Masquer le HUD
     let hud = document.querySelector(".ActionBar");
     if (hud) hud.style.display = "none";
 
-    // Texte VICTORY 
-    let victoryText = gameScene.add.text(
+    // Texte LOOSE
+    let defeatText = gameScene.add.text(
       config.width / 2, config.height / 2 - 80,
-      "VICTORY!",
+      "LOOSE...",
       {
         fontSize: "64px",
         fontFamily: "Arial",
-        color: "#FFD700",
+        color: "#FF0000",
         stroke: "#000",
         strokeThickness: 6
       }
     ).setOrigin(0.5);
 
-    victoryText.setScale(0);
+    defeatText.setScale(0);
     gameScene.tweens.add({
-      targets: victoryText,
+      targets: defeatText,
       scale: 1,
       duration: 600,
       ease: "Back.easeOut"
     });
 
-    // Transition 
+    // Transition après 3 secondes
     gameScene.time.delayedCall(3000, () => {
-      // window.location.href = "ta-page-suivante.html";
+      // window.location.href = "game-over.html";
     });
-  });
-}
-
-// Détecte défaite
-let allHeroesDead = 
-  (Tidus.currentHP <= 0) && 
-  (Sora.currentHP <= 0) && 
-  (Lunafreya.currentHP <= 0);
-
-if (allHeroesDead && !victoryStarted && !defeatStarted) {
-  defeatStarted = true;
-
-  // Stopper tous les ATB
-  soraAttacking = true;
-  tidusAttacking = true;
-  lunaAttacking = true;
-  bombo1Attacking = true;
-  bombo2Attacking = true;
-
-  // Masquer le HUD
-  let hud = document.querySelector(".ActionBar");
-  if (hud) hud.style.display = "none";
-
-  // Texte LOOSE
-  let defeatText = gameScene.add.text(
-    config.width / 2, config.height / 2 - 80,
-    "LOOSE...",
-    {
-      fontSize: "64px",
-      fontFamily: "Arial",
-      color: "#FF0000",
-      stroke: "#000",
-      strokeThickness: 6
-    }
-  ).setOrigin(0.5);
-
-  defeatText.setScale(0);
-  gameScene.tweens.add({
-    targets: defeatText,
-    scale: 1,
-    duration: 600,
-    ease: "Back.easeOut"
-  });
-
-  // Transition après 3 secondes
-  gameScene.time.delayedCall(3000, () => {
-    // window.location.href = "game-over.html";
-  });
-}
-
-
+  }
 }
