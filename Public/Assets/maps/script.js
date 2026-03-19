@@ -56,9 +56,15 @@ function preload() {
   this.load.image("tidus_back_t1", "../../Images/Tidus_walking_back_t1.png");
   this.load.image("tidus_back_t2", "../../Images/Tidus_walking_back_t2.png");
   this.load.image("tidus_back_t3", "../../Images/Tidus_walking_back_t3.png");
+
+  //npc
+
+  this.load.image("NPC-1", "../../Images/NPC-1.png");
+  this.load.image("NPC-2", "../../Images/NPC-2.png");
+  this.load.image("old-man", "../../Images/old-man.png");
 }
 
-function create() {
+async function create() {
   // img map size
   const mapScale = 3.1;
 
@@ -177,6 +183,47 @@ function create() {
     right: Phaser.Input.Keyboard.KeyCodes.D,
   });
 
+  // interraction npc
+
+  this.interactKey = this.input.keyboard.addKey(
+    Phaser.Input.Keyboard.KeyCodes.E,
+  );
+
+  //fetch npc
+
+  const response = await fetch("http://localhost:3000/pnj");
+  const pnjs = await response.json();
+  console.log("PNJ récupérés :", pnjs);
+
+  this.npcs = this.physics.add.staticGroup();
+
+  pnjs.forEach((pnj) => {
+    const imageKey = pnj.image.replace(".png", "");
+
+    if (pnj.id === 1) {
+      const npcSprite = this.npcs.create(230, 100, imageKey).setScale(0.65);
+      npcSprite.refreshBody();
+      npcSprite.setData("id", pnj.id);
+      npcSprite.setData("name", pnj.name);
+    }
+
+    if (pnj.id === 2) {
+      const npcSprite = this.npcs.create(1365, 32, imageKey).setScale(0.65);
+      npcSprite.refreshBody();
+      npcSprite.setData("id", pnj.id);
+      npcSprite.setData("name", pnj.name);
+    }
+
+    if (pnj.id === 3) {
+      const npcSprite = this.npcs.create(1983, -415, imageKey).setScale(0.15);
+      npcSprite.refreshBody();
+      npcSprite.setData("id", pnj.id);
+      npcSprite.setData("name", pnj.name);
+    }
+  });
+
+  this.physics.add.collider(this.player, this.npcs);
+
   // Camera
 
   this.normalCameraTop = 0;
@@ -193,6 +240,7 @@ function create() {
 }
 
 function update(time, delta) {
+  if (!this.keys || !this.interactKey || !this.npcs) return;
   const speed = 200;
   let moving = false;
 
@@ -262,5 +310,25 @@ function update(time, delta) {
       this.physics.world.bounds.width,
       this.map1.displayHeight,
     );
+  }
+
+  // Interraction with NPCs
+  let nearbyNpc = null;
+
+  this.npcs.children.each((npc) => {
+    const distance = Phaser.Math.Distance.Between(
+      this.player.x,
+      this.player.y,
+      npc.x,
+      npc.y,
+    );
+
+    if (distance < 80) {
+      nearbyNpc = npc;
+    }
+  });
+
+  if (nearbyNpc && Phaser.Input.Keyboard.JustDown(this.interactKey)) {
+    console.log("Interaction avec :", nearbyNpc.getData("name"));
   }
 }
