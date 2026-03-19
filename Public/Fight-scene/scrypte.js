@@ -2,6 +2,7 @@ console.log("yo");
 
 let gameScene;
 let sceneReady = false;
+let defeatStarted = false;
 victoryStarted = false;
 
 class Characters {
@@ -747,14 +748,30 @@ function update(time, delta)  {
         y: target.sprite.y,
         duration: 600,
         ease: 'Power2',
+
         onComplete: () => {
-          target.sprite.setTint(0xff0000);
-          gameScene.time.delayedCall(300, () => {
-            target.sprite.clearTint();
-          });
-          fireball.destroy();
-          bombo1Attacking = false;
-        }
+  // Calcul dégâts
+  let damage = calculateDamage(Bombo1.stats.name);
+  target.currentHP -= damage;
+
+  // Afficher les dégâts
+  showDamage(gameScene, target, damage);
+
+  // Flash rouge
+  target.sprite.setTint(0xff0000);
+  gameScene.time.delayedCall(300, () => {
+    target.sprite.clearTint();
+  });
+
+  // Mettre à jour la barre de PV
+  let hpPercent = Math.max(0, (target.currentHP / target.stats.Health) * 100);
+  let barreClass = ".jaugePV" + target.stats.name; // .jaugePVTidus, .jaugePVSora, .jaugePVLunafreya
+  let barre = document.querySelector(barreClass);
+  if (barre) barre.style.width = hpPercent + "%";
+
+  fireball.destroy();
+  bombo1Attacking = false;
+}
       });
     }
   }
@@ -783,14 +800,27 @@ function update(time, delta)  {
         y: target.sprite.y,
         duration: 600,
         ease: 'Power2',
+
         onComplete: () => {
-          target.sprite.setTint(0xff0000);
-          gameScene.time.delayedCall(300, () => {
-            target.sprite.clearTint();
-          });
-          fireball2.destroy();
-          bombo2Attacking = false;
-        }
+  let damage = calculateDamage(Bombo2.stats.name);
+  target.currentHP -= damage;
+
+  showDamage(gameScene, target, damage);
+
+  target.sprite.setTint(0xff0000);
+  gameScene.time.delayedCall(300, () => {
+    target.sprite.clearTint();
+  });
+
+  let hpPercent = Math.max(0, (target.currentHP / target.stats.Health) * 100);
+  let barreClass = ".jaugePV" + target.stats.name;
+  let barre = document.querySelector(barreClass);
+  if (barre) barre.style.width = hpPercent + "%";
+
+  fireball2.destroy();
+  bombo2Attacking = false;
+}
+
       });
     }
   }
@@ -868,6 +898,52 @@ if (allMobsDead && !victoryStarted) {
   });
 }
 
+// Détecte défaite
+let allHeroesDead = 
+  (Tidus.currentHP <= 0) && 
+  (Sora.currentHP <= 0) && 
+  (Lunafreya.currentHP <= 0);
+
+if (allHeroesDead && !victoryStarted && !defeatStarted) {
+  defeatStarted = true;
+
+  // Stopper tous les ATB
+  soraAttacking = true;
+  tidusAttacking = true;
+  lunaAttacking = true;
+  bombo1Attacking = true;
+  bombo2Attacking = true;
+
+  // Masquer le HUD
+  let hud = document.querySelector(".ActionBar");
+  if (hud) hud.style.display = "none";
+
+  // Texte LOOSE
+  let defeatText = gameScene.add.text(
+    config.width / 2, config.height / 2 - 80,
+    "LOOSE...",
+    {
+      fontSize: "64px",
+      fontFamily: "Arial",
+      color: "#FF0000",
+      stroke: "#000",
+      strokeThickness: 6
+    }
+  ).setOrigin(0.5);
+
+  defeatText.setScale(0);
+  gameScene.tweens.add({
+    targets: defeatText,
+    scale: 1,
+    duration: 600,
+    ease: "Back.easeOut"
+  });
+
+  // Transition après 3 secondes
+  gameScene.time.delayedCall(3000, () => {
+    // window.location.href = "game-over.html";
+  });
+}
 
 
 }
