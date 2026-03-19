@@ -73,6 +73,17 @@ function preload() {
   this.load.image("Tidus-atk-7", "../Images/Tidus-atk-7.png");
   this.load.image("Tidus-run", "../Images/Tidus-sprinte.png");
   this.load.image("Tidus-back", "../Images/Tidus-atk-7.png");
+  this.load.image("Tidus-win-1", "../Images/Tidus-win-1.png");
+  this.load.image("Tidus-win-2", "../Images/Tidus-win-2.png");
+  this.load.image("Tidus-win-3", "../Images/Tidus-win-3.png");
+  this.load.image("Tidus-win-4", "../Images/Tidus-win-4.png");
+  this.load.image("Tidus-win-5", "../Images/Tidus-win-5.png");
+  this.load.image("Tidus-win-6", "../Images/Tidus-win-6.png");
+  this.load.image("Tidus-win-7", "../Images/Tidus-win-7.png");
+  this.load.image("Tidus-win-8", "../Images/Tidus-win-8.png");
+  this.load.image("Tidus-win-9", "../Images/Tidus-win-9.png");
+  this.load.image("Tidus-win-10", "../Images/Tidus-win-10.png");
+
 
   //  Lunafreya
   this.load.image("Lunafreya", "../Images/Lunafreya.png");
@@ -85,6 +96,14 @@ function preload() {
   this.load.image("Lunafreya-atk-7", "../Images/Lunafreya-atk-7.png");
   this.load.image("Lunafreya-atk-8", "../Images/Lunafreya-atk-8.png");
   this.load.image("Lunafreya-atk-9", "../Images/Lunafreya-atk-9.png");
+  this.load.image("Lunafreya-win-1", "../Images/Lunafreya-win-1.png");
+  this.load.image("Lunafreya-win-2", "../Images/Lunafreya-win-2.png");
+  this.load.image("Lunafreya-win-3", "../Images/Lunafreya-win-3.png");
+  this.load.image("Lunafreya-win-4", "../Images/Lunafreya-win-4.png");
+  this.load.image("Lunafreya-win-5", "../Images/Lunafreya-win-5.png");
+  this.load.image("Lunafreya-win-6", "../Images/Lunafreya-win-6.png");
+  this.load.image("Lunafreya-win-7", "../Images/Lunafreya-win-7.png");
+
 
   //  Sora
   this.load.image("Sora", "../Images/Sora.png");
@@ -95,6 +114,17 @@ function preload() {
   this.load.image("Sora-atk-5", "../Images/Sora-atk-5.png");
   this.load.image("Sora-run","../Images/Sora-run.png");
   this.load.image("Sora-back", "../Images/Sora-atk-5.png");
+  this.load.image("Sora-win-1", "../Images/Sora-win-1.png");
+  this.load.image("Sora-win-2", "../Images/Sora-win-2.png");
+  this.load.image("Sora-win-3", "../Images/Sora-win-3.png");
+  this.load.image("Sora-win-4", "../Images/Sora-win-4.png");
+  this.load.image("Sora-win-5", "../Images/Sora-win-5.png");
+  this.load.image("Sora-win-6", "../Images/Sora-win-6.png");
+  this.load.image("Sora-win-7", "../Images/Sora-win-7.png");
+  this.load.image("Sora-win-8", "../Images/Sora-win-8.png");
+  this.load.image("Sora-win-9", "../Images/Sora-win-9.png");
+  this.load.image("Sora-win-10", "../Images/Sora-win-10.png");
+
 
   //  Background-fight
   this.load.image("background-fight", "../Images/image-de-fond-fight.png");
@@ -162,6 +192,26 @@ async function create() {
     repeat: 0
   });
 
+// Sora win
+  this.anims.create({
+    key: "Sora-win",
+    frames: [
+      { key: "Sora-win-1" },
+      { key: "Sora-win-2" },
+      { key: "Sora-win-3" },
+      { key: "Sora-win-4" },
+      { key: "Sora-win-5" },
+      { key: "Sora-win-6" },
+      { key: "Sora-win-7" },
+      { key: "Sora-win-8" },
+      { key: "Sora-win-9" },
+      { key: "Sora-win-10"}
+    ],
+    frameRate: 10,
+    repeat: 0
+  });
+
+
   // Tidus attaque
   this.anims.create({
     key: "Tidus-atk",
@@ -178,6 +228,25 @@ async function create() {
     repeat: 0
   });
 
+// Tidus win
+ this.anims.create({
+  key: "Tidus-win",
+  frames: [
+    { key: "Tidus-win-1" },
+    { key: "Tidus-win-2" },
+    { key: "Tidus-win-3" },
+    { key: "Tidus-win-4" },
+    { key: "Tidus-win-5" },
+    { key: "Tidus-win-6" },
+    { key: "Tidus-win-7" },
+    { key: "Tidus-win-8" },
+    { key: "Tidus-win-9" },
+    { key: "Tidus-win-10" }
+  ],
+  frameRate: 6,
+  repeat: 0
+}); 
+
   // Lunafreya attaque 
   this.anims.create({
     key: "Lunafreya-atk",
@@ -193,6 +262,23 @@ async function create() {
     frameRate: 10,
     repeat: 0
   });
+
+// Lunafreya win
+ this.anims.create({
+  key: "Lunafreya-win",
+  frames: [
+    { key: "Lunafreya-win-1" },
+    { key: "Lunafreya-win-2" },
+    { key: "Lunafreya-win-3" },
+    { key: "Lunafreya-win-4" },
+    { key: "Lunafreya-win-5" },
+    { key: "Lunafreya-win-6" },
+    { key: "Lunafreya-win-7" },
+  ],
+  frameRate: 10,
+  repeat: 0
+}); 
+
 
   // Effet magique de Luna sur le mob
   this.anims.create({
@@ -730,22 +816,22 @@ if (allMobsDead && !victoryStarted) {
   gameScene.tweens.add({
     targets: Tidus.sprite,
     x: tidusHomeX, y: tidusHomeY,
-    duration: 500,
-    onComplete: () => Tidus.sprite.setTexture("Tidus")
+    duration: 200,
+    onComplete: () => Tidus.sprite.anims.play("Tidus-win")
   });
 
   gameScene.tweens.add({
     targets: Sora.sprite,
     x: soraHomeX, y: soraHomeY,
-    duration: 500,
-    onComplete: () => Sora.sprite.setTexture("Sora")
+    duration: 200,
+   onComplete: () => Sora.sprite.anims.play("Sora-win")
   });
 
   gameScene.tweens.add({
     targets: Lunafreya.sprite,
     x: lunaHomeX, y: lunaHomeY,
-    duration: 500,
-    onComplete: () => Lunafreya.sprite.setTexture("Lunafreya")
+    duration: 300,
+   onComplete: () => Lunafreya.sprite.anims.play("Lunafreya-win")
   });
 
   // Après repositionnement : animation victoire
