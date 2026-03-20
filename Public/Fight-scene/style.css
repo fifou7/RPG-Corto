@@ -77,13 +77,22 @@ body, html {
     transition: width 0.3s ease;
 }
 
-.BarreHP {
-    background-color: rgb(6, 39, 255);
+.BarreHP-container {
+    background-color: rgb(80, 80, 80);
     border-radius: 48px;
     border: white solid 3px;
-    flex: 2.5;
+    flex: 4;
     height: 15px;
     margin-left: 10px;
+    overflow: hidden;
+}
+
+.BarreHP {
+    width: 100%;
+    height: 100%;
+    background-color: rgb(6, 39, 255);
+    border-radius: 48px;
+    transition: width 0.3s ease;
 }
 
 .jaugeATB-container {
