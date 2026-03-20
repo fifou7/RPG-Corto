@@ -185,14 +185,14 @@ async function create() {
   const tidusData = characters.find(c => c.name === "Tidus");
   const soraData = characters.find(c => c.name === "Sora");
   const lunaData = characters.find(c => c.name === "Lunafreya");
-  const bombo1Data = mobs.find(m => m.name === "mibombo");
+  const bombo1Data = mobs.find(m => m.name === "Mibombo");
   const bombo2Data = mobs.find(m => m.name === "Mibombo");
 
   // ATB speeds
   TIDUS_SPEED = 100 / tidusData.atb_jauge;
   SORA_SPEED = 100 / soraData.atb_jauge;
   LUNA_SPEED = 100 / lunaData.atb_jauge;
-  BOMBO1_SPEED = 100 / bombo1Data.atb_jauge;
+  BOMBO1_SPEED = 100 / bombo1Data.atb_jauge;  
   BOMBO2_SPEED = 100 / bombo2Data.atb_jauge;
 
   // Background
