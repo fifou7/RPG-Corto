@@ -222,6 +222,50 @@ async function create() {
     }
   });
 
+  this.loadDialogue = async (npcId) => {
+    const response = await fetch(`http://localhost:3000/dialogues/${npcId}`);
+    const dialogues = await response.json();
+
+    this.currentDialogue = dialogues;
+    this.currentDialogueIndex = 0;
+
+    if (this.currentDialogue.length > 0) {
+      this.isDialogueActive = true;
+      this.dialogueBox.setVisible(true);
+      this.dialogueText.setVisible(true);
+      this.dialogueText.setText(this.currentDialogue[0].text);
+    }
+    console.log("dialogues récupérés :", dialogues);
+  };
+
+  // Dialogue box
+
+  const camWidth = this.cameras.main.width;
+  const camHeight = this.cameras.main.height;
+
+  this.dialogueBox = this.add
+    .rectangle(
+      camWidth / 2,
+      camHeight - 100,
+      camWidth - 100,
+      140,
+      0x000000,
+      0.7,
+    )
+    .setScrollFactor(0)
+    .setDepth(1000)
+    .setVisible(false);
+
+  this.dialogueText = this.add
+    .text(80, camHeight - 145, "", {
+      fontSize: "28px",
+      fill: "#ffffff",
+      wordWrap: { width: camWidth - 160 },
+    })
+    .setScrollFactor(0)
+    .setDepth(1001)
+    .setVisible(false);
+
   this.physics.add.collider(this.player, this.npcs);
 
   // Camera
@@ -241,32 +285,35 @@ async function create() {
 
 function update(time, delta) {
   if (!this.keys || !this.interactKey || !this.npcs) return;
+
   const speed = 200;
   let moving = false;
 
   this.player.setVelocity(0);
 
+  if (!this.isDialogueActive) {
+    if (this.keys.left.isDown) {
+      this.player.setVelocityX(-speed);
+      this.direction = "left";
+      moving = true;
+    } else if (this.keys.right.isDown) {
+      this.player.setVelocityX(speed);
+      this.direction = "right";
+      moving = true;
+    }
+
+    if (this.keys.up.isDown) {
+      this.player.setVelocityY(-speed);
+      this.direction = "back";
+      moving = true;
+    } else if (this.keys.down.isDown) {
+      this.player.setVelocityY(speed);
+      this.direction = "front";
+      moving = true;
+    }
+  }
+
   // walking animation
-
-  if (this.keys.left.isDown) {
-    this.player.setVelocityX(-speed);
-    this.direction = "left";
-    moving = true;
-  } else if (this.keys.right.isDown) {
-    this.player.setVelocityX(speed);
-    this.direction = "right";
-    moving = true;
-  }
-
-  if (this.keys.up.isDown) {
-    this.player.setVelocityY(-speed);
-    this.direction = "back";
-    moving = true;
-  } else if (this.keys.down.isDown) {
-    this.player.setVelocityY(speed);
-    this.direction = "front";
-    moving = true;
-  }
 
   if (moving) {
     this.frameTimer += delta;
@@ -312,7 +359,7 @@ function update(time, delta) {
     );
   }
 
-  // Interraction with NPCs
+  // Detection NPCs interaction
   let nearbyNpc = null;
 
   this.npcs.children.each((npc) => {
@@ -328,7 +375,26 @@ function update(time, delta) {
     }
   });
 
-  if (nearbyNpc && Phaser.Input.Keyboard.JustDown(this.interactKey)) {
-    console.log("Interaction avec :", nearbyNpc.getData("name"));
+  if (Phaser.Input.Keyboard.JustDown(this.interactKey)) {
+    if (!this.isDialogueActive && nearbyNpc) {
+      this.loadDialogue(nearbyNpc.getData("id"));
+      return;
+    }
+
+    if (this.isDialogueActive) {
+      this.currentDialogueIndex++;
+
+      if (this.currentDialogueIndex < this.currentDialogue.length) {
+        this.dialogueText.setText(
+          this.currentDialogue[this.currentDialogueIndex].text,
+        );
+      } else {
+        this.isDialogueActive = false;
+        this.currentDialogue = [];
+        this.currentDialogueIndex = 0;
+        this.dialogueBox.setVisible(false);
+        this.dialogueText.setVisible(false);
+      }
+    }
   }
 }
