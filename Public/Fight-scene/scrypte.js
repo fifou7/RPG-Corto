@@ -152,6 +152,33 @@ function preload() {
   this.load.image("Sora-win-9", "../Images/Sora-win-9.png");
   this.load.image("Sora-win-10", "../Images/Sora-win-10.png");
   this.load.image("Sora-death", "../Images/Sora-death.png");
+  this.load.image("Sora-skill-1", "../Images/Sora-skill-1.png");
+  this.load.image("Sora-skill-2", "../Images/Sora-skill-2.png");
+  this.load.image("Sora-skill-3", "../Images/Sora-skill-3.png");
+  this.load.image("Sora-skill-4", "../Images/Sora-skill-4.png");
+  this.load.image("Sora-skill-5", "../Images/Sora-skill-5.png");
+  this.load.image("Sora-skill-6", "../Images/Sora-skill-6.png");
+  this.load.image("Sora-skill-7", "../Images/Sora-skill-7.png");
+  this.load.image("Sora-skill-8", "../Images/Sora-skill-8.png");
+  this.load.image("Sora-skill-9", "../Images/Sora-skill-9.png");
+  this.load.image("Sora-skill-10", "../Images/Sora-skill-10.png");
+  this.load.image("Sora-skill-11", "../Images/Sora-skill-11.png");
+  this.load.image("Sora-skill-12", "../Images/Sora-skill-12.png");
+  this.load.image("Sora-skill-13", "../Images/Sora-skill-13.png");
+  this.load.image("Sora-skill-14", "../Images/Sora-skill-14.png");
+  this.load.image("Sora-skill-15", "../Images/Sora-skill-15.png");
+  this.load.image("Sora-skill-16", "../Images/Sora-skill-16.png");
+  this.load.image("Sora-skill-17", "../Images/Sora-skill-17.png");
+  this.load.image("Sora-skill-18", "../Images/Sora-skill-18.png");
+  this.load.image("Sora-skill-19", "../Images/Sora-skill-19.png");
+  this.load.image("Sora-skill-20", "../Images/Sora-skill-20.png");
+  this.load.image("Sora-skill-21", "../Images/Sora-skill-21.png");
+  this.load.image("Sora-skill-22", "../Images/Sora-skill-22.png");
+  this.load.image("Sora-skill-23", "../Images/Sora-skill-23.png");
+  this.load.image("Sora-skill-24", "../Images/Sora-skill-24.png");
+  this.load.image("Sora-skill-25", "../Images/Sora-skill-25.png");
+  this.load.image("Sora-skill-26", "../Images/Sora-skill-26.png");
+  this.load.image("Sora-skill-27", "../Images/Sora-skill-27.png");
 
   //  Background-fight
   this.load.image("background-fight", "../Images/image-de-fond-fight.png");
@@ -217,6 +244,42 @@ async function create() {
       { key: "Sora-atk-5" }
     ],
     frameRate: 10,
+    repeat: 0
+  });
+
+  // Sora skill
+  this.anims.create({
+    key: "Sora-skill",
+    frames: [
+      { key: "Sora-skill-1" },
+      { key: "Sora-skill-2" },
+      { key: "Sora-skill-3" },
+      { key: "Sora-skill-4" },
+      { key: "Sora-skill-5" },
+      { key: "Sora-skill-6" },
+      { key: "Sora-skill-7" },
+      { key: "Sora-skill-8" },
+      { key: "Sora-skill-9" },
+      { key: "Sora-skill-10" },
+      { key: "Sora-skill-11" },
+      { key: "Sora-skill-12" },
+      { key: "Sora-skill-13" },
+      { key: "Sora-skill-14" },
+      { key: "Sora-skill-15" },
+      { key: "Sora-skill-16" },
+      { key: "Sora-skill-17" },
+      { key: "Sora-skill-18" },
+      { key: "Sora-skill-19" },
+      { key: "Sora-skill-20" },
+      { key: "Sora-skill-21" },
+      { key: "Sora-skill-22" },
+      { key: "Sora-skill-23" },
+      { key: "Sora-skill-24" },
+      { key: "Sora-skill-25" },
+      { key: "Sora-skill-26" },
+      { key: "Sora-skill-27" }
+    ],
+    frameRate: 6,
     repeat: 0
   });
 
@@ -385,6 +448,8 @@ async function create() {
   Sora.sprite.setScale(0.7);
   Sora.stats = soraData;
   Sora.currentHP = soraData.Health;
+  Sora.currentMana = soraData.MANA;
+  Sora.attackCount = 0;
 
   // Mobs
   Bombo1.sprite = this.add.sprite(config.width * 0.75, 150, "Bombo1");
@@ -590,108 +655,139 @@ function update(time, delta) {
   let dt = delta / 1000;
 
   // ==================== SORA ATB ====================
-  if (Sora.alive) {
+if (Sora.alive) {
     if (!soraAttacking) {
-      soraATB += SORA_SPEED * dt;
-      if (soraATB > ATB_MAX) soraATB = ATB_MAX;
-      document.querySelector(".jaugeATBSora").style.width = soraATB + "%";
+        soraATB += SORA_SPEED * dt;
+        if (soraATB > ATB_MAX) soraATB = ATB_MAX;
+        document.querySelector(".jaugeATBSora").style.width = soraATB + "%";
     }
 
     if (soraATB >= ATB_MAX && !soraAttacking) {
-      if (!Bombo1.alive && !Bombo2.alive) {
-        soraATB = 0;
-        soraAttacking = false;
-      } else {
-        soraAttacking = true;
+        if (!Bombo1.alive && !Bombo2.alive) {
+            soraATB = 0;
+            soraAttacking = false;
+        } else {
+            soraAttacking = true;
+            soraATB = 0;
+            document.querySelector(".jaugeATBSora").style.width = "0%";
+            moveCursor("Sora");
 
-        // Sauvegarde la position de départ
-        if (!Sora.startX) {
-          Sora.startX = Sora.sprite.x;
-          Sora.startY = Sora.sprite.y;
-          Sora.attackTarget = getRandomBombo();
-          Sora.targetX = Sora.attackTarget.sprite.x - 120;
-          Sora.targetY = Sora.attackTarget.sprite.y;
+            Sora.attackCount = (Sora.attackCount || 0) + 1;
+
+            if (Sora.attackCount === 3 && Sora.currentMana >= 50) {
+                Sora.useSkill = true;
+                Sora.currentMana -= 50;
+                Sora.attackCount = 0;
+
+                let manaPercent = Math.max(0, (Sora.currentMana / Sora.stats.MANA) * 100);
+                let barreMana = document.querySelector(".jaugeManaSora");
+                if (barreMana) barreMana.style.width = manaPercent + "%";
+                console.log(">>> SORA SKILL ACTIVÉ !");
+            } else {
+                Sora.useSkill = false;
+                if (Sora.attackCount >= 3) Sora.attackCount = 0;
+            }
+
+            if (!Sora.startX) {
+                Sora.startX = Sora.sprite.x;
+                Sora.startY = Sora.sprite.y;
+                Sora.attackTarget = getRandomBombo();
+                Sora.targetX = Sora.attackTarget.sprite.x - 120;
+                Sora.targetY = Sora.attackTarget.sprite.y;
+            }
         }
-      }
     }
 
     if (soraAttacking && Sora.startX) {
-      // ALLER vers le mob
-      if (Sora.isMovingToAttack) {
-        if (Sora.stepsMade === 0) {
-          Sora.sprite.setTexture("Sora-run");
-        }
-
-        // Déplacement vers la cible
-        let dx = Sora.targetX - Sora.sprite.x;
-        let dy = Sora.targetY - Sora.sprite.y;
-        let dist = Math.sqrt(dx * dx + dy * dy);
-
-        if (dist > 5) {
-          Sora.sprite.x += (dx / dist) * 5;
-          Sora.sprite.y += (dy / dist) * 5;
-          Sora.stepsMade += 1;
-        } else {
-          // Arrivé au contact
-          Sora.isMovingToAttack = false;
-          Sora.stepsMade = 0;
-          Sora.sprite.anims.play("Sora-atk");
-
-          Sora.sprite.once("animationcomplete", () => {
-            if (!Sora.alive) return;
-
-            // CALCUL DES DÉGÂTS
-            let damage = calculateDamage('Sora');
-            Sora.attackTarget.currentHP -= damage;
-
-            // AFFICHER LES DÉGÂTS
-            showDamage(gameScene, Sora.attackTarget, damage);
-
-            // Flash rouge
-            Sora.attackTarget.sprite.setTint(0xff0000);
-            gameScene.time.delayedCall(300, () => {
-              if (Sora.attackTarget.sprite && Sora.attackTarget.sprite.active) {
-                Sora.attackTarget.sprite.clearTint();
-              }
-            });
-
-            // MOB MORT ?
-            if (Sora.attackTarget.currentHP <= 0) {
-              killMob(gameScene, Sora.attackTarget);
+        // ALLER vers le mob
+        if (Sora.isMovingToAttack) {
+            if (Sora.stepsMade === 0) {
+                Sora.sprite.setTexture("Sora-run");
             }
 
-            Sora.sprite.setTexture("Sora-back");
-            Sora.isRetreating = true;
-          });
-        }
-      }
+            let dx = Sora.targetX - Sora.sprite.x;
+            let dy = Sora.targetY - Sora.sprite.y;
+            let dist = Math.sqrt(dx * dx + dy * dy);
 
-      // RETOUR vers la position initiale
-      if (Sora.isRetreating) {
-        let dx = Sora.startX - Sora.sprite.x;
-        let dy = Sora.startY - Sora.sprite.y;
-        let dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist > 5) {
+                Sora.sprite.x += (dx / dist) * 5;
+                Sora.sprite.y += (dy / dist) * 5;
+                Sora.stepsMade += 1;
+            } else {
+                // Arrivé au contact
+                Sora.isMovingToAttack = false;
+                Sora.stepsMade = 0;
 
-        if (dist > 5) {
-          Sora.sprite.x += (dx / dist) * 5;
-          Sora.sprite.y += (dy / dist) * 5;
-        } else {
-          Sora.sprite.x = Sora.startX;
-          Sora.sprite.y = Sora.startY;
-          // Sprite idle : normal ou mid-life selon les PV
-          Sora.sprite.setTexture(getIdleTexture(Sora));
-          document.querySelector(".jaugeATBSora").style.width = "0%";
-          moveCursor("Sora");
-          Sora.stepsMade = 0;
-          Sora.startX = null;
-          soraATB = 0;
-          soraAttacking = false;
-          Sora.isRetreating = false;
-          Sora.isMovingToAttack = true;
+                let animKey = Sora.useSkill ? "Sora-skill" : "Sora-atk";
+                Sora.sprite.anims.play(animKey);
+
+                Sora.sprite.once("animationcomplete", () => {
+                    if (!Sora.alive) { soraAttacking = false; return; }
+
+                    let damage = calculateDamage("Sora");
+                    if (Sora.useSkill) damage = Math.floor(damage * 2.5);
+
+                    Sora.attackTarget.currentHP -= damage;
+
+                    // Barre de vie du mob
+                    let hpPercent = Math.max(0, (Sora.attackTarget.currentHP / Sora.attackTarget.stats.Health) * 100);
+                    let barreClass = ".jaugePV" + Sora.attackTarget.stats.name;
+                    let barre = document.querySelector(barreClass);
+                    if (barre) barre.style.width = hpPercent + "%";
+
+                    // Afficher dégâts
+                    showDamage(gameScene, Sora.attackTarget, damage);
+
+                    // Flash rouge
+                    Sora.attackTarget.sprite.setTint(0xff0000);
+                    gameScene.time.delayedCall(300, () => {
+                        if (Sora.attackTarget.sprite && Sora.attackTarget.sprite.active) {
+                            Sora.attackTarget.sprite.clearTint();
+                        }
+                    });
+
+                    // Mob mort ?
+                    if (Sora.attackTarget.currentHP <= 0) {
+                        killMob(gameScene, Sora.attackTarget);
+                    }
+
+                    // RETOUR
+                    Sora.isRetreating = true;
+                    Sora.sprite.setTexture("Sora-atk-5");
+                    // Sora.sprite.flipX = true;
+                });
+            }
         }
-      }
+
+        // RETOUR vers la position de départ
+        if (Sora.isRetreating) {
+            let dx = Sora.startX - Sora.sprite.x;
+            let dy = Sora.startY - Sora.sprite.y;
+            let dist = Math.sqrt(dx * dx + dy * dy);
+
+            if (dist > 5) {
+                Sora.sprite.x += (dx / dist) * 5;
+                Sora.sprite.y += (dy / dist) * 5;
+            } else {
+                Sora.sprite.x = Sora.startX;
+                Sora.sprite.y = Sora.startY;
+                Sora.sprite.flipX = false;
+                Sora.sprite.setTexture(getIdleTexture(Sora));
+
+                // Reset
+                soraATB = 0;
+                soraAttacking = false;
+                Sora.useSkill = false;
+                Sora.startX = null;
+                Sora.startY = null;
+                Sora.isRetreating = false;
+                Sora.isMovingToAttack = true;
+                Sora.stepsMade = 0;
+            }
+        }
     }
-  }
+}
+
 
     // ==================== TIDUS ATB ====================
 if (Tidus.alive) {
