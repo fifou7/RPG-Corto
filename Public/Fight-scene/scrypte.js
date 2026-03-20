@@ -85,6 +85,30 @@ function preload() {
   this.load.image("Tidus-win-9", "../Images/Tidus-win-9.png");
   this.load.image("Tidus-win-10", "../Images/Tidus-win-10.png");
   this.load.image("Tidus-death", "../Images/Tidus-death.png");
+  this.load.image("Tidus-skill-1", "../Images/Tidus-skill-1.png");
+  this.load.image("Tidus-skill-2", "../Images/Tidus-skill-2.png");
+  this.load.image("Tidus-skill-3", "../Images/Tidus-skill-3.png");
+  this.load.image("Tidus-skill-4", "../Images/Tidus-skill-4.png");
+  this.load.image("Tidus-skill-5", "../Images/Tidus-skill-5.png");
+  this.load.image("Tidus-skill-6", "../Images/Tidus-skill-6.png");
+  this.load.image("Tidus-skill-7", "../Images/Tidus-skill-7.png");
+  this.load.image("Tidus-skill-8", "../Images/Tidus-skill-8.png");
+  this.load.image("Tidus-skill-9", "../Images/Tidus-skill-9.png");
+  this.load.image("Tidus-skill-10", "../Images/Tidus-skill-10.png");
+  this.load.image("Tidus-skill-11", "../Images/Tidus-skill-11.png");
+  this.load.image("Tidus-skill-12", "../Images/Tidus-skill-12.png");
+  this.load.image("Tidus-skill-13", "../Images/Tidus-skill-13.png");
+  this.load.image("Tidus-skill-14", "../Images/Tidus-skill-14.png");
+  this.load.image("Tidus-skill-15", "../Images/Tidus-skill-15.png");
+  this.load.image("Tidus-skill-16", "../Images/Tidus-skill-16.png");
+  this.load.image("Tidus-skill-17", "../Images/Tidus-skill-17.png");
+  this.load.image("Tidus-skill-18", "../Images/Tidus-skill-18.png");
+  this.load.image("Tidus-skill-19", "../Images/Tidus-skill-19.png");
+  this.load.image("Tidus-skill-20", "../Images/Tidus-skill-20.png");
+  this.load.image("Tidus-skill-21", "../Images/Tidus-skill-21.png");
+  this.load.image("Tidus-skill-22", "../Images/Tidus-skill-22.png");
+  this.load.image("Tidus-skill-23", "../Images/Tidus-skill-23.png");
+  this.load.image("Tidus-skill-24", "../Images/Tidus-skill-24.png");
 
   //  Lunafreya
   this.load.image("Lunafreya", "../Images/Lunafreya.png");
@@ -230,6 +254,41 @@ async function create() {
     repeat: 0
   });
 
+
+// Tidus skill
+  this.anims.create({
+    key: "Tidus-skill",
+    frames: [
+      { key: "Tidus-skill-1" },
+      { key: "Tidus-skill-2" },
+      { key: "Tidus-skill-3" },
+      { key: "Tidus-skill-4" },
+      { key: "Tidus-skill-5" },
+      { key: "Tidus-skill-6" },
+      { key: "Tidus-skill-7" },
+      { key: "Tidus-skill-8" },
+      { key: "Tidus-skill-9" },
+      { key: "Tidus-skill-10" },
+      { key: "Tidus-skill-11" },
+      { key: "Tidus-skill-12" },
+      { key: "Tidus-skill-13" },
+      { key: "Tidus-skill-14" },
+      { key: "Tidus-skill-15" },
+      { key: "Tidus-skill-16" },
+      { key: "Tidus-skill-17" },
+      { key: "Tidus-skill-18" },
+      { key: "Tidus-skill-19" },
+      { key: "Tidus-skill-20" },
+      { key: "Tidus-skill-21" },
+      { key: "Tidus-skill-22" },
+      { key: "Tidus-skill-23" },
+      { key: "Tidus-skill-24" }
+    ],
+    frameRate: 12,
+    repeat: 0
+  });
+
+
   // Tidus win
   this.anims.create({
     key: "Tidus-win",
@@ -311,6 +370,8 @@ async function create() {
   Tidus.sprite.setScale(0.7);
   Tidus.stats = tidusData;
   Tidus.currentHP = tidusData.Health;
+  Tidus.currentMana = tidusData.MANA;  
+  Tidus.attackCount = 0; 
 
   // Lunafreya
   Lunafreya.sprite = this.add.sprite(config.width * 0.22, 290, "Lunafreya");
@@ -380,11 +441,11 @@ function showDamage(scene, target, damage) {
 }
 
 const ATTACK_TABLE = {
-  'Tidus': { min: 150, max: 200 },
-  'Sora': { min: 120, max: 170 },
-  'Lunafreya': { min: 180, max: 250 },
-  'mibombo': { min: 1000, max: 1500 },
-  'Mibombo': { min: 1000, max: 1500 }
+  'Tidus': { min: 150, max: 20 },
+  'Sora': { min: 12, max: 17 },
+  'Lunafreya': { min: 18, max: 25 },
+  'mibombo': { min: 100, max: 150 },
+  'Mibombo': { min: 100, max: 150 }
 };
 
 function calculateDamage(attackerName) {
@@ -631,99 +692,133 @@ function update(time, delta) {
     }
   }
 
-  // ==================== TIDUS ATB ====================
-  if (Tidus.alive) {
+    // ==================== TIDUS ATB ====================
+if (Tidus.alive) {
     if (!tidusAttacking) {
-      tidusATB += TIDUS_SPEED * dt;
-      if (tidusATB > ATB_MAX) tidusATB = ATB_MAX;
-      document.querySelector(".jaugeATBTidus").style.width = tidusATB + "%";
+        tidusATB += TIDUS_SPEED * dt;
+        if (tidusATB > ATB_MAX) tidusATB = ATB_MAX;
+        document.querySelector(".jaugeATBTidus").style.width = tidusATB + "%";
     }
 
     if (tidusATB >= ATB_MAX && !tidusAttacking) {
-      if (!Bombo1.alive && !Bombo2.alive) {
-        tidusATB = 0;
-        tidusAttacking = false;
-      } else {
-        tidusAttacking = true;
-
-        if (!Tidus.startX) {
-          Tidus.startX = Tidus.sprite.x;
-          Tidus.startY = Tidus.sprite.y;
-          Tidus.attackTarget = getRandomBombo();
-          Tidus.targetX = Tidus.attackTarget.sprite.x - 120;
-          Tidus.targetY = Tidus.attackTarget.sprite.y;
-        }
-      }
-    }
-
-    if (tidusAttacking && Tidus.startX) {
-      if (Tidus.isMovingToAttack) {
-        if (Tidus.stepsMade === 0) {
-          Tidus.sprite.setTexture("Tidus-run");
-        }
-
-        let dx = Tidus.targetX - Tidus.sprite.x;
-        let dy = Tidus.targetY - Tidus.sprite.y;
-        let dist = Math.sqrt(dx * dx + dy * dy);
-
-        if (dist > 5) {
-          Tidus.sprite.x += (dx / dist) * 5;
-          Tidus.sprite.y += (dy / dist) * 5;
-          Tidus.stepsMade += 1;
+        if (!Bombo1.alive && !Bombo2.alive) {
+            tidusATB = 0;
+            tidusAttacking = false;
         } else {
-          Tidus.isMovingToAttack = false;
-          Tidus.stepsMade = 0;
-          Tidus.sprite.anims.play("Tidus-atk");
+            tidusAttacking = true;
+            Tidus.attackCount = (Tidus.attackCount || 0) + 1;
+            console.log("Tidus attackCount:", Tidus.attackCount, "mana:", Tidus.currentMana);
 
-          Tidus.sprite.once("animationcomplete", () => {
-            if (!Tidus.alive) return;
+            // À la 3e attaque, skill + reset compteur
+            if (Tidus.attackCount === 3 && Tidus.currentMana >= 50) {
+                Tidus.useSkill = true;
+                Tidus.currentMana -= 50;
+                Tidus.attackCount = 0;
 
-            let damage = calculateDamage('Tidus');
-            Tidus.attackTarget.currentHP -= damage;
-            showDamage(gameScene, Tidus.attackTarget, damage);
-
-            Tidus.attackTarget.sprite.setTint(0xff0000);
-            gameScene.time.delayedCall(300, () => {
-              if (Tidus.attackTarget.sprite && Tidus.attackTarget.sprite.active) {
-                Tidus.attackTarget.sprite.clearTint();
-              }
-            });
-
-            if (Tidus.attackTarget.currentHP <= 0) {
-              killMob(gameScene, Tidus.attackTarget);
+                let manaPercent = Math.max(0, (Tidus.currentMana / Tidus.stats.MANA) * 100);
+                let barreMana = document.querySelector(".jaugeManaTidus");
+                if (barreMana) barreMana.style.width = manaPercent + "%";
+                console.log(">>> SKILL ACTIVÉ !");
+            } else {
+                Tidus.useSkill = false;
+                if (Tidus.attackCount >= 3) Tidus.attackCount = 0;
             }
 
-            Tidus.sprite.setTexture("Tidus-back");
-            Tidus.isRetreating = true;
-          });
+            if (!Tidus.startX) {
+                Tidus.startX = Tidus.sprite.x;
+                Tidus.startY = Tidus.sprite.y;
+                Tidus.attackTarget = getRandomBombo();
+                Tidus.targetX = Tidus.attackTarget.sprite.x - 120;
+                Tidus.targetY = Tidus.attackTarget.sprite.y;
+            }
         }
-      }
-
-      if (Tidus.isRetreating) {
-        let dx = Tidus.startX - Tidus.sprite.x;
-        let dy = Tidus.startY - Tidus.sprite.y;
-        let dist = Math.sqrt(dx * dx + dy * dy);
-
-        if (dist > 5) {
-          Tidus.sprite.x += (dx / dist) * 5;
-          Tidus.sprite.y += (dy / dist) * 5;
-        } else {
-          Tidus.sprite.x = Tidus.startX;
-          Tidus.sprite.y = 150;
-          // Sprite idle : normal ou mid-life selon les PV
-          Tidus.sprite.setTexture(getIdleTexture(Tidus));
-          document.querySelector(".jaugeATBTidus").style.width = "0%";
-          moveCursor("Tidus");
-          Tidus.stepsMade = 0;
-          Tidus.startX = null;
-          tidusATB = 0;
-          tidusAttacking = false;
-          Tidus.isRetreating = false;
-          Tidus.isMovingToAttack = true;
-        }
-      }
     }
-  }
+
+    // ===== MOUVEMENT + ATTAQUE + RETOUR DE TIDUS =====
+    if (tidusAttacking && Tidus.startX) {
+
+        // PHASE 1 : COURSE VERS L'ENNEMI
+        if (Tidus.isMovingToAttack) {
+            Tidus.sprite.setTexture("Tidus-run");
+            let dx = Tidus.targetX - Tidus.sprite.x;
+            let dy = Tidus.targetY - Tidus.sprite.y;
+            let dist = Math.sqrt(dx * dx + dy * dy);
+
+            if (dist > 5) {
+                Tidus.sprite.x += (dx / dist) * 5;
+                Tidus.sprite.y += (dy / dist) * 5;
+            } else {
+                // Arrivé devant l'ennemi → lancer l'animation d'attaque
+                Tidus.isMovingToAttack = false;
+
+                let animKey = Tidus.useSkill ? "Tidus-skill" : "Tidus-atk";
+                Tidus.sprite.anims.play(animKey);
+
+                Tidus.sprite.once('animationcomplete', () => {
+                    if (!Tidus.alive) { tidusAttacking = false; return; }
+
+                    // Calcul dégâts
+                    let damage = calculateDamage("Tidus");
+                    if (Tidus.useSkill) damage = Math.floor(damage * 2.5);
+
+                    Tidus.attackTarget.currentHP -= damage;
+
+                    // Barre de vie du mob
+                    let hpPercent = Math.max(0, (Tidus.attackTarget.currentHP / Tidus.attackTarget.stats.Health) * 100);
+                    let barreClass = ".jaugePV" + Tidus.attackTarget.stats.name;
+                    let barre = document.querySelector(barreClass);
+                    if (barre) barre.style.width = hpPercent + "%";
+
+                    // Afficher dégâts
+                    showDamage(gameScene, Tidus.attackTarget, damage);
+
+                    // Flash rouge
+                    Tidus.attackTarget.sprite.setTint(0xff0000);
+                    gameScene.time.delayedCall(300, () => {
+                        if (Tidus.attackTarget.sprite && Tidus.attackTarget.sprite.active) {
+                            Tidus.attackTarget.sprite.clearTint();
+                        }
+                    });
+
+                    // Mob mort ?
+                    if (Tidus.attackTarget.currentHP <= 0) {
+                        killMob(gameScene, Tidus.attackTarget);
+                    }
+
+                    Tidus.sprite.setTexture("Tidus-back");
+                    Tidus.isRetreating = true;
+                });
+            }
+        }
+
+        // PHASE 2 : RETOUR À LA POSITION INITIALE
+        if (Tidus.isRetreating) {
+            let dx = Tidus.startX - Tidus.sprite.x;
+            let dy = Tidus.startY - Tidus.sprite.y;
+            let dist = Math.sqrt(dx * dx + dy * dy);
+
+            if (dist > 5) {
+                Tidus.sprite.x += (dx / dist) * 5;
+                Tidus.sprite.y += (dy / dist) * 5;
+            } else {
+                Tidus.sprite.x = Tidus.startX;
+                Tidus.sprite.y = Tidus.startY;
+                Tidus.sprite.setTexture(getIdleTexture(Tidus));
+                document.querySelector(".jaugeATBTidus").style.width = "0%";
+                moveCursor("Tidus");
+                Tidus.stepsMade = 0;
+                Tidus.startX = null;
+                tidusATB = 0;
+                tidusAttacking = false;
+                Tidus.isRetreating = false;
+                Tidus.isMovingToAttack = true;
+            }
+        }
+    }
+} // ← fin du if (Tidus.alive)
+
+
+
 
   // Permet de récupérer la distance entre deux éléments
   // Je te laisse ça là, ça pourra t'être utile
