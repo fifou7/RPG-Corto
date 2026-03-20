@@ -130,6 +130,24 @@ function preload() {
   this.load.image("Lunafreya-win-6", "../Images/Lunafreya-win-6.png");
   this.load.image("Lunafreya-win-7", "../Images/Lunafreya-win-7.png");
   this.load.image("Lunafreya-death", "../Images/Lunafreya-death.png");
+   this.load.image("Lunafreya-skill-1", "../Images/Lunafreya-skill-1.png");
+  this.load.image("Lunafreya-skill-2", "../Images/Lunafreya-skill-2.png");
+  this.load.image("Lunafreya-skill-3", "../Images/Lunafreya-skill-3.png");
+  this.load.image("Lunafreya-skill-4", "../Images/Lunafreya-skill-4.png");
+  this.load.image("Lunafreya-skill-5", "../Images/Lunafreya-skill-5.png");
+  this.load.image("Lunafreya-skill-6", "../Images/Lunafreya-skill-6.png");
+  this.load.image("Lunafreya-skill-7", "../Images/Lunafreya-skill-7.png");
+  this.load.image("Lunafreya-skill-8", "../Images/Lunafreya-skill-8.png");
+  this.load.image("Lunafreya-skill-9", "../Images/Lunafreya-skill-9.png");
+  this.load.image("Lunafreya-skill-10", "../Images/Lunafreya-skill-10.png");
+  this.load.image("Lunafreya-skill-11", "../Images/Lunafreya-skill-11.png");
+  this.load.image("Lunafreya-skill-12", "../Images/Lunafreya-skill-12.png");
+  this.load.image("Lunafreya-skill-13", "../Images/Lunafreya-skill-13.png");
+  this.load.image("Lunafreya-skill-14", "../Images/Lunafreya-skill-14.png");
+  this.load.image("Lunafreya-skill-15", "../Images/Lunafreya-skill-15.png");
+  this.load.image("Lunafreya-skill-16", "../Images/Lunafreya-skill-16.png");
+  this.load.image("Lunafreya-skill-17", "../Images/Lunafreya-skill-17.png");
+
 
   //  Sora
   this.load.image("Sora", "../Images/Sora.png");
@@ -205,7 +223,7 @@ async function create() {
   const mobsRaw = await responseMobs.json();
   const mobs = Array.isArray(mobsRaw) ? mobsRaw : mobsRaw.mobs || mobsRaw.data || [];
 
-  console.log(characters, mobs);
+  // console.log(characters, mobs);
 
 
   // Verification
@@ -214,6 +232,9 @@ async function create() {
   const lunaData = characters.find(c => c.name === "Lunafreya");
   const bombo1Data = mobs.find(m => m.name === "Mibombo");
   const bombo2Data = mobs.find(m => m.name === "Mibombo");
+
+  console.log(bombo1Data, bombo2Data);
+  
 
   // ATB speeds
   TIDUS_SPEED = 100 / tidusData.atb_jauge;
@@ -279,7 +300,7 @@ async function create() {
       { key: "Sora-skill-26" },
       { key: "Sora-skill-27" }
     ],
-    frameRate: 6,
+    frameRate: 9,
     repeat: 0
   });
 
@@ -388,6 +409,55 @@ async function create() {
     repeat: 0
   });
 
+// Effet magique de Luna sur le mob
+  this.anims.create({
+    key: "luna-magic-effect",
+    frames: [
+      { key: "Lunafreya-atk-8" },
+      { key: "Lunafreya-atk-9" }
+    ],
+    frameRate: 6,
+    repeat: 2
+  });
+
+
+// Lunafreya skill
+  this.anims.create({
+    key: "Lunafreya-skill",
+    frames: [
+      { key: "Lunafreya-skill-1" },
+      { key: "Lunafreya-skill-2" },
+      { key: "Lunafreya-skill-3" },
+      { key: "Lunafreya-skill-4" },
+      { key: "Lunafreya-skill-5" },
+      { key: "Lunafreya-skill-6" },
+      { key: "Lunafreya-skill-7" }
+    ],
+    frameRate: 7,
+    repeat: 0
+  });
+
+  // Effet magique de Luna sur le mob pour le skill
+  this.anims.create({
+    key: "luna-magic-effect-skill",
+    frames: [
+     { key: "Lunafreya-skill-8" },
+      { key: "Lunafreya-skill-9" },
+      { key: "Lunafreya-skill-10" },
+      { key: "Lunafreya-skill-11" },
+      { key: "Lunafreya-skill-12" },
+      { key: "Lunafreya-skill-13" },
+      { key: "Lunafreya-skill-14" },
+      { key: "Lunafreya-skill-15" },
+      { key: "Lunafreya-skill-16" },
+      { key: "Lunafreya-skill-17" }
+    ],
+    frameRate: 7,
+    repeat: 0
+  });
+
+
+
   // Lunafreya win
   this.anims.create({
     key: "Lunafreya-win",
@@ -404,16 +474,7 @@ async function create() {
     repeat: 0
   });
 
-  // Effet magique de Luna sur le mob
-  this.anims.create({
-    key: "luna-magic-effect",
-    frames: [
-      { key: "Lunafreya-atk-8" },
-      { key: "Lunafreya-atk-9" }
-    ],
-    frameRate: 6,
-    repeat: 2
-  });
+  
 
   // Fireball des Bombos
   this.anims.create({
@@ -442,6 +503,9 @@ async function create() {
   Lunafreya.sprite.setScale(0.7);
   Lunafreya.stats = lunaData;
   Lunafreya.currentHP = lunaData.Health;
+  Lunafreya.attackCount = 0;
+  Lunafreya.currentMana = Lunafreya.stats.MANA;
+  Lunafreya.useSkill = false;
 
   // Sora
   Sora.sprite = this.add.sprite(config.width * 0.24, 420, "Sora");
@@ -507,9 +571,9 @@ function showDamage(scene, target, damage) {
 }
 
 const ATTACK_TABLE = {
-  'Tidus': { min: 15, max: 200 },
-  'Sora': { min: 29, max: 117 },
-  'Lunafreya': { min: 11, max: 125 },
+  'Tidus': { min: 15, max: 20 },
+  'Sora': { min: 29, max: 11 },
+  'Lunafreya': { min: 11, max: 12 },
   'mibombo': { min: 100, max: 150 },
   'Mibombo': { min: 100, max: 150 }
 };
@@ -924,81 +988,105 @@ if (Tidus.alive) {
   // );
 
   // ==================== LUNAFREYA ATB ====================
-  if (Lunafreya.alive) {
+if (Lunafreya.alive) {
     if (!lunaAttacking) {
-      lunaATB += LUNA_SPEED * dt;
-      if (lunaATB > ATB_MAX) lunaATB = ATB_MAX;
-      let barreLuna = document.querySelector(".jaugeATBLuna");
-      if (barreLuna) barreLuna.style.width = lunaATB + "%";
+        lunaATB += LUNA_SPEED * dt;
+        if (lunaATB > ATB_MAX) lunaATB = ATB_MAX;
+        let barreLuna = document.querySelector(".jaugeATBLuna");
+        if (barreLuna) barreLuna.style.width = lunaATB + "%";
     }
 
     if (lunaATB >= ATB_MAX && !lunaAttacking) {
-      if (!Bombo1.alive && !Bombo2.alive) {
-        lunaATB = 0;
-        lunaAttacking = false;
-      } else {
-        lunaATB = 0;
-        lunaAttacking = true;
-        document.querySelector(".jaugeATBLuna").style.width = "0%";
-        moveCursor("Lunafreya");
-
-        let target = getRandomBombo();
-
-        // Luna lance son animation d'attaque sur place
-        Lunafreya.sprite.anims.play("Lunafreya-atk");
-
-        Lunafreya.sprite.once('animationcomplete', () => {
-          // Vérifier si Luna est toujours vivante après l'anim
-          if (!Lunafreya.alive) { lunaAttacking = false; return; }
-
-          // Créer l'effet magique sur le mob
-          let magicEffect = gameScene.add.sprite(
-            target.sprite.x,
-            target.sprite.y,
-            "Lunafreya-atk-8"
-          );
-          magicEffect.setScale(0.5);
-          magicEffect.anims.play("luna-magic-effect");
-
-          magicEffect.once('animationcomplete', () => {
-            // Vérifier encore si Luna est vivante
-            if (!Lunafreya.alive) {
-              magicEffect.destroy();
-              lunaAttacking = false;
-              return;
-            }
-
-            let damage = calculateDamage(Lunafreya.stats.name);
-            target.currentHP -= damage;
-            showDamage(gameScene, target, damage);
-
-            target.sprite.setTint(0xff0000);
-            gameScene.time.delayedCall(300, () => {
-              if (target.sprite && target.sprite.active) target.sprite.clearTint();
-            });
-
-            let hpPercent = Math.max(0, (target.currentHP / target.stats.Health) * 100);
-            let barreClass = ".jaugePV" + target.stats.name;
-            let barre = document.querySelector(barreClass);
-            if (barre) barre.style.width = hpPercent + "%";
-
-            if (target.currentHP <= 0) {
-              killMob(gameScene, target);
-            }
-
-            magicEffect.destroy();
-
-            // Vérifier encore avant de remettre le sprite idle
-            if (!Lunafreya.alive) { lunaAttacking = false; return; }
-
-            // Sprite idle check si normal ou mid-life selon les PV
-            Lunafreya.sprite.setTexture(getIdleTexture(Lunafreya));
+        if (!Bombo1.alive && !Bombo2.alive) {
+            lunaATB = 0;
             lunaAttacking = false;
-          });
-        });
-      }
+        } else {
+            lunaATB = 0;
+            lunaAttacking = true;
+            document.querySelector(".jaugeATBLuna").style.width = "0%";
+            moveCursor("Lunafreya");
+
+           Lunafreya.attackCount = (Lunafreya.attackCount || 0) + 1;
+          console.log("Luna attackCount:", Lunafreya.attackCount, "Mana:", Lunafreya.currentMana);
+
+// Skill à la 3e attaque si assez de mana
+if (Lunafreya.attackCount >= 3 && Lunafreya.currentMana >= 50) {
+    Lunafreya.useSkill = true;
+    Lunafreya.currentMana -= 50;
+    Lunafreya.attackCount = 0;
+
+    let manaPercent = Math.max(0, (Lunafreya.currentMana / Lunafreya.stats.MANA) * 100);
+    let barreMana = document.querySelector(".jaugeManaLunafreya");
+    if (barreMana) barreMana.style.width = manaPercent + "%";
+    console.log(">>> LUNA SKILL ACTIVÉ !");
+} else {
+    Lunafreya.useSkill = false;
+}
+
+            let target = getRandomBombo();
+
+            let animKey = Lunafreya.useSkill ? "Lunafreya-skill" : "Lunafreya-atk";
+            Lunafreya.sprite.anims.play(animKey);
+
+            Lunafreya.sprite.once('animationcomplete', () => {
+                if (!Lunafreya.alive) { lunaAttacking = false; return; }
+
+                // Luna reste sur la dernière frame pendant l'effet
+                if (Lunafreya.useSkill) {
+                    Lunafreya.sprite.setTexture("Lunafreya-skill-7");
+                } else {
+                    Lunafreya.sprite.setTexture("Lunafreya-atk-7");
+                }
+
+                // Effet magique sur le mob
+                let effectKey = Lunafreya.useSkill ? "luna-magic-effect-skill" : "luna-magic-effect";
+                let effectTexture = Lunafreya.useSkill ? "Lunafreya-skill-8" : "Lunafreya-atk-8";
+
+                let magicEffect = gameScene.add.sprite(
+                    target.sprite.x,
+                    target.sprite.y,
+                    effectTexture
+                );
+                magicEffect.setScale(0.5);
+                magicEffect.anims.play(effectKey);
+
+                magicEffect.once('animationcomplete', () => {
+                    magicEffect.destroy();
+
+                    // Calcul dégâts
+                    let damage = calculateDamage("Lunafreya");
+                    if (Lunafreya.useSkill) damage = Math.floor(damage * 2.5);
+
+                    target.currentHP -= damage;
+
+                    let hpPercent = Math.max(0, (target.currentHP / target.stats.Health) * 100);
+                    let barreClass = ".jaugePV" + target.stats.name;
+                    let barre = document.querySelector(barreClass);
+                    if (barre) barre.style.width = hpPercent + "%";
+
+                    showDamage(gameScene, target, damage);
+
+                    target.sprite.setTint(0xff0000);
+                    gameScene.time.delayedCall(300, () => {
+                        if (target.sprite && target.sprite.active) {
+                            target.sprite.clearTint();
+                        }
+                    });
+
+                    if (target.currentHP <= 0) {
+                        killMob(gameScene, target);
+                    }
+
+                    // Luna retourne en idle
+                    Lunafreya.sprite.setTexture(getIdleTexture(Lunafreya));
+                    lunaAttacking = false;
+                    Lunafreya.useSkill = false;
+                });
+            });
+        }
     }
-  }
+}
+
 
   // ==================== BOMBO1 ATB ====================
   if (Bombo1.alive && !bombo1Attacking) {
