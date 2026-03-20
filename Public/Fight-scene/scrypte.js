@@ -180,6 +180,7 @@ async function create() {
 
   console.log(characters, mobs);
 
+
   // Verification
   const tidusData = characters.find(c => c.name === "Tidus");
   const soraData = characters.find(c => c.name === "Sora");
@@ -441,9 +442,9 @@ function showDamage(scene, target, damage) {
 }
 
 const ATTACK_TABLE = {
-  'Tidus': { min: 150, max: 20 },
-  'Sora': { min: 12, max: 17 },
-  'Lunafreya': { min: 18, max: 25 },
+  'Tidus': { min: 15, max: 200 },
+  'Sora': { min: 29, max: 117 },
+  'Lunafreya': { min: 11, max: 125 },
   'mibombo': { min: 100, max: 150 },
   'Mibombo': { min: 100, max: 150 }
 };
@@ -511,9 +512,9 @@ const ATB_MAX = 100;
 
 let BOMBO1_SPEED = 100 / 8;
 let BOMBO2_SPEED = 100 / 10;
-let SORA_SPEED = 100 / 5;
-let TIDUS_SPEED = 100 / 4;
-let LUNA_SPEED = 100 / 6;
+let SORA_SPEED = 100 / 4;
+let TIDUS_SPEED = 100 / 2;
+let LUNA_SPEED = 100 / 3;
 
 let soraAttacking = false;
 let tidusAttacking = false;
@@ -1024,66 +1025,65 @@ if (Tidus.alive) {
     tidusAttacking = true;
     lunaAttacking = true;
 
+    // STOPPER toutes les anims et tweens en cours
+    gameScene.tweens.killTweensOf(Tidus.sprite);
+    gameScene.tweens.killTweensOf(Sora.sprite);
+    gameScene.tweens.killTweensOf(Lunafreya.sprite);
+    if (Tidus.sprite.anims) Tidus.sprite.anims.stop();
+    if (Sora.sprite.anims) Sora.sprite.anims.stop();
+    if (Lunafreya.sprite.anims) Lunafreya.sprite.anims.stop();
+
+    // Forcer reset des états
+    Tidus.isMovingToAttack = true; Tidus.isRetreating = false; Tidus.startX = null;
+    Sora.isMovingToAttack = true; Sora.isRetreating = false; Sora.startX = null;
+    Lunafreya.isMovingToAttack = true; Lunafreya.isRetreating = false; Lunafreya.startX = null;
+
     // Positions initiales
     let tidusHomeX = config.width * 0.26, tidusHomeY = 150;
     let soraHomeX = config.width * 0.24, soraHomeY = 420;
     let lunaHomeX = config.width * 0.22, lunaHomeY = 290;
 
-    // Repositionner les persos
-    gameScene.tweens.add({
-      targets: Tidus.sprite,
-      x: tidusHomeX, y: tidusHomeY,
-      duration: 200,
-      onComplete: () => Tidus.sprite.anims.play("Tidus-win")
-    });
+    // TÉLÉPORTER immédiatement puis animer
+    Tidus.sprite.setPosition(tidusHomeX, tidusHomeY);
+    Sora.sprite.setPosition(soraHomeX, soraHomeY);
+    Lunafreya.sprite.setPosition(lunaHomeX, lunaHomeY);
 
-    gameScene.tweens.add({
-      targets: Sora.sprite,
-      x: soraHomeX, y: soraHomeY,
-      duration: 200,
-      onComplete: () => Sora.sprite.anims.play("Sora-win")
-    });
+    // Lancer les anims de victoire (seulement si vivant)
+    if (Tidus.alive) Tidus.sprite.anims.play("Tidus-win");
+    if (Sora.alive) Sora.sprite.anims.play("Sora-win");
+    if (Lunafreya.alive) Lunafreya.sprite.anims.play("Lunafreya-win");
 
-    gameScene.tweens.add({
-      targets: Lunafreya.sprite,
-      x: lunaHomeX, y: lunaHomeY,
-      duration: 300,
-      onComplete: () => Lunafreya.sprite.anims.play("Lunafreya-win")
-    });
-
-    // Après repositionnement : animation victoire
+    // Après repositionnement : texte VICTORY
     gameScene.time.delayedCall(800, () => {
-      // Masquer le HUD
-      let hud = document.querySelector(".ActionBar");
-      if (hud) hud.style.display = "none";
+        let hud = document.querySelector(".ActionBar");
+        if (hud) hud.style.display = "none";
 
-      // Texte VICTORY
-      let victoryText = gameScene.add.text(
-        config.width / 2, config.height / 2 - 80,
-        "VICTORY!",
-        {
-          fontSize: "64px",
-          fontFamily: "Arial",
-          color: "#FFD700",
-          stroke: "#000",
-          strokeThickness: 6
-        }
-      ).setOrigin(0.5);
+        let victoryText = gameScene.add.text(
+            config.width / 2, config.height / 2 - 80,
+            "VICTORY!",
+            {
+                fontSize: "64px",
+                fontFamily: "Arial",
+                color: "#FFD700",
+                stroke: "#000",
+                strokeThickness: 6
+            }
+        ).setOrigin(0.5);
 
-      victoryText.setScale(0);
-      gameScene.tweens.add({
-        targets: victoryText,
-        scale: 1,
-        duration: 600,
-        ease: "Back.easeOut"
-      });
+        victoryText.setScale(0);
+        gameScene.tweens.add({
+            targets: victoryText,
+            scale: 1,
+            duration: 600,
+            ease: "Back.easeOut"
+        });
 
-      // Transition
-      gameScene.time.delayedCall(3000, () => {
-        // window.location.href = "ta-page-suivante.html";
-      });
+        gameScene.time.delayedCall(3000, () => {
+            // window.location.href = "ta-page-suivante.html";
+        });
     });
-  }
+}
+
 
   // Détecte défaite
   let allHeroesDead =
