@@ -66,7 +66,6 @@ function getIdleTexture(character) {
 }
 
 function preload() {
-
   //  Tidus
   this.load.image("Tidus", "../Images/Tidus.png");
   this.load.image("Tidus-atk-1", "../Images/Tidus-atk-1.png");
@@ -205,7 +204,7 @@ function preload() {
   //  Background-fight
   this.load.image("background-fight", "../Images/image-de-fond-fight.png");
 
-  //  Mob - BOMBO 
+  //  Mob - BOMBO
   this.load.image("Bombo1", "../Images/Bombo.png");
   this.load.image("Bombo2", "../Images/Bombo.png");
   this.load.image("Bombo1-atk-1", "../Images/Bombo-atk-1.png");
@@ -214,12 +213,12 @@ function preload() {
   this.load.image("Bombo1-atk-4", "../Images/Bombo-atk-4.png");
   this.load.image("Bombo1-atk-5", "../Images/Bombo-atk-5.png");
 
- //  Mob - BlackKnight - State
+  //  Mob - BlackKnight - State
   this.load.image("BlackKnight", "../Images/BlackKnight.png");
   this.load.image("BlackKnight-1", "../Images/BlackKnight-1.png");
   this.load.image("BlackKnight-2", "../Images/BlackKnight-2.png");
 
-//  Mob - BlackKnight - State
+  //  Mob - BlackKnight - State
   this.load.image("BlackKnight-atk-1", "../Images/BlackKnight-atk-1.png");
   this.load.image("BlackKnight-atk-2", "../Images/BlackKnight-atk-2.png");
   this.load.image("BlackKnight-atk-3", "../Images/BlackKnight-atk-3.png");
@@ -227,16 +226,13 @@ function preload() {
   this.load.image("BlackKnight-atk-5", "../Images/BlackKnight-atk-5.png");
   this.load.image("BlackKnight-atk-6", "../Images/BlackKnight-atk-6.png");
   this.load.image("BlackKnight-atk-7", "../Images/BlackKnight-atk-7.png");
-  this.load.image("BlackKnight-atk-8", "../Images/BlackKnight-atk-8.png"); 
+  this.load.image("BlackKnight-atk-8", "../Images/BlackKnight-atk-8.png");
   this.load.image("BlackKnight-atk-9", "../Images/BlackKnight-atk-9.png");
 
-  //  Mob - BlackKnight - run and back 
+  //  Mob - BlackKnight - run and back
   this.load.image("BlackKnight-run", "../Images/BlackKnight-run.png");
   this.load.image("BlackKnight-back", "../Images/BlackKnight-back.png");
 }
-
-
-
 
 async function create() {
   gameScene = this;
@@ -257,12 +253,12 @@ async function create() {
   console.log(characters, mobs);
 
   // Verification
-  const tidusData = characters.find(c => c.name === "Tidus");
-  const soraData = characters.find(c => c.name === "Sora");
-  const lunaData = characters.find(c => c.name === "Lunafreya");
+  const tidusData = characters.find((c) => c.name === "Tidus");
+  const soraData = characters.find((c) => c.name === "Sora");
+  const lunaData = characters.find((c) => c.name === "Lunafreya");
 
-  const bomboData = mobs.find(m => m.name === "Mibombo");
-  const blackKnightData = mobs.find(m => m.name === "BlackKnight");
+  const bomboData = mobs.find((m) => m.name === "Mibombo");
+  const blackKnightData = mobs.find((m) => m.name === "BlackKnight");
 
   const mobPool = [bomboData, blackKnightData];
   // Tirer 2 mobs aléatoires
@@ -525,10 +521,10 @@ async function create() {
     frames: [
       { key: "BlackKnight" },
       { key: "BlackKnight-1" },
-      { key: "BlackKnight-2" }
+      { key: "BlackKnight-2" },
     ],
     frameRate: 3,
-    repeat: -1
+    repeat: -1,
   });
 
   // BlackKnight ATK
@@ -543,10 +539,10 @@ async function create() {
       { key: "BlackKnight-atk-6" },
       { key: "BlackKnight-atk-7" },
       { key: "BlackKnight-atk-8" },
-      { key: "BlackKnight-atk-9" }
+      { key: "BlackKnight-atk-9" },
     ],
     frameRate: 6,
-    repeat: 0
+    repeat: 0,
   });
 
   // Tidus
@@ -593,7 +589,7 @@ async function create() {
       duration: 1500,
       yoyo: true,
       repeat: -1,
-      ease: 'Sine.easeInOut'
+      ease: "Sine.easeInOut",
     });
   }
 
@@ -616,13 +612,12 @@ async function create() {
       duration: 1800,
       yoyo: true,
       repeat: -1,
-      ease: 'Sine.easeInOut'
+      ease: "Sine.easeInOut",
     });
   }
 
   sceneReady = true;
 }
-
 
 //afficher dmg
 function showDamage(scene, target, damage) {
@@ -648,9 +643,9 @@ function showDamage(scene, target, damage) {
 }
 
 const ATTACK_TABLE = {
-  Tidus: { min: 15, max: 20 },
-  Sora: { min: 29, max: 11 },
-  Lunafreya: { min: 11, max: 12 },
+  Tidus: { min: 120, max: 200 },
+  Sora: { min: 129, max: 220 },
+  Lunafreya: { min: 110, max: 145 },
   mibombo: { min: 100, max: 150 },
   Mibombo: { min: 100, max: 150 },
 };
@@ -740,7 +735,6 @@ let SORA_SPEED = 100 / 4;
 let TIDUS_SPEED = 100 / 2;
 let LUNA_SPEED = 100 / 3;
 let BLACKKNIGHT_SPEED = 100 / 8;
-
 
 let soraAttacking = false;
 let tidusAttacking = false;
@@ -1244,273 +1238,291 @@ function update(time, delta) {
     }
   }
 
-
   // ==================== MOB SLOT 1 ATB ====================
-if (Bombo1.alive) {
+  if (Bombo1.alive) {
     if (!bombo1Attacking) {
-        bombo1ATB += BOMBO1_SPEED * dt;
-        if (bombo1ATB > ATB_MAX) bombo1ATB = ATB_MAX;
+      bombo1ATB += BOMBO1_SPEED * dt;
+      if (bombo1ATB > ATB_MAX) bombo1ATB = ATB_MAX;
     }
 
     if (bombo1ATB >= ATB_MAX && !bombo1Attacking) {
-        let allHeroesDead = !Tidus.alive && !Sora.alive && !Lunafreya.alive;
-        if (allHeroesDead) {
-            bombo1ATB = 0;
-            bombo1Attacking = false;
+      let allHeroesDead = !Tidus.alive && !Sora.alive && !Lunafreya.alive;
+      if (allHeroesDead) {
+        bombo1ATB = 0;
+        bombo1Attacking = false;
+      } else {
+        bombo1Attacking = true;
+        bombo1ATB = 0;
+        let target = getRandomHero();
+        Bombo1.attackTarget = target;
+
+        if (Bombo1.mobType === "BlackKnight") {
+          // === BLACKKNIGHT : avance, frappe, revient ===
+          Bombo1.startX = Bombo1.sprite.x;
+          Bombo1.startY = Bombo1.sprite.y;
+          Bombo1.targetX = target.sprite.x + 120;
+          Bombo1.targetY = target.sprite.y;
+          Bombo1.isMovingToAttack = true;
+          Bombo1.isRetreating = false;
+          Bombo1.sprite.anims.stop();
+          Bombo1.sprite.setTexture("BlackKnight-run");
         } else {
-            bombo1Attacking = true;
-            bombo1ATB = 0;
-            let target = getRandomHero();
-            Bombo1.attackTarget = target;
+          // === BOMBO : lance fireball ===
+          let fireball = gameScene.add.sprite(
+            Bombo1.sprite.x,
+            Bombo1.sprite.y,
+            "Bombo1-atk-1",
+          );
+          fireball.setScale(0.5);
+          fireball.anims.play("fireball-anim");
 
-            if (Bombo1.mobType === "BlackKnight") {
-                // === BLACKKNIGHT : avance, frappe, revient ===
-                Bombo1.startX = Bombo1.sprite.x;
-                Bombo1.startY = Bombo1.sprite.y;
-                Bombo1.targetX = target.sprite.x + 120;
-                Bombo1.targetY = target.sprite.y;
-                Bombo1.isMovingToAttack = true;
-                Bombo1.isRetreating = false;
-                Bombo1.sprite.anims.stop();
-                Bombo1.sprite.setTexture("BlackKnight-run");
+          gameScene.tweens.add({
+            targets: fireball,
+            x: target.sprite.x,
+            y: target.sprite.y,
+            duration: 800,
+            ease: "Linear",
+            onComplete: () => {
+              let damage = calculateDamage("Mibombo");
+              target.currentHP -= damage;
+              showDamage(gameScene, target, damage);
 
-            } else {
-                // === BOMBO : lance fireball ===
-                let fireball = gameScene.add.sprite(
-                    Bombo1.sprite.x, Bombo1.sprite.y, "Bombo1-atk-1"
-                );
-                fireball.setScale(0.5);
-                fireball.anims.play("fireball-anim");
+              target.sprite.setTint(0xff0000);
+              gameScene.time.delayedCall(300, () => {
+                if (target.sprite && target.sprite.active)
+                  target.sprite.clearTint();
+              });
 
-                gameScene.tweens.add({
-                    targets: fireball,
-                    x: target.sprite.x,
-                    y: target.sprite.y,
-                    duration: 800,
-                    ease: "Linear",
-                    onComplete: () => {
-                        let damage = calculateDamage("Mibombo");
-                        target.currentHP -= damage;
-                        showDamage(gameScene, target, damage);
+              checkDeath(target);
 
-                        target.sprite.setTint(0xff0000);
-                        gameScene.time.delayedCall(300, () => {
-                            if (target.sprite && target.sprite.active) target.sprite.clearTint();
-                        });
+              let hpPercent = Math.max(
+                0,
+                (target.currentHP / target.stats.Health) * 100,
+              );
+              let barre = document.querySelector(
+                ".jaugePV" + target.stats.name,
+              );
+              if (barre) barre.style.width = hpPercent + "%";
 
-                        checkDeath(target);
-
-                        let hpPercent = Math.max(0, (target.currentHP / target.stats.Health) * 100);
-                        let barre = document.querySelector(".jaugePV" + target.stats.name);
-                        if (barre) barre.style.width = hpPercent + "%";
-
-                        fireball.destroy();
-                        bombo1Attacking = false;
-                    }
-                });
-            }
+              fireball.destroy();
+              bombo1Attacking = false;
+            },
+          });
         }
+      }
     }
 
     // === BLACKKNIGHT MOUVEMENT (slot 1) ===
     if (Bombo1.mobType === "BlackKnight" && bombo1Attacking && Bombo1.startX) {
+      if (Bombo1.isMovingToAttack && !Bombo1.isRetreating) {
+        let dx = Bombo1.targetX - Bombo1.sprite.x;
+        let dy = Bombo1.targetY - Bombo1.sprite.y;
+        let dist = Math.sqrt(dx * dx + dy * dy);
 
-        if (Bombo1.isMovingToAttack && !Bombo1.isRetreating) {
-            let dx = Bombo1.targetX - Bombo1.sprite.x;
-            let dy = Bombo1.targetY - Bombo1.sprite.y;
-            let dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist > 5) {
+          Bombo1.sprite.x += (dx / dist) * 4;
+          Bombo1.sprite.y += (dy / dist) * 4;
+        } else {
+          Bombo1.isMovingToAttack = false;
+          Bombo1.sprite.anims.play("BlackKnight-atk");
 
-            if (dist > 5) {
-                Bombo1.sprite.x += (dx / dist) * 4;
-                Bombo1.sprite.y += (dy / dist) * 4;
-            } else {
-                Bombo1.isMovingToAttack = false;
-                Bombo1.sprite.anims.play("BlackKnight-atk");
+          Bombo1.sprite.once("animationcomplete", () => {
+            let target = Bombo1.attackTarget;
+            let damage = Math.floor(Math.random() * (150 - 100 + 1)) + 100;
+            target.currentHP -= damage;
+            showDamage(gameScene, target, damage);
 
-                Bombo1.sprite.once('animationcomplete', () => {
-                    let target = Bombo1.attackTarget;
-                    let damage = Math.floor(Math.random() * (150 - 100 + 1)) + 100;
-                    target.currentHP -= damage;
-                    showDamage(gameScene, target, damage);
+            target.sprite.setTint(0xff0000);
+            gameScene.time.delayedCall(300, () => {
+              if (target.sprite && target.sprite.active)
+                target.sprite.clearTint();
+            });
 
-                    target.sprite.setTint(0xff0000);
-                    gameScene.time.delayedCall(300, () => {
-                        if (target.sprite && target.sprite.active) target.sprite.clearTint();
-                    });
+            let hpPercent = Math.max(
+              0,
+              (target.currentHP / target.stats.Health) * 100,
+            );
+            let barre = document.querySelector(".jaugePV" + target.stats.name);
+            if (barre) barre.style.width = hpPercent + "%";
 
-                    let hpPercent = Math.max(0, (target.currentHP / target.stats.Health) * 100);
-                    let barre = document.querySelector(".jaugePV" + target.stats.name);
-                    if (barre) barre.style.width = hpPercent + "%";
+            checkDeath(target);
 
-                    checkDeath(target);
-
-                    Bombo1.isRetreating = true;
-                    Bombo1.sprite.anims.stop();
-                    Bombo1.sprite.setTexture("BlackKnight-back");
-                });
-            }
+            Bombo1.isRetreating = true;
+            Bombo1.sprite.anims.stop();
+            Bombo1.sprite.setTexture("BlackKnight-back");
+          });
         }
+      }
 
-        if (Bombo1.isRetreating) {
-            let dx = Bombo1.startX - Bombo1.sprite.x;
-            let dy = Bombo1.startY - Bombo1.sprite.y;
-            let dist = Math.sqrt(dx * dx + dy * dy);
+      if (Bombo1.isRetreating) {
+        let dx = Bombo1.startX - Bombo1.sprite.x;
+        let dy = Bombo1.startY - Bombo1.sprite.y;
+        let dist = Math.sqrt(dx * dx + dy * dy);
 
-            if (dist > 5) {
-                Bombo1.sprite.x += (dx / dist) * 4;
-                Bombo1.sprite.y += (dy / dist) * 4;
-            } else {
-                Bombo1.sprite.x = Bombo1.startX;
-                Bombo1.sprite.y = Bombo1.startY;
-                Bombo1.isRetreating = false;
-                Bombo1.isMovingToAttack = true;
-                Bombo1.startX = null;
-                bombo1Attacking = false;
-                Bombo1.sprite.anims.play("BlackKnight-state-anim");
-            }
+        if (dist > 5) {
+          Bombo1.sprite.x += (dx / dist) * 4;
+          Bombo1.sprite.y += (dy / dist) * 4;
+        } else {
+          Bombo1.sprite.x = Bombo1.startX;
+          Bombo1.sprite.y = Bombo1.startY;
+          Bombo1.isRetreating = false;
+          Bombo1.isMovingToAttack = true;
+          Bombo1.startX = null;
+          bombo1Attacking = false;
+          Bombo1.sprite.anims.play("BlackKnight-state-anim");
         }
+      }
     }
-}
+  }
 
-
-
-// ==================== MOB SLOT 2 ATB ====================
-if (Bombo2.alive) {
+  // ==================== MOB SLOT 2 ATB ====================
+  if (Bombo2.alive) {
     if (!bombo2Attacking) {
-        bombo2ATB += BOMBO2_SPEED * dt;
-        if (bombo2ATB > ATB_MAX) bombo2ATB = ATB_MAX;
+      bombo2ATB += BOMBO2_SPEED * dt;
+      if (bombo2ATB > ATB_MAX) bombo2ATB = ATB_MAX;
     }
 
     if (bombo2ATB >= ATB_MAX && !bombo2Attacking) {
-        let allHeroesDead = !Tidus.alive && !Sora.alive && !Lunafreya.alive;
-        if (allHeroesDead) {
-            bombo2ATB = 0;
-            bombo2Attacking = false;
+      let allHeroesDead = !Tidus.alive && !Sora.alive && !Lunafreya.alive;
+      if (allHeroesDead) {
+        bombo2ATB = 0;
+        bombo2Attacking = false;
+      } else {
+        bombo2Attacking = true;
+        bombo2ATB = 0;
+        let target = getRandomHero();
+        Bombo2.attackTarget = target;
+
+        if (Bombo2.mobType === "BlackKnight") {
+          // === BLACKKNIGHT : avance, frappe, revient ===
+          Bombo2.startX = Bombo2.sprite.x;
+          Bombo2.startY = Bombo2.sprite.y;
+          Bombo2.targetX = target.sprite.x + 120;
+          Bombo2.targetY = target.sprite.y;
+          Bombo2.isMovingToAttack = true;
+          Bombo2.isRetreating = false;
+          Bombo2.sprite.anims.stop();
+          Bombo2.sprite.setTexture("BlackKnight-run");
         } else {
-            bombo2Attacking = true;
-            bombo2ATB = 0;
-            let target = getRandomHero();
-            Bombo2.attackTarget = target;
+          // === BOMBO : lance fireball ===
+          let fireball = gameScene.add.sprite(
+            Bombo2.sprite.x,
+            Bombo2.sprite.y,
+            "Bombo1-atk-1",
+          );
+          fireball.setScale(0.5);
+          fireball.anims.play("fireball-anim");
 
-            if (Bombo2.mobType === "BlackKnight") {
-                // === BLACKKNIGHT : avance, frappe, revient ===
-                Bombo2.startX = Bombo2.sprite.x;
-                Bombo2.startY = Bombo2.sprite.y;
-                Bombo2.targetX = target.sprite.x + 120;
-                Bombo2.targetY = target.sprite.y;
-                Bombo2.isMovingToAttack = true;
-                Bombo2.isRetreating = false;
-                Bombo2.sprite.anims.stop();
-                Bombo2.sprite.setTexture("BlackKnight-run");
+          gameScene.tweens.add({
+            targets: fireball,
+            x: target.sprite.x,
+            y: target.sprite.y,
+            duration: 600,
+            ease: "Linear",
+            onComplete: () => {
+              fireball.destroy();
+              if (!target.alive) {
+                bombo2Attacking = false;
+                return;
+              }
 
-            } else {
-                // === BOMBO : lance fireball ===
-                let fireball = gameScene.add.sprite(
-                    Bombo2.sprite.x, Bombo2.sprite.y, "Bombo1-atk-1"
-                );
-                fireball.setScale(0.5);
-                fireball.anims.play("fireball-anim");
+              let damage = calculateDamage("Mibombo");
+              target.currentHP -= damage;
+              showDamage(gameScene, target, damage);
 
-                gameScene.tweens.add({
-                    targets: fireball,
-                    x: target.sprite.x,
-                    y: target.sprite.y,
-                    duration: 600,
-                    ease: "Linear",
-                    onComplete: () => {
-                        fireball.destroy();
-                        if (!target.alive) { bombo2Attacking = false; return; }
+              target.sprite.setTint(0xff0000);
+              gameScene.time.delayedCall(300, () => {
+                if (target.sprite && target.sprite.active)
+                  target.sprite.clearTint();
+              });
 
-                        let damage = calculateDamage("Mibombo");
-                        target.currentHP -= damage;
-                        showDamage(gameScene, target, damage);
+              let pvPercent = Math.max(
+                0,
+                (target.currentHP / target.stats.Health) * 100,
+              );
+              let barre = document.querySelector(
+                ".jaugePV" + target.stats.name,
+              );
+              if (barre) barre.style.width = pvPercent + "%";
 
-                        target.sprite.setTint(0xff0000);
-                        gameScene.time.delayedCall(300, () => {
-                            if (target.sprite && target.sprite.active) target.sprite.clearTint();
-                        });
-
-                        let pvPercent = Math.max(0, (target.currentHP / target.stats.Health) * 100);
-                        let barre = document.querySelector(".jaugePV" + target.stats.name);
-                        if (barre) barre.style.width = pvPercent + "%";
-
-                        checkDeath(target);
-                        bombo2Attacking = false;
-                    }
-                });
-            }
+              checkDeath(target);
+              bombo2Attacking = false;
+            },
+          });
         }
+      }
     }
 
     // === BLACKKNIGHT SLOT 2 : mouvement vers héros ===
     if (bombo2Attacking && Bombo2.mobType === "BlackKnight" && Bombo2.startX) {
+      if (Bombo2.isMovingToAttack) {
+        Bombo2.sprite.setTexture("BlackKnight-run");
+        let dx = Bombo2.targetX - Bombo2.sprite.x;
+        let dy = Bombo2.targetY - Bombo2.sprite.y;
+        let dist = Math.sqrt(dx * dx + dy * dy);
 
-        if (Bombo2.isMovingToAttack) {
-            Bombo2.sprite.setTexture("BlackKnight-run");
-            let dx = Bombo2.targetX - Bombo2.sprite.x;
-            let dy = Bombo2.targetY - Bombo2.sprite.y;
-            let dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist > 5) {
+          Bombo2.sprite.x += (dx / dist) * 4;
+          Bombo2.sprite.y += (dy / dist) * 4;
+        } else {
+          Bombo2.isMovingToAttack = false;
+          Bombo2.sprite.anims.play("BlackKnight-atk");
 
-            if (dist > 5) {
-                Bombo2.sprite.x += (dx / dist) * 4;
-                Bombo2.sprite.y += (dy / dist) * 4;
-            } else {
-                Bombo2.isMovingToAttack = false;
-                Bombo2.sprite.anims.play("BlackKnight-atk");
-
-                Bombo2.sprite.once("animationcomplete", () => {
-                    let target = Bombo2.attackTarget;
-                    if (!target || !target.alive) {
-                        Bombo2.isRetreating = true;
-                        Bombo2.sprite.anims.stop();
-                        Bombo2.sprite.setTexture("BlackKnight-back");
-                        return;
-                    }
-
-                    let damage = calculateDamage("Mibombo");
-                    target.currentHP -= damage;
-                    showDamage(gameScene, target, damage);
-
-                    target.sprite.setTint(0xff0000);
-                    gameScene.time.delayedCall(300, () => {
-                        if (target.sprite && target.sprite.active) target.sprite.clearTint();
-                    });
-
-                    let pvPercent = Math.max(0, (target.currentHP / target.stats.Health) * 100);
-                    let barre = document.querySelector(".jaugePV" + target.stats.name);
-                    if (barre) barre.style.width = pvPercent + "%";
-
-                    checkDeath(target);
-
-                    Bombo2.isRetreating = true;
-                    Bombo2.sprite.anims.stop();
-                    Bombo2.sprite.setTexture("BlackKnight-back");
-                });
+          Bombo2.sprite.once("animationcomplete", () => {
+            let target = Bombo2.attackTarget;
+            if (!target || !target.alive) {
+              Bombo2.isRetreating = true;
+              Bombo2.sprite.anims.stop();
+              Bombo2.sprite.setTexture("BlackKnight-back");
+              return;
             }
-        }
 
-        if (Bombo2.isRetreating) {
-            let dx = Bombo2.startX - Bombo2.sprite.x;
-            let dy = Bombo2.startY - Bombo2.sprite.y;
-            let dist = Math.sqrt(dx * dx + dy * dy);
+            let damage = calculateDamage("Mibombo");
+            target.currentHP -= damage;
+            showDamage(gameScene, target, damage);
 
-            if (dist > 5) {
-                Bombo2.sprite.x += (dx / dist) * 4;
-                Bombo2.sprite.y += (dy / dist) * 4;
-            } else {
-                Bombo2.sprite.x = Bombo2.startX;
-                Bombo2.sprite.y = Bombo2.startY;
-                Bombo2.isRetreating = false;
-                Bombo2.isMovingToAttack = true;
-                Bombo2.startX = null;
-                bombo2Attacking = false;
-                Bombo2.sprite.anims.play("BlackKnight-state-anim");
-            }
+            target.sprite.setTint(0xff0000);
+            gameScene.time.delayedCall(300, () => {
+              if (target.sprite && target.sprite.active)
+                target.sprite.clearTint();
+            });
+
+            let pvPercent = Math.max(
+              0,
+              (target.currentHP / target.stats.Health) * 100,
+            );
+            let barre = document.querySelector(".jaugePV" + target.stats.name);
+            if (barre) barre.style.width = pvPercent + "%";
+
+            checkDeath(target);
+
+            Bombo2.isRetreating = true;
+            Bombo2.sprite.anims.stop();
+            Bombo2.sprite.setTexture("BlackKnight-back");
+          });
         }
+      }
+
+      if (Bombo2.isRetreating) {
+        let dx = Bombo2.startX - Bombo2.sprite.x;
+        let dy = Bombo2.startY - Bombo2.sprite.y;
+        let dist = Math.sqrt(dx * dx + dy * dy);
+
+        if (dist > 5) {
+          Bombo2.sprite.x += (dx / dist) * 4;
+          Bombo2.sprite.y += (dy / dist) * 4;
+        } else {
+          Bombo2.sprite.x = Bombo2.startX;
+          Bombo2.sprite.y = Bombo2.startY;
+          Bombo2.isRetreating = false;
+          Bombo2.isMovingToAttack = true;
+          Bombo2.startX = null;
+          bombo2Attacking = false;
+          Bombo2.sprite.anims.play("BlackKnight-state-anim");
+        }
+      }
     }
-}
-
-
+  }
 
   // ==================== Détecte fin de combat ====================
   let allMobsDead = !Bombo1.alive && !Bombo2.alive;
@@ -1523,7 +1535,7 @@ if (Bombo2.alive) {
     soraAttacking = true;
     tidusAttacking = true;
     lunaAttacking = true;
-    blackknightAttacking = true;  
+    blackknightAttacking = true;
 
     // STOPPER toutes les anims et tweens en cours
     gameScene.tweens.killTweensOf(Tidus.sprite);
@@ -1532,7 +1544,6 @@ if (Bombo2.alive) {
     if (Tidus.sprite.anims) Tidus.sprite.anims.stop();
     if (Sora.sprite.anims) Sora.sprite.anims.stop();
     if (Lunafreya.sprite.anims) Lunafreya.sprite.anims.stop();
-
 
     // Forcer reset des états
     Tidus.isMovingToAttack = true;
