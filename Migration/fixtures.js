@@ -171,4 +171,18 @@ con.connect(function (err) {
     if (err) throw err;
     console.log("Mobs fixtures inserted");
   });
+
+  //skills
+
+  let sqlskills = "INSERT INTO skills (name, DMG, MANA_cost) VALUES ?";
+  let skillsValues = [
+    ["Enchainement dévastateur", 30, 50],
+    ["Big bang", 30, 50],
+    ["KeyBlade rush", 30, 50],
+  ];
+
+  con.query(sqlskills, [skillsValues], function (err) {
+    if (err) throw err;
+    console.log("Skills fixtures inserted");
+  });
 });

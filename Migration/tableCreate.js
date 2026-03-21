@@ -48,7 +48,7 @@ con.connect(function (err) {
   );
 
   con.query(
-    "CREATE TABLE IF NOT EXISTS skills (id int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT, name varchar(25), category enum('elemental', 'buff', 'debuff', 'special_move'), element enum('fire', 'water', 'ice', 'thunder'), DMG int(11), mana_cost int(11));",
+    "CREATE TABLE IF NOT EXISTS skills (id int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT, name varchar(25), DMG int(11), MANA_cost int(11));",
     function (err) {
       if (err) throw err;
       console.log("Table created");
