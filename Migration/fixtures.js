@@ -70,6 +70,22 @@ con.connect(function (err) {
     console.log("Table created");
   });
 
+// fixtures skills
+
+let sqlskills = "INSERT INTO skills (id, name, DMG, MANA_cost) VALUES ?";
+  let skillsValues = [
+    [1, "Enchainement dévastateur", 30, 50],
+    [2, "Big bang", 30, 50],
+    [3, "KeyBlade rush", 30, 50],
+  ];
+
+  con.query(sqlskills, [skillsValues], function (err) {
+    if (err) throw err;
+    console.log("Skills fixtures inserted");
+  });
+
+
+
   // fixtures npc
 
   let sqlNpc = "INSERT INTO npc (name, gender, image, role) VALUES ?";
@@ -171,4 +187,35 @@ con.connect(function (err) {
     if (err) throw err;
     console.log("Mobs fixtures inserted");
   });
+
+
+// BlackKnight
+  let sqlBlackKnight =
+    "INSERT INTO mobs (name, gender, image, category, level, ATK, DEF, Health, MANA, speed, atb_jauge, magic, spirit, dodge, accuracy, DMG) VALUES ?";
+  let mobValuesBlackKnight = [
+    [
+      "BlackKnight",
+      "Other",
+      "BlackKnight.png",
+      "Enemy",
+      4,
+      100,
+      200,
+      800,
+      100,
+      20,
+      5,
+      35,
+      10,
+      10,
+      40,
+      400,
+    ],
+  ];
+
+  con.query(sqlBlackKnight, [mobValuesBlackKnight], function (err) {
+    if (err) throw err;
+    console.log("Mobs BlackKnight fixtures inserted");
+  });
+
 });
