@@ -86,5 +86,4 @@ con.connect(function (err) {
       console.log("Table created");
     },
   );
-  
 });
