@@ -19,6 +19,7 @@ let Sora = new Characters();
 let Lunafreya = new Characters();
 let Bombo1 = new Characters();
 let Bombo2 = new Characters();
+let BlackKnight = new Characters();
 
 const config = {
   type: Phaser.AUTO,
@@ -62,6 +63,7 @@ function getIdleTexture(character) {
 }
 
 function preload() {
+
   //  Tidus
   this.load.image("Tidus", "../Images/Tidus.png");
   this.load.image("Tidus-atk-1", "../Images/Tidus-atk-1.png");
@@ -130,7 +132,7 @@ function preload() {
   this.load.image("Lunafreya-win-6", "../Images/Lunafreya-win-6.png");
   this.load.image("Lunafreya-win-7", "../Images/Lunafreya-win-7.png");
   this.load.image("Lunafreya-death", "../Images/Lunafreya-death.png");
-   this.load.image("Lunafreya-skill-1", "../Images/Lunafreya-skill-1.png");
+  this.load.image("Lunafreya-skill-1", "../Images/Lunafreya-skill-1.png");
   this.load.image("Lunafreya-skill-2", "../Images/Lunafreya-skill-2.png");
   this.load.image("Lunafreya-skill-3", "../Images/Lunafreya-skill-3.png");
   this.load.image("Lunafreya-skill-4", "../Images/Lunafreya-skill-4.png");
@@ -201,7 +203,7 @@ function preload() {
   //  Background-fight
   this.load.image("background-fight", "../Images/image-de-fond-fight.png");
 
-  //  Mob
+  //  Mob - BOMBO 
   this.load.image("Bombo1", "../Images/Bombo.png");
   this.load.image("Bombo2", "../Images/Bombo.png");
   this.load.image("Bombo1-atk-1", "../Images/Bombo-atk-1.png");
@@ -209,7 +211,30 @@ function preload() {
   this.load.image("Bombo1-atk-3", "../Images/Bombo-atk-3.png");
   this.load.image("Bombo1-atk-4", "../Images/Bombo-atk-4.png");
   this.load.image("Bombo1-atk-5", "../Images/Bombo-atk-5.png");
+
+ //  Mob - BlackKnight - State
+  this.load.image("BlackKnight", "../Images/BlackKnight.png");
+  this.load.image("BlackKnight-1", "../Images/BlackKnight-1.png");
+  this.load.image("BlackKnight-2", "../Images/BlackKnight-2.png");
+
+//  Mob - BlackKnight - State
+  this.load.image("BlackKnight-atk-1", "../Images/BlackKnight-atk-1.png");
+  this.load.image("BlackKnight-atk-2", "../Images/BlackKnight-atk-2.png");
+  this.load.image("BlackKnight-atk-3", "../Images/BlackKnight-atk-3.png");
+  this.load.image("BlackKnight-atk-4", "../Images/BlackKnight-atk-4.png");
+  this.load.image("BlackKnight-atk-5", "../Images/BlackKnight-atk-5.png");
+  this.load.image("BlackKnight-atk-6", "../Images/BlackKnight-atk-6.png");
+  this.load.image("BlackKnight-atk-7", "../Images/BlackKnight-atk-7.png");
+  this.load.image("BlackKnight-atk-8", "../Images/BlackKnight-atk-8.png"); 
+  this.load.image("BlackKnight-atk-9", "../Images/BlackKnight-atk-9.png");
+
+  //  Mob - BlackKnight - run and back 
+  this.load.image("BlackKnight-run", "../Images/BlackKnight-run.png");
+  this.load.image("BlackKnight-back", "../Images/BlackKnight-back.png");
 }
+
+
+
 
 async function create() {
   gameScene = this;
@@ -232,8 +257,9 @@ async function create() {
   const lunaData = characters.find(c => c.name === "Lunafreya");
   const bombo1Data = mobs.find(m => m.name === "Mibombo");
   const bombo2Data = mobs.find(m => m.name === "Mibombo");
+  const BlackKnightData = mobs.find(m => m.name === "BlackKnight");
 
-  console.log(bombo1Data, bombo2Data);
+  console.log(bombo1Data, bombo2Data, BlackKnightData);
   
 
   // ATB speeds
@@ -242,6 +268,7 @@ async function create() {
   LUNA_SPEED = 100 / lunaData.atb_jauge;
   BOMBO1_SPEED = 100 / bombo1Data.atb_jauge;  
   BOMBO2_SPEED = 100 / bombo2Data.atb_jauge;
+  BLACKKNIGHT_SPEED = 100 / BlackKnightData.atb_jauge;
 
   // Background
   var backgroundImage = this.add.sprite(0, 0, "background-fight");
@@ -490,6 +517,37 @@ async function create() {
     repeat: 0
   });
 
+// BlackKnight State
+this.anims.create({
+    key: "BlackKnight-state-anim",
+    frames: [
+      { key: "BlackKnight" },
+      { key: "BlackKnight-1" },
+      { key: "BlackKnight-2"}
+    ],
+    frameRate: 3,
+    repeat: -1
+  });
+
+// BlackKnight ATK
+this.anims.create({
+    key: "BlackKnight-atk",
+    frames: [
+      { key: "BlackKnight-atk-1" },
+      { key: "BlackKnight-atk-2" },
+      { key: "BlackKnight-atk-3" },
+      { key: "BlackKnight-atk-4" },
+      { key: "BlackKnight-atk-5" },
+      { key: "BlackKnight-atk-6" },
+      { key: "BlackKnight-atk-7" },
+      { key: "BlackKnight-atk-8" },
+      { key: "BlackKnight-atk-9" }
+    ],
+    frameRate: 6,
+    repeat: -1
+  });
+
+
   // Tidus
   Tidus.sprite = this.add.sprite(config.width * 0.26, 150, "Tidus");
   Tidus.sprite.setScale(0.7);
@@ -516,6 +574,8 @@ async function create() {
   Sora.attackCount = 0;
 
   // Mobs
+
+  // BOMBO
   Bombo1.sprite = this.add.sprite(config.width * 0.75, 150, "Bombo1");
   Bombo1.sprite.setScale(0.6);
   Bombo1.stats = bombo1Data;
@@ -527,6 +587,16 @@ async function create() {
   Bombo2.stats = bombo2Data;
   Bombo2.currentHP = bombo2Data.Health;
   Bombo2.alive = true;
+
+  // BlackKnight
+  BlackKnight.sprite = this.add.sprite(config.width * 0.75, 150, "BlackKnight");
+
+  // BlackKnight.sprite.setScale(0.6);
+  BlackKnight.sprite.anims.play("BlackKnight-state-anim");
+  BlackKnight.stats = BlackKnightData;
+  BlackKnight.currentHP = BlackKnightData.Health;
+  BlackKnight.alive = true;
+  
 
   this.tweens.add({
     targets: Bombo1.sprite,
@@ -636,6 +706,7 @@ let tidusATB = 0;
 let lunaATB = 0;
 let bombo1ATB = 0;
 let bombo2ATB = -30;
+let blackknightATB = 0;
 
 const ATB_MAX = 100;
 
@@ -644,12 +715,15 @@ let BOMBO2_SPEED = 100 / 10;
 let SORA_SPEED = 100 / 4;
 let TIDUS_SPEED = 100 / 2;
 let LUNA_SPEED = 100 / 3;
+let BLACKKNIGHT_SPEED = 100 / 8;
+
 
 let soraAttacking = false;
 let tidusAttacking = false;
 let lunaAttacking = false;
 let bombo1Attacking = false;
 let bombo2Attacking = false;
+let blackknightAttacking = false;
 
 function checkDeath(character) {
   if (character.currentHP <= 0 && character.alive) {

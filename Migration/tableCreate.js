@@ -78,4 +78,13 @@ con.connect(function (err) {
       console.log("Table created");
     },
   );
+
+  con.query(
+    "CREATE TABLE IF NOT EXISTS skills (id int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT, name varchar(25), DMG int(11), MANA_cost int(11));",
+    function (err) {
+      if (err) throw err;
+      console.log("Table created");
+    },
+  );
+  
 });
