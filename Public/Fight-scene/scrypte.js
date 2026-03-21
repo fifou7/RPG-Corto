@@ -29,7 +29,7 @@ const config = {
   scene: {
     preload: preload,
     create: create,
-    update: update
+    update: update,
   },
 
   scale: {
@@ -38,16 +38,16 @@ const config = {
     autoCenter: Phaser.Scale.CENTER_BOTH,
     width: "100%",
     height: "100%",
-    zoom: 1
+    zoom: 1,
   },
 
   physics: {
     default: "arcade",
     arcade: {
       debug: true,
-      gravity: { y: 0 }
-    }
-  }
+      gravity: { y: 0 },
+    },
+  },
 };
 
 const game = new Phaser.Game(config);
@@ -56,7 +56,10 @@ console.log(game);
 
 // Fonction helper pour récupérer le bon sprite idle (normal ou mid-life)
 function getIdleTexture(character) {
-  if (character.currentHP <= character.stats.Health / 2 && character.currentHP > 0) {
+  if (
+    character.currentHP <= character.stats.Health / 2 &&
+    character.currentHP > 0
+  ) {
     return character.stats.name + "-mid-life";
   }
   return character.stats.name;
@@ -150,7 +153,6 @@ function preload() {
   this.load.image("Lunafreya-skill-16", "../Images/Lunafreya-skill-16.png");
   this.load.image("Lunafreya-skill-17", "../Images/Lunafreya-skill-17.png");
 
-
   //  Sora
   this.load.image("Sora", "../Images/Sora.png");
   this.load.image("Sora-atk-1", "../Images/Sora-atk-1.png");
@@ -238,6 +240,8 @@ function preload() {
 
 async function create() {
   gameScene = this;
+  const battleData = JSON.parse(sessionStorage.getItem("battleData") || "{}");
+  console.log("battleData reçu :", battleData);
 
   // fetch
   const response = await fetch("http://localhost:3000/characters");
@@ -246,7 +250,9 @@ async function create() {
   // fetch des mobs
   const responseMobs = await fetch("http://localhost:3000/mobs");
   const mobsRaw = await responseMobs.json();
-  const mobs = Array.isArray(mobsRaw) ? mobsRaw : mobsRaw.mobs || mobsRaw.data || [];
+  const mobs = Array.isArray(mobsRaw)
+    ? mobsRaw
+    : mobsRaw.mobs || mobsRaw.data || [];
 
   console.log(characters, mobs);
 
@@ -295,10 +301,10 @@ async function create() {
       { key: "Sora-atk-2" },
       { key: "Sora-atk-3" },
       { key: "Sora-atk-4" },
-      { key: "Sora-atk-5" }
+      { key: "Sora-atk-5" },
     ],
     frameRate: 10,
-    repeat: 0
+    repeat: 0,
   });
 
   // Sora skill
@@ -331,10 +337,10 @@ async function create() {
       { key: "Sora-skill-24" },
       { key: "Sora-skill-25" },
       { key: "Sora-skill-26" },
-      { key: "Sora-skill-27" }
+      { key: "Sora-skill-27" },
     ],
     frameRate: 9,
-    repeat: 0
+    repeat: 0,
   });
 
   // Sora win
@@ -350,10 +356,10 @@ async function create() {
       { key: "Sora-win-7" },
       { key: "Sora-win-8" },
       { key: "Sora-win-9" },
-      { key: "Sora-win-10" }
+      { key: "Sora-win-10" },
     ],
     frameRate: 5,
-    repeat: 0
+    repeat: 0,
   });
 
   // Tidus attaque
@@ -366,10 +372,10 @@ async function create() {
       { key: "Tidus-atk-4" },
       { key: "Tidus-atk-5" },
       { key: "Tidus-atk-6" },
-      { key: "Tidus-atk-7" }
+      { key: "Tidus-atk-7" },
     ],
     frameRate: 12,
-    repeat: 0
+    repeat: 0,
   });
 
   // Tidus skill
@@ -399,10 +405,10 @@ async function create() {
       { key: "Tidus-skill-21" },
       { key: "Tidus-skill-22" },
       { key: "Tidus-skill-23" },
-      { key: "Tidus-skill-24" }
+      { key: "Tidus-skill-24" },
     ],
     frameRate: 12,
-    repeat: 0
+    repeat: 0,
   });
 
   // Tidus win
@@ -418,10 +424,10 @@ async function create() {
       { key: "Tidus-win-7" },
       { key: "Tidus-win-8" },
       { key: "Tidus-win-9" },
-      { key: "Tidus-win-10" }
+      { key: "Tidus-win-10" },
     ],
     frameRate: 6,
-    repeat: 0
+    repeat: 0,
   });
 
   // Lunafreya attaque
@@ -434,21 +440,18 @@ async function create() {
       { key: "Lunafreya-atk-4" },
       { key: "Lunafreya-atk-5" },
       { key: "Lunafreya-atk-6" },
-      { key: "Lunafreya-atk-7" }
+      { key: "Lunafreya-atk-7" },
     ],
     frameRate: 6,
-    repeat: 0
+    repeat: 0,
   });
 
   // Effet magique de Luna sur le mob
   this.anims.create({
     key: "luna-magic-effect",
-    frames: [
-      { key: "Lunafreya-atk-8" },
-      { key: "Lunafreya-atk-9" }
-    ],
+    frames: [{ key: "Lunafreya-atk-8" }, { key: "Lunafreya-atk-9" }],
     frameRate: 6,
-    repeat: 2
+    repeat: 2,
   });
 
   // Lunafreya skill
@@ -461,10 +464,10 @@ async function create() {
       { key: "Lunafreya-skill-4" },
       { key: "Lunafreya-skill-5" },
       { key: "Lunafreya-skill-6" },
-      { key: "Lunafreya-skill-7" }
+      { key: "Lunafreya-skill-7" },
     ],
     frameRate: 7,
-    repeat: 0
+    repeat: 0,
   });
 
   // Effet magique de Luna sur le mob pour le skill
@@ -480,10 +483,10 @@ async function create() {
       { key: "Lunafreya-skill-14" },
       { key: "Lunafreya-skill-15" },
       { key: "Lunafreya-skill-16" },
-      { key: "Lunafreya-skill-17" }
+      { key: "Lunafreya-skill-17" },
     ],
     frameRate: 7,
-    repeat: 0
+    repeat: 0,
   });
 
   // Lunafreya win
@@ -496,10 +499,10 @@ async function create() {
       { key: "Lunafreya-win-4" },
       { key: "Lunafreya-win-5" },
       { key: "Lunafreya-win-6" },
-      { key: "Lunafreya-win-7" }
+      { key: "Lunafreya-win-7" },
     ],
     frameRate: 10,
-    repeat: 0
+    repeat: 0,
   });
 
   // Fireball des Bombos
@@ -510,10 +513,10 @@ async function create() {
       { key: "Bombo1-atk-2" },
       { key: "Bombo1-atk-3" },
       { key: "Bombo1-atk-4" },
-      { key: "Bombo1-atk-5" }
+      { key: "Bombo1-atk-5" },
     ],
     frameRate: 10,
-    repeat: 0
+    repeat: 0,
   });
 
   // BlackKnight State
@@ -623,31 +626,33 @@ async function create() {
 
 //afficher dmg
 function showDamage(scene, target, damage) {
-  let dmgText = scene.add.text(target.sprite.x, target.sprite.y - 50, damage, {
-    fontSize: '32px',
-    fontFamily: 'Arial',
-    color: '#ffffff',
-    stroke: '#ff0000',
-    strokeThickness: 4,
-    fontStyle: 'bold'
-  }).setOrigin(0.5);
+  let dmgText = scene.add
+    .text(target.sprite.x, target.sprite.y - 50, damage, {
+      fontSize: "32px",
+      fontFamily: "Arial",
+      color: "#ffffff",
+      stroke: "#ff0000",
+      strokeThickness: 4,
+      fontStyle: "bold",
+    })
+    .setOrigin(0.5);
 
   scene.tweens.add({
     targets: dmgText,
     y: dmgText.y - 60,
     alpha: 0,
     duration: 1000,
-    ease: 'Power2',
-    onComplete: () => dmgText.destroy()
+    ease: "Power2",
+    onComplete: () => dmgText.destroy(),
   });
 }
 
 const ATTACK_TABLE = {
-  'Tidus': { min: 15, max: 20 },
-  'Sora': { min: 29, max: 11 },
-  'Lunafreya': { min: 11, max: 12 },
-  'mibombo': { min: 100, max: 150 },
-  'Mibombo': { min: 100, max: 150 }
+  Tidus: { min: 15, max: 20 },
+  Sora: { min: 29, max: 11 },
+  Lunafreya: { min: 11, max: 12 },
+  mibombo: { min: 100, max: 150 },
+  Mibombo: { min: 100, max: 150 },
 };
 
 function calculateDamage(attackerName) {
@@ -667,18 +672,35 @@ function killMob(scene, mob) {
     onComplete: () => {
       mob.sprite.setVisible(false);
       mob.sprite.destroy();
-    }
+    },
   });
+}
+
+// map return
+
+function returnToMap(result) {
+  const battleData = JSON.parse(sessionStorage.getItem("battleData") || "{}");
+
+  sessionStorage.setItem(
+    "battleReturn",
+    JSON.stringify({
+      result: result,
+      returnX: battleData.returnX ?? 120,
+      returnY: battleData.returnY ?? 220,
+    }),
+  );
+
+  window.location.href = battleData.returnMap || "../assets/maps/index.html";
 }
 
 // Fonction pour déplacer le curseur
 function moveCursor(persoName) {
-  document.querySelectorAll(".perso-ligne").forEach(ligne => {
+  document.querySelectorAll(".perso-ligne").forEach((ligne) => {
     const cursor = ligne.querySelector(".cursor");
     if (cursor) cursor.remove();
   });
 
-  document.querySelectorAll(".perso-ligne").forEach(ligne => {
+  document.querySelectorAll(".perso-ligne").forEach((ligne) => {
     const name = ligne.querySelector(".NamePerso");
     if (name && name.textContent.trim().includes(persoName)) {
       const img = document.createElement("img");
@@ -690,7 +712,7 @@ function moveCursor(persoName) {
 }
 
 function getRandomHero() {
-  let aliveHeroes = [Tidus, Sora, Lunafreya].filter(h => h.alive);
+  let aliveHeroes = [Tidus, Sora, Lunafreya].filter((h) => h.alive);
   if (aliveHeroes.length === 0) return null;
   return aliveHeroes[Math.floor(Math.random() * aliveHeroes.length)];
 }
@@ -739,19 +761,34 @@ function checkDeath(character) {
     // Retour position initiale + sprite mort
     let homeX, homeY;
     if (character === Tidus) {
-      homeX = config.width * 0.26; homeY = 150;
-      tidusAttacking = true; tidusATB = 0;
-      Tidus.isMovingToAttack = true; Tidus.isRetreating = false; Tidus.startX = null; Tidus.stepsMade = 0;
+      homeX = config.width * 0.26;
+      homeY = 150;
+      tidusAttacking = true;
+      tidusATB = 0;
+      Tidus.isMovingToAttack = true;
+      Tidus.isRetreating = false;
+      Tidus.startX = null;
+      Tidus.stepsMade = 0;
     }
     if (character === Sora) {
-      homeX = config.width * 0.24; homeY = 420;
-      soraAttacking = true; soraATB = 0;
-      Sora.isMovingToAttack = true; Sora.isRetreating = false; Sora.startX = null; Sora.stepsMade = 0;
+      homeX = config.width * 0.24;
+      homeY = 420;
+      soraAttacking = true;
+      soraATB = 0;
+      Sora.isMovingToAttack = true;
+      Sora.isRetreating = false;
+      Sora.startX = null;
+      Sora.stepsMade = 0;
     }
     if (character === Lunafreya) {
-      homeX = config.width * 0.22; homeY = 290;
-      lunaAttacking = true; lunaATB = 0;
-      Lunafreya.isMovingToAttack = true; Lunafreya.isRetreating = false; Lunafreya.startX = null; Lunafreya.stepsMade = 0;
+      homeX = config.width * 0.22;
+      homeY = 290;
+      lunaAttacking = true;
+      lunaATB = 0;
+      Lunafreya.isMovingToAttack = true;
+      Lunafreya.isRetreating = false;
+      Lunafreya.startX = null;
+      Lunafreya.stepsMade = 0;
     }
 
     character.sprite.setPosition(homeX, homeY);
@@ -765,10 +802,13 @@ function checkDeath(character) {
   }
 }
 
-// Vérifie et applique le sprite mid-life 
+// Vérifie et applique le sprite mid-life
 function checkMidLife(character) {
   if (!character.alive) return;
-  if (character.currentHP <= character.stats.Health / 2 && character.currentHP > 0) {
+  if (
+    character.currentHP <= character.stats.Health / 2 &&
+    character.currentHP > 0
+  ) {
     // Seulement changer si en idle
     let currentTexture = character.sprite.texture.key;
     let idleName = character.stats.name;
@@ -795,267 +835,290 @@ function update(time, delta) {
   let dt = delta / 1000;
 
   // ==================== SORA ATB ====================
-if (Sora.alive) {
+  if (Sora.alive) {
     if (!soraAttacking) {
-        soraATB += SORA_SPEED * dt;
-        if (soraATB > ATB_MAX) soraATB = ATB_MAX;
-        document.querySelector(".jaugeATBSora").style.width = soraATB + "%";
+      soraATB += SORA_SPEED * dt;
+      if (soraATB > ATB_MAX) soraATB = ATB_MAX;
+      document.querySelector(".jaugeATBSora").style.width = soraATB + "%";
     }
 
     if (soraATB >= ATB_MAX && !soraAttacking) {
-        if (!Bombo1.alive && !Bombo2.alive) {
-            soraATB = 0;
-            soraAttacking = false;
+      if (!Bombo1.alive && !Bombo2.alive) {
+        soraATB = 0;
+        soraAttacking = false;
+      } else {
+        soraAttacking = true;
+        soraATB = 0;
+        document.querySelector(".jaugeATBSora").style.width = "0%";
+        moveCursor("Sora");
+
+        Sora.attackCount = (Sora.attackCount || 0) + 1;
+
+        if (Sora.attackCount === 3 && Sora.currentMana >= 50) {
+          Sora.useSkill = true;
+          Sora.currentMana -= 50;
+          Sora.attackCount = 0;
+
+          let manaPercent = Math.max(
+            0,
+            (Sora.currentMana / Sora.stats.MANA) * 100,
+          );
+          let barreMana = document.querySelector(".jaugeManaSora");
+          if (barreMana) barreMana.style.width = manaPercent + "%";
+          console.log(">>> SORA SKILL ACTIVÉ !");
         } else {
-            soraAttacking = true;
-            soraATB = 0;
-            document.querySelector(".jaugeATBSora").style.width = "0%";
-            moveCursor("Sora");
-
-            Sora.attackCount = (Sora.attackCount || 0) + 1;
-
-            if (Sora.attackCount === 3 && Sora.currentMana >= 50) {
-                Sora.useSkill = true;
-                Sora.currentMana -= 50;
-                Sora.attackCount = 0;
-
-                let manaPercent = Math.max(0, (Sora.currentMana / Sora.stats.MANA) * 100);
-                let barreMana = document.querySelector(".jaugeManaSora");
-                if (barreMana) barreMana.style.width = manaPercent + "%";
-                console.log(">>> SORA SKILL ACTIVÉ !");
-            } else {
-                Sora.useSkill = false;
-                if (Sora.attackCount >= 3) Sora.attackCount = 0;
-            }
-
-            if (!Sora.startX) {
-                Sora.startX = Sora.sprite.x;
-                Sora.startY = Sora.sprite.y;
-                Sora.attackTarget = getRandomBombo();
-                Sora.targetX = Sora.attackTarget.sprite.x - 120;
-                Sora.targetY = Sora.attackTarget.sprite.y;
-            }
+          Sora.useSkill = false;
+          if (Sora.attackCount >= 3) Sora.attackCount = 0;
         }
+
+        if (!Sora.startX) {
+          Sora.startX = Sora.sprite.x;
+          Sora.startY = Sora.sprite.y;
+          Sora.attackTarget = getRandomBombo();
+          Sora.targetX = Sora.attackTarget.sprite.x - 120;
+          Sora.targetY = Sora.attackTarget.sprite.y;
+        }
+      }
     }
 
     if (soraAttacking && Sora.startX) {
-        // ALLER vers le mob
-        if (Sora.isMovingToAttack) {
-            if (Sora.stepsMade === 0) {
-                Sora.sprite.setTexture("Sora-run");
-            }
-
-            let dx = Sora.targetX - Sora.sprite.x;
-            let dy = Sora.targetY - Sora.sprite.y;
-            let dist = Math.sqrt(dx * dx + dy * dy);
-
-            if (dist > 5) {
-                Sora.sprite.x += (dx / dist) * 5;
-                Sora.sprite.y += (dy / dist) * 5;
-                Sora.stepsMade += 1;
-            } else {
-                // Arrivé au contact
-                Sora.isMovingToAttack = false;
-                Sora.stepsMade = 0;
-
-                let animKey = Sora.useSkill ? "Sora-skill" : "Sora-atk";
-                Sora.sprite.anims.play(animKey);
-
-                Sora.sprite.once("animationcomplete", () => {
-                    if (!Sora.alive) { soraAttacking = false; return; }
-
-                    let damage = calculateDamage("Sora");
-                    if (Sora.useSkill) damage = Math.floor(damage * 2.5);
-
-                    Sora.attackTarget.currentHP -= damage;
-
-                    // Barre de vie du mob
-                    let hpPercent = Math.max(0, (Sora.attackTarget.currentHP / Sora.attackTarget.stats.Health) * 100);
-                    let barreClass = ".jaugePV" + Sora.attackTarget.stats.name;
-                    let barre = document.querySelector(barreClass);
-                    if (barre) barre.style.width = hpPercent + "%";
-
-                    // Afficher dégâts
-                    showDamage(gameScene, Sora.attackTarget, damage);
-
-                    // Flash rouge
-                    Sora.attackTarget.sprite.setTint(0xff0000);
-                    gameScene.time.delayedCall(300, () => {
-                        if (Sora.attackTarget.sprite && Sora.attackTarget.sprite.active) {
-                            Sora.attackTarget.sprite.clearTint();
-                        }
-                    });
-
-                    // Mob mort ?
-                    if (Sora.attackTarget.currentHP <= 0) {
-                        killMob(gameScene, Sora.attackTarget);
-                    }
-
-                    // RETOUR
-                    Sora.isRetreating = true;
-                    Sora.sprite.setTexture("Sora-atk-5");
-                    // Sora.sprite.flipX = true;
-                });
-            }
+      // ALLER vers le mob
+      if (Sora.isMovingToAttack) {
+        if (Sora.stepsMade === 0) {
+          Sora.sprite.setTexture("Sora-run");
         }
 
-        // RETOUR vers la position de départ
-        if (Sora.isRetreating) {
-            let dx = Sora.startX - Sora.sprite.x;
-            let dy = Sora.startY - Sora.sprite.y;
-            let dist = Math.sqrt(dx * dx + dy * dy);
+        let dx = Sora.targetX - Sora.sprite.x;
+        let dy = Sora.targetY - Sora.sprite.y;
+        let dist = Math.sqrt(dx * dx + dy * dy);
 
-            if (dist > 5) {
-                Sora.sprite.x += (dx / dist) * 5;
-                Sora.sprite.y += (dy / dist) * 5;
-            } else {
-                Sora.sprite.x = Sora.startX;
-                Sora.sprite.y = Sora.startY;
-                Sora.sprite.flipX = false;
-                Sora.sprite.setTexture(getIdleTexture(Sora));
+        if (dist > 5) {
+          Sora.sprite.x += (dx / dist) * 5;
+          Sora.sprite.y += (dy / dist) * 5;
+          Sora.stepsMade += 1;
+        } else {
+          // Arrivé au contact
+          Sora.isMovingToAttack = false;
+          Sora.stepsMade = 0;
 
-                // Reset
-                soraATB = 0;
-                soraAttacking = false;
-                Sora.useSkill = false;
-                Sora.startX = null;
-                Sora.startY = null;
-                Sora.isRetreating = false;
-                Sora.isMovingToAttack = true;
-                Sora.stepsMade = 0;
+          let animKey = Sora.useSkill ? "Sora-skill" : "Sora-atk";
+          Sora.sprite.anims.play(animKey);
+
+          Sora.sprite.once("animationcomplete", () => {
+            if (!Sora.alive) {
+              soraAttacking = false;
+              return;
             }
+
+            let damage = calculateDamage("Sora");
+            if (Sora.useSkill) damage = Math.floor(damage * 2.5);
+
+            Sora.attackTarget.currentHP -= damage;
+
+            // Barre de vie du mob
+            let hpPercent = Math.max(
+              0,
+              (Sora.attackTarget.currentHP / Sora.attackTarget.stats.Health) *
+                100,
+            );
+            let barreClass = ".jaugePV" + Sora.attackTarget.stats.name;
+            let barre = document.querySelector(barreClass);
+            if (barre) barre.style.width = hpPercent + "%";
+
+            // Afficher dégâts
+            showDamage(gameScene, Sora.attackTarget, damage);
+
+            // Flash rouge
+            Sora.attackTarget.sprite.setTint(0xff0000);
+            gameScene.time.delayedCall(300, () => {
+              if (Sora.attackTarget.sprite && Sora.attackTarget.sprite.active) {
+                Sora.attackTarget.sprite.clearTint();
+              }
+            });
+
+            // Mob mort ?
+            if (Sora.attackTarget.currentHP <= 0) {
+              killMob(gameScene, Sora.attackTarget);
+            }
+
+            // RETOUR
+            Sora.isRetreating = true;
+            Sora.sprite.setTexture("Sora-atk-5");
+            // Sora.sprite.flipX = true;
+          });
         }
+      }
+
+      // RETOUR vers la position de départ
+      if (Sora.isRetreating) {
+        let dx = Sora.startX - Sora.sprite.x;
+        let dy = Sora.startY - Sora.sprite.y;
+        let dist = Math.sqrt(dx * dx + dy * dy);
+
+        if (dist > 5) {
+          Sora.sprite.x += (dx / dist) * 5;
+          Sora.sprite.y += (dy / dist) * 5;
+        } else {
+          Sora.sprite.x = Sora.startX;
+          Sora.sprite.y = Sora.startY;
+          Sora.sprite.flipX = false;
+          Sora.sprite.setTexture(getIdleTexture(Sora));
+
+          // Reset
+          soraATB = 0;
+          soraAttacking = false;
+          Sora.useSkill = false;
+          Sora.startX = null;
+          Sora.startY = null;
+          Sora.isRetreating = false;
+          Sora.isMovingToAttack = true;
+          Sora.stepsMade = 0;
+        }
+      }
     }
-}
+  }
 
-
-    // ==================== TIDUS ATB ====================
-if (Tidus.alive) {
+  // ==================== TIDUS ATB ====================
+  if (Tidus.alive) {
     if (!tidusAttacking) {
-        tidusATB += TIDUS_SPEED * dt;
-        if (tidusATB > ATB_MAX) tidusATB = ATB_MAX;
-        document.querySelector(".jaugeATBTidus").style.width = tidusATB + "%";
+      tidusATB += TIDUS_SPEED * dt;
+      if (tidusATB > ATB_MAX) tidusATB = ATB_MAX;
+      document.querySelector(".jaugeATBTidus").style.width = tidusATB + "%";
     }
 
     if (tidusATB >= ATB_MAX && !tidusAttacking) {
-        if (!Bombo1.alive && !Bombo2.alive) {
-            tidusATB = 0;
-            tidusAttacking = false;
+      if (!Bombo1.alive && !Bombo2.alive) {
+        tidusATB = 0;
+        tidusAttacking = false;
+      } else {
+        tidusAttacking = true;
+        Tidus.attackCount = (Tidus.attackCount || 0) + 1;
+        console.log(
+          "Tidus attackCount:",
+          Tidus.attackCount,
+          "mana:",
+          Tidus.currentMana,
+        );
+
+        // À la 3e attaque, skill + reset compteur
+        if (Tidus.attackCount === 3 && Tidus.currentMana >= 50) {
+          Tidus.useSkill = true;
+          Tidus.currentMana -= 50;
+          Tidus.attackCount = 0;
+
+          let manaPercent = Math.max(
+            0,
+            (Tidus.currentMana / Tidus.stats.MANA) * 100,
+          );
+          let barreMana = document.querySelector(".jaugeManaTidus");
+          if (barreMana) barreMana.style.width = manaPercent + "%";
+          console.log(">>> SKILL ACTIVÉ !");
         } else {
-            tidusAttacking = true;
-            Tidus.attackCount = (Tidus.attackCount || 0) + 1;
-            console.log("Tidus attackCount:", Tidus.attackCount, "mana:", Tidus.currentMana);
-
-            // À la 3e attaque, skill + reset compteur
-            if (Tidus.attackCount === 3 && Tidus.currentMana >= 50) {
-                Tidus.useSkill = true;
-                Tidus.currentMana -= 50;
-                Tidus.attackCount = 0;
-
-                let manaPercent = Math.max(0, (Tidus.currentMana / Tidus.stats.MANA) * 100);
-                let barreMana = document.querySelector(".jaugeManaTidus");
-                if (barreMana) barreMana.style.width = manaPercent + "%";
-                console.log(">>> SKILL ACTIVÉ !");
-            } else {
-                Tidus.useSkill = false;
-                if (Tidus.attackCount >= 3) Tidus.attackCount = 0;
-            }
-
-            if (!Tidus.startX) {
-                Tidus.startX = Tidus.sprite.x;
-                Tidus.startY = Tidus.sprite.y;
-                Tidus.attackTarget = getRandomBombo();
-                Tidus.targetX = Tidus.attackTarget.sprite.x - 120;
-                Tidus.targetY = Tidus.attackTarget.sprite.y;
-            }
+          Tidus.useSkill = false;
+          if (Tidus.attackCount >= 3) Tidus.attackCount = 0;
         }
+
+        if (!Tidus.startX) {
+          Tidus.startX = Tidus.sprite.x;
+          Tidus.startY = Tidus.sprite.y;
+          Tidus.attackTarget = getRandomBombo();
+          Tidus.targetX = Tidus.attackTarget.sprite.x - 120;
+          Tidus.targetY = Tidus.attackTarget.sprite.y;
+        }
+      }
     }
 
     // ===== MOUVEMENT + ATTAQUE + RETOUR DE TIDUS =====
     if (tidusAttacking && Tidus.startX) {
+      // PHASE 1 : COURSE VERS L'ENNEMI
+      if (Tidus.isMovingToAttack) {
+        Tidus.sprite.setTexture("Tidus-run");
+        let dx = Tidus.targetX - Tidus.sprite.x;
+        let dy = Tidus.targetY - Tidus.sprite.y;
+        let dist = Math.sqrt(dx * dx + dy * dy);
 
-        // PHASE 1 : COURSE VERS L'ENNEMI
-        if (Tidus.isMovingToAttack) {
-            Tidus.sprite.setTexture("Tidus-run");
-            let dx = Tidus.targetX - Tidus.sprite.x;
-            let dy = Tidus.targetY - Tidus.sprite.y;
-            let dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist > 5) {
+          Tidus.sprite.x += (dx / dist) * 5;
+          Tidus.sprite.y += (dy / dist) * 5;
+        } else {
+          // Arrivé devant l'ennemi → lancer l'animation d'attaque
+          Tidus.isMovingToAttack = false;
 
-            if (dist > 5) {
-                Tidus.sprite.x += (dx / dist) * 5;
-                Tidus.sprite.y += (dy / dist) * 5;
-            } else {
-                // Arrivé devant l'ennemi → lancer l'animation d'attaque
-                Tidus.isMovingToAttack = false;
+          let animKey = Tidus.useSkill ? "Tidus-skill" : "Tidus-atk";
+          Tidus.sprite.anims.play(animKey);
 
-                let animKey = Tidus.useSkill ? "Tidus-skill" : "Tidus-atk";
-                Tidus.sprite.anims.play(animKey);
-
-                Tidus.sprite.once('animationcomplete', () => {
-                    if (!Tidus.alive) { tidusAttacking = false; return; }
-
-                    // Calcul dégâts
-                    let damage = calculateDamage("Tidus");
-                    if (Tidus.useSkill) damage = Math.floor(damage * 2.5);
-
-                    Tidus.attackTarget.currentHP -= damage;
-
-                    // Barre de vie du mob
-                    let hpPercent = Math.max(0, (Tidus.attackTarget.currentHP / Tidus.attackTarget.stats.Health) * 100);
-                    let barreClass = ".jaugePV" + Tidus.attackTarget.stats.name;
-                    let barre = document.querySelector(barreClass);
-                    if (barre) barre.style.width = hpPercent + "%";
-
-                    // Afficher dégâts
-                    showDamage(gameScene, Tidus.attackTarget, damage);
-
-                    // Flash rouge
-                    Tidus.attackTarget.sprite.setTint(0xff0000);
-                    gameScene.time.delayedCall(300, () => {
-                        if (Tidus.attackTarget.sprite && Tidus.attackTarget.sprite.active) {
-                            Tidus.attackTarget.sprite.clearTint();
-                        }
-                    });
-
-                    // Mob mort ?
-                    if (Tidus.attackTarget.currentHP <= 0) {
-                        killMob(gameScene, Tidus.attackTarget);
-                    }
-
-                    Tidus.sprite.setTexture("Tidus-back");
-                    Tidus.isRetreating = true;
-                });
+          Tidus.sprite.once("animationcomplete", () => {
+            if (!Tidus.alive) {
+              tidusAttacking = false;
+              return;
             }
-        }
 
-        // PHASE 2 : RETOUR À LA POSITION INITIALE
-        if (Tidus.isRetreating) {
-            let dx = Tidus.startX - Tidus.sprite.x;
-            let dy = Tidus.startY - Tidus.sprite.y;
-            let dist = Math.sqrt(dx * dx + dy * dy);
+            // Calcul dégâts
+            let damage = calculateDamage("Tidus");
+            if (Tidus.useSkill) damage = Math.floor(damage * 2.5);
 
-            if (dist > 5) {
-                Tidus.sprite.x += (dx / dist) * 5;
-                Tidus.sprite.y += (dy / dist) * 5;
-            } else {
-                Tidus.sprite.x = Tidus.startX;
-                Tidus.sprite.y = Tidus.startY;
-                Tidus.sprite.setTexture(getIdleTexture(Tidus));
-                document.querySelector(".jaugeATBTidus").style.width = "0%";
-                moveCursor("Tidus");
-                Tidus.stepsMade = 0;
-                Tidus.startX = null;
-                tidusATB = 0;
-                tidusAttacking = false;
-                Tidus.isRetreating = false;
-                Tidus.isMovingToAttack = true;
+            Tidus.attackTarget.currentHP -= damage;
+
+            // Barre de vie du mob
+            let hpPercent = Math.max(
+              0,
+              (Tidus.attackTarget.currentHP / Tidus.attackTarget.stats.Health) *
+                100,
+            );
+            let barreClass = ".jaugePV" + Tidus.attackTarget.stats.name;
+            let barre = document.querySelector(barreClass);
+            if (barre) barre.style.width = hpPercent + "%";
+
+            // Afficher dégâts
+            showDamage(gameScene, Tidus.attackTarget, damage);
+
+            // Flash rouge
+            Tidus.attackTarget.sprite.setTint(0xff0000);
+            gameScene.time.delayedCall(300, () => {
+              if (
+                Tidus.attackTarget.sprite &&
+                Tidus.attackTarget.sprite.active
+              ) {
+                Tidus.attackTarget.sprite.clearTint();
+              }
+            });
+
+            // Mob mort ?
+            if (Tidus.attackTarget.currentHP <= 0) {
+              killMob(gameScene, Tidus.attackTarget);
             }
+
+            Tidus.sprite.setTexture("Tidus-back");
+            Tidus.isRetreating = true;
+          });
         }
+      }
+
+      // PHASE 2 : RETOUR À LA POSITION INITIALE
+      if (Tidus.isRetreating) {
+        let dx = Tidus.startX - Tidus.sprite.x;
+        let dy = Tidus.startY - Tidus.sprite.y;
+        let dist = Math.sqrt(dx * dx + dy * dy);
+
+        if (dist > 5) {
+          Tidus.sprite.x += (dx / dist) * 5;
+          Tidus.sprite.y += (dy / dist) * 5;
+        } else {
+          Tidus.sprite.x = Tidus.startX;
+          Tidus.sprite.y = Tidus.startY;
+          Tidus.sprite.setTexture(getIdleTexture(Tidus));
+          document.querySelector(".jaugeATBTidus").style.width = "0%";
+          moveCursor("Tidus");
+          Tidus.stepsMade = 0;
+          Tidus.startX = null;
+          tidusATB = 0;
+          tidusAttacking = false;
+          Tidus.isRetreating = false;
+          Tidus.isMovingToAttack = true;
+        }
+      }
     }
-} // ← fin du if (Tidus.alive)
-
-
-
+  } // ← fin du if (Tidus.alive)
 
   // Permet de récupérer la distance entre deux éléments
   // Je te laisse ça là, ça pourra t'être utile
@@ -1064,104 +1127,122 @@ if (Tidus.alive) {
   // );
 
   // ==================== LUNAFREYA ATB ====================
-if (Lunafreya.alive) {
+  if (Lunafreya.alive) {
     if (!lunaAttacking) {
-        lunaATB += LUNA_SPEED * dt;
-        if (lunaATB > ATB_MAX) lunaATB = ATB_MAX;
-        let barreLuna = document.querySelector(".jaugeATBLuna");
-        if (barreLuna) barreLuna.style.width = lunaATB + "%";
+      lunaATB += LUNA_SPEED * dt;
+      if (lunaATB > ATB_MAX) lunaATB = ATB_MAX;
+      let barreLuna = document.querySelector(".jaugeATBLuna");
+      if (barreLuna) barreLuna.style.width = lunaATB + "%";
     }
 
     if (lunaATB >= ATB_MAX && !lunaAttacking) {
-        if (!Bombo1.alive && !Bombo2.alive) {
-            lunaATB = 0;
-            lunaAttacking = false;
+      if (!Bombo1.alive && !Bombo2.alive) {
+        lunaATB = 0;
+        lunaAttacking = false;
+      } else {
+        lunaATB = 0;
+        lunaAttacking = true;
+        document.querySelector(".jaugeATBLuna").style.width = "0%";
+        moveCursor("Lunafreya");
+
+        Lunafreya.attackCount = (Lunafreya.attackCount || 0) + 1;
+        console.log(
+          "Luna attackCount:",
+          Lunafreya.attackCount,
+          "Mana:",
+          Lunafreya.currentMana,
+        );
+
+        // Skill à la 3e attaque si assez de mana
+        if (Lunafreya.attackCount >= 3 && Lunafreya.currentMana >= 50) {
+          Lunafreya.useSkill = true;
+          Lunafreya.currentMana -= 50;
+          Lunafreya.attackCount = 0;
+
+          let manaPercent = Math.max(
+            0,
+            (Lunafreya.currentMana / Lunafreya.stats.MANA) * 100,
+          );
+          let barreMana = document.querySelector(".jaugeManaLunafreya");
+          if (barreMana) barreMana.style.width = manaPercent + "%";
+          console.log(">>> LUNA SKILL ACTIVÉ !");
         } else {
-            lunaATB = 0;
-            lunaAttacking = true;
-            document.querySelector(".jaugeATBLuna").style.width = "0%";
-            moveCursor("Lunafreya");
-
-           Lunafreya.attackCount = (Lunafreya.attackCount || 0) + 1;
-          console.log("Luna attackCount:", Lunafreya.attackCount, "Mana:", Lunafreya.currentMana);
-
-// Skill à la 3e attaque si assez de mana
-if (Lunafreya.attackCount >= 3 && Lunafreya.currentMana >= 50) {
-    Lunafreya.useSkill = true;
-    Lunafreya.currentMana -= 50;
-    Lunafreya.attackCount = 0;
-
-    let manaPercent = Math.max(0, (Lunafreya.currentMana / Lunafreya.stats.MANA) * 100);
-    let barreMana = document.querySelector(".jaugeManaLunafreya");
-    if (barreMana) barreMana.style.width = manaPercent + "%";
-    console.log(">>> LUNA SKILL ACTIVÉ !");
-} else {
-    Lunafreya.useSkill = false;
-}
-
-            let target = getRandomBombo();
-
-            let animKey = Lunafreya.useSkill ? "Lunafreya-skill" : "Lunafreya-atk";
-            Lunafreya.sprite.anims.play(animKey);
-
-            Lunafreya.sprite.once('animationcomplete', () => {
-                if (!Lunafreya.alive) { lunaAttacking = false; return; }
-
-                // Luna reste sur la dernière frame pendant l'effet
-                if (Lunafreya.useSkill) {
-                    Lunafreya.sprite.setTexture("Lunafreya-skill-7");
-                } else {
-                    Lunafreya.sprite.setTexture("Lunafreya-atk-7");
-                }
-
-                // Effet magique sur le mob
-                let effectKey = Lunafreya.useSkill ? "luna-magic-effect-skill" : "luna-magic-effect";
-                let effectTexture = Lunafreya.useSkill ? "Lunafreya-skill-8" : "Lunafreya-atk-8";
-
-                let magicEffect = gameScene.add.sprite(
-                    target.sprite.x,
-                    target.sprite.y,
-                    effectTexture
-                );
-                magicEffect.setScale(0.5);
-                magicEffect.anims.play(effectKey);
-
-                magicEffect.once('animationcomplete', () => {
-                    magicEffect.destroy();
-
-                    // Calcul dégâts
-                    let damage = calculateDamage("Lunafreya");
-                    if (Lunafreya.useSkill) damage = Math.floor(damage * 2.5);
-
-                    target.currentHP -= damage;
-
-                    let hpPercent = Math.max(0, (target.currentHP / target.stats.Health) * 100);
-                    let barreClass = ".jaugePV" + target.stats.name;
-                    let barre = document.querySelector(barreClass);
-                    if (barre) barre.style.width = hpPercent + "%";
-
-                    showDamage(gameScene, target, damage);
-
-                    target.sprite.setTint(0xff0000);
-                    gameScene.time.delayedCall(300, () => {
-                        if (target.sprite && target.sprite.active) {
-                            target.sprite.clearTint();
-                        }
-                    });
-
-                    if (target.currentHP <= 0) {
-                        killMob(gameScene, target);
-                    }
-
-                    // Luna retourne en idle
-                    Lunafreya.sprite.setTexture(getIdleTexture(Lunafreya));
-                    lunaAttacking = false;
-                    Lunafreya.useSkill = false;
-                });
-            });
+          Lunafreya.useSkill = false;
         }
+
+        let target = getRandomBombo();
+
+        let animKey = Lunafreya.useSkill ? "Lunafreya-skill" : "Lunafreya-atk";
+        Lunafreya.sprite.anims.play(animKey);
+
+        Lunafreya.sprite.once("animationcomplete", () => {
+          if (!Lunafreya.alive) {
+            lunaAttacking = false;
+            return;
+          }
+
+          // Luna reste sur la dernière frame pendant l'effet
+          if (Lunafreya.useSkill) {
+            Lunafreya.sprite.setTexture("Lunafreya-skill-7");
+          } else {
+            Lunafreya.sprite.setTexture("Lunafreya-atk-7");
+          }
+
+          // Effet magique sur le mob
+          let effectKey = Lunafreya.useSkill
+            ? "luna-magic-effect-skill"
+            : "luna-magic-effect";
+          let effectTexture = Lunafreya.useSkill
+            ? "Lunafreya-skill-8"
+            : "Lunafreya-atk-8";
+
+          let magicEffect = gameScene.add.sprite(
+            target.sprite.x,
+            target.sprite.y,
+            effectTexture,
+          );
+          magicEffect.setScale(0.5);
+          magicEffect.anims.play(effectKey);
+
+          magicEffect.once("animationcomplete", () => {
+            magicEffect.destroy();
+
+            // Calcul dégâts
+            let damage = calculateDamage("Lunafreya");
+            if (Lunafreya.useSkill) damage = Math.floor(damage * 2.5);
+
+            target.currentHP -= damage;
+
+            let hpPercent = Math.max(
+              0,
+              (target.currentHP / target.stats.Health) * 100,
+            );
+            let barreClass = ".jaugePV" + target.stats.name;
+            let barre = document.querySelector(barreClass);
+            if (barre) barre.style.width = hpPercent + "%";
+
+            showDamage(gameScene, target, damage);
+
+            target.sprite.setTint(0xff0000);
+            gameScene.time.delayedCall(300, () => {
+              if (target.sprite && target.sprite.active) {
+                target.sprite.clearTint();
+              }
+            });
+
+            if (target.currentHP <= 0) {
+              killMob(gameScene, target);
+            }
+
+            // Luna retourne en idle
+            Lunafreya.sprite.setTexture(getIdleTexture(Lunafreya));
+            lunaAttacking = false;
+            Lunafreya.useSkill = false;
+          });
+        });
+      }
     }
-}
+  }
 
 
   // ==================== MOB SLOT 1 ATB ====================
@@ -1454,14 +1535,23 @@ if (Bombo2.alive) {
 
 
     // Forcer reset des états
-    Tidus.isMovingToAttack = true; Tidus.isRetreating = false; Tidus.startX = null;
-    Sora.isMovingToAttack = true; Sora.isRetreating = false; Sora.startX = null;
-    Lunafreya.isMovingToAttack = true; Lunafreya.isRetreating = false; Lunafreya.startX = null;
+    Tidus.isMovingToAttack = true;
+    Tidus.isRetreating = false;
+    Tidus.startX = null;
+    Sora.isMovingToAttack = true;
+    Sora.isRetreating = false;
+    Sora.startX = null;
+    Lunafreya.isMovingToAttack = true;
+    Lunafreya.isRetreating = false;
+    Lunafreya.startX = null;
 
     // Positions initiales
-    let tidusHomeX = config.width * 0.26, tidusHomeY = 150;
-    let soraHomeX = config.width * 0.24, soraHomeY = 420;
-    let lunaHomeX = config.width * 0.22, lunaHomeY = 290;
+    let tidusHomeX = config.width * 0.26,
+      tidusHomeY = 150;
+    let soraHomeX = config.width * 0.24,
+      soraHomeY = 420;
+    let lunaHomeX = config.width * 0.22,
+      lunaHomeY = 290;
 
     // TÉLÉPORTER immédiatement puis animer
     Tidus.sprite.setPosition(tidusHomeX, tidusHomeY);
@@ -1475,41 +1565,36 @@ if (Bombo2.alive) {
 
     // Après repositionnement : texte VICTORY
     gameScene.time.delayedCall(800, () => {
-        let hud = document.querySelector(".ActionBar");
-        if (hud) hud.style.display = "none";
+      let hud = document.querySelector(".ActionBar");
+      if (hud) hud.style.display = "none";
 
-        let victoryText = gameScene.add.text(
-            config.width / 2, config.height / 2 - 80,
-            "VICTORY!",
-            {
-                fontSize: "64px",
-                fontFamily: "Arial",
-                color: "#FFD700",
-                stroke: "#000",
-                strokeThickness: 6
-            }
-        ).setOrigin(0.5);
+      let victoryText = gameScene.add
+        .text(config.width / 2, config.height / 2 - 80, "VICTORY!", {
+          fontSize: "64px",
+          fontFamily: "Arial",
+          color: "#FFD700",
+          stroke: "#000",
+          strokeThickness: 6,
+        })
+        .setOrigin(0.5);
 
-        victoryText.setScale(0);
-        gameScene.tweens.add({
-            targets: victoryText,
-            scale: 1,
-            duration: 600,
-            ease: "Back.easeOut"
-        });
+      victoryText.setScale(0);
+      gameScene.tweens.add({
+        targets: victoryText,
+        scale: 1,
+        duration: 600,
+        ease: "Back.easeOut",
+      });
 
-        gameScene.time.delayedCall(3000, () => {
-            // window.location.href = "ta-page-suivante.html";
-        });
+      gameScene.time.delayedCall(3000, () => {
+        returnToMap("victory");
+      });
     });
-}
-
+  }
 
   // Détecte défaite
   let allHeroesDead =
-    (Tidus.currentHP <= 0) &&
-    (Sora.currentHP <= 0) &&
-    (Lunafreya.currentHP <= 0);
+    Tidus.currentHP <= 0 && Sora.currentHP <= 0 && Lunafreya.currentHP <= 0;
 
   if (allHeroesDead && !victoryStarted && !defeatStarted) {
     defeatStarted = true;
@@ -1526,29 +1611,27 @@ if (Bombo2.alive) {
     if (hud) hud.style.display = "none";
 
     // Texte LOOSE
-    let defeatText = gameScene.add.text(
-      config.width / 2, config.height / 2 - 80,
-      "LOOSE...",
-      {
+    let defeatText = gameScene.add
+      .text(config.width / 2, config.height / 2 - 80, "LOOSE...", {
         fontSize: "64px",
         fontFamily: "Arial",
         color: "#FF0000",
         stroke: "#000",
-        strokeThickness: 6
-      }
-    ).setOrigin(0.5);
+        strokeThickness: 6,
+      })
+      .setOrigin(0.5);
 
     defeatText.setScale(0);
     gameScene.tweens.add({
       targets: defeatText,
       scale: 1,
       duration: 600,
-      ease: "Back.easeOut"
+      ease: "Back.easeOut",
     });
 
     // Transition après 3 secondes
     gameScene.time.delayedCall(3000, () => {
-      // window.location.href = "game-over.html";
+      returnToMap("defeat");
     });
   }
 }

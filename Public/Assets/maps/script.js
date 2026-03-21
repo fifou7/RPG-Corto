@@ -81,9 +81,28 @@ async function create() {
     .setOrigin(0)
     .setScale(mapScale);
 
+  //fight return
+
+  const battleReturn = JSON.parse(
+    sessionStorage.getItem("battleReturn") || "null",
+  );
+
+  let startX = 120;
+  let startY = 220;
+
+  if (battleReturn) {
+    startX = battleReturn.returnX ?? startX;
+    startY = battleReturn.returnY ?? startY;
+
+    console.log("Retour de combat :", battleReturn.result);
+
+    sessionStorage.removeItem("battleReturn");
+    sessionStorage.removeItem("battleData");
+  }
+
   //player
 
-  this.player = this.physics.add.sprite(120, 220, "tidus_right");
+  this.player = this.physics.add.sprite(startX, startY, "tidus_right");
   this.player.setScale(0.6);
   this.player.setCollideWorldBounds(true);
   this.direction = "right";
@@ -183,6 +202,16 @@ async function create() {
     right: Phaser.Input.Keyboard.KeyCodes.D,
   });
 
+  // Battle trigger
+
+  this.debugBattleKey = this.input.keyboard.addKey(
+    Phaser.Input.Keyboard.KeyCodes.B,
+  );
+
+  this.isEncounterTriggered = false;
+  this.encounterTimer = 0;
+  this.encounterGraceTime = battleReturn ? 3000 : 0;
+
   // interraction npc
 
   this.interactKey = this.input.keyboard.addKey(
@@ -267,6 +296,58 @@ async function create() {
     .setVisible(false);
 
   this.physics.add.collider(this.player, this.npcs);
+
+  // Battle transition
+
+  this.startBattleTransition = () => {
+    if (this.isEncounterTriggered || this.isDialogueActive) return;
+
+    this.isEncounterTriggered = true;
+    this.player.setVelocity(0);
+
+    const battleData = {
+      returnX: this.player.x,
+      returnY: this.player.y,
+      returnMap: "../../assets/maps/index.html",
+    };
+
+    sessionStorage.setItem("battleData", JSON.stringify(battleData));
+
+    const camWidth = this.cameras.main.width;
+    const camHeight = this.cameras.main.height;
+
+    const flash = this.add
+      .rectangle(camWidth / 2, camHeight / 2, camWidth, camHeight, 0xffffff)
+      .setScrollFactor(0)
+      .setDepth(9999)
+      .setAlpha(0);
+
+    const black = this.add
+      .rectangle(camWidth / 2, camHeight / 2, camWidth, camHeight, 0x000000)
+      .setScrollFactor(0)
+      .setDepth(10000)
+      .setAlpha(0);
+
+    this.cameras.main.shake(250, 0.01);
+
+    this.tweens.add({
+      targets: flash,
+      alpha: 1,
+      duration: 80,
+      yoyo: true,
+      repeat: 2,
+      onComplete: () => {
+        this.tweens.add({
+          targets: black,
+          alpha: 1,
+          duration: 400,
+          onComplete: () => {
+            window.location.href = "../../Fight-scene/index.html";
+          },
+        });
+      },
+    });
+  };
 
   // Camera
 
@@ -396,5 +477,40 @@ function update(time, delta) {
         this.dialogueText.setVisible(false);
       }
     }
+  }
+
+  // random battle time
+
+  if (this.encounterGraceTime > 0) {
+    this.encounterGraceTime -= delta;
+  }
+
+  // test manuel avec la touche B
+  if (Phaser.Input.Keyboard.JustDown(this.debugBattleKey)) {
+    this.startBattleTransition();
+    return;
+  }
+
+  // rencontre aléatoire seulement en déplacement
+  if (
+    moving &&
+    !this.isDialogueActive &&
+    !this.isEncounterTriggered &&
+    this.encounterGraceTime <= 0
+  ) {
+    this.encounterTimer += delta;
+
+    if (this.encounterTimer >= 800) {
+      const chance = Math.random();
+
+      if (chance < 0.08) {
+        this.startBattleTransition();
+        return;
+      }
+
+      this.encounterTimer = 0;
+    }
+  } else {
+    this.encounterTimer = 0;
   }
 }
