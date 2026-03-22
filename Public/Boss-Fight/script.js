@@ -15,6 +15,7 @@ class Characters {
 let Tidus = new Characters();
 let Sora = new Characters();
 let Lunafreya = new Characters();
+let Sephiroth = new Characters();
 
 const config = {
   type: Phaser.AUTO,
@@ -200,7 +201,11 @@ async function create() {
 
   // fetch boss
   const responseboss = await fetch("http://localhost:3000/boss");
-  const boss = await responseboss.json();
+  const SephirothData = await responseboss.json();
+
+  console.log(SephirothData);
+  console.log(skills);
+  
 
   const tidusSkill = skills.find(s => s.name === "Enchainement dévastateur");
   const soraSkill = skills.find(s => s.name === "KeyBlade rush");
@@ -216,6 +221,8 @@ async function create() {
   const soraData = characters.find(c => c.name === "Sora");
   const lunaData = characters.find(c => c.name === "Lunafreya");
 
+
+ 
   
 
   // ATB speeds
@@ -233,6 +240,46 @@ async function create() {
   Lunafreya.alive = true;
 
   // ANIMATIONS
+
+
+  // Sephiroth state
+this.anims.create({
+    key: "Sephiroth-state",
+    frames: [
+      { key: "Sephiroth-state-1" },
+      { key: "Sephiroth-state-2" },
+      { key: "Sephiroth-state-3" },
+    ],
+    frameRate: 3,
+    repeat: -1
+  });
+
+//
+  this.anims.create({
+    key: "Sephiroth-atk",
+    frames: [
+      { key: "Sephiroth-atk-1" },
+      { key: "Sephiroth-atk-2" },
+      { key: "Sephiroth-atk-3" },
+      { key: "Sephiroth-atk-4" },
+      { key: "Sephiroth-atk-5" },
+      { key: "Sephiroth-atk-6" },
+      { key: "Sephiroth-atk-7" },
+      { key: "Sephiroth-atk-8" },
+      { key: "Sephiroth-atk-9" },
+      { key: "Sephiroth-atk-10" },
+      { key: "Sephiroth-atk-12" },
+      { key: "Sephiroth-atk-13" },
+      { key: "Sephiroth-atk-14" },
+      { key: "Sephiroth-atk-16" },
+      { key: "Sephiroth-atk-17" },
+      { key: "Sephiroth-atk-18" },
+      { key: "Sephiroth-atk-19" },
+    ],
+    frameRate: 10,
+    repeat: -1
+  });
+
 
   // Sora attaque
   this.anims.create({
@@ -380,6 +427,14 @@ async function create() {
   Lunafreya.sprite = this.add.sprite(config.width * 0.22, 290, "Lunafreya");
   Lunafreya.sprite.setScale(0.7);
 
+  // === SEPHIROTH ===
+  Sephiroth.stats = SephirothData;
+  Sephiroth.currentHP = SephirothData.Health;
+  Sephiroth.currentMana = SephirothData.MANA;
+  Sephiroth.sprite = this.add.sprite(config.width *0.75, 280, "Sephiroth");
+  Sephiroth.sprite.anims.play("Sephiroth-atk");
+
+  
   sceneReady = true;
 }
 
