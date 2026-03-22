@@ -847,19 +847,128 @@ function update(time, delta) {
     }
 
     // VICTOIRE
-    if (!Bombo1.alive && !Bombo2.alive && !victoryStarted) {
-        victoryStarted = true;
-        atbPaused = true;
-        if (Tidus.alive) Tidus.sprite.anims.play("Tidus-win");
-        if (Sora.alive) Sora.sprite.anims.play("Sora-win");
-        if (Lunafreya.alive) Lunafreya.sprite.anims.play("Lunafreya-win");
-    }
+    // VICTOIRE
+if (!Bombo1.alive && !Bombo2.alive && !victoryStarted && !defeatStarted) {
+    victoryStarted = true;
+    atbPaused = true;
+    currentAction = null;
+    actionQueue = [];
 
-    // DÉFAITE
-    if (!Tidus.alive && !Sora.alive && !Lunafreya.alive && !defeatStarted) {
-        defeatStarted = true;
-        atbPaused = true;
-    }
+    // Stopper les héros
+    [Tidus, Sora, Lunafreya].forEach(hero => {
+        gameScene.tweens.killTweensOf(hero.sprite);
+        if (hero.sprite.anims) hero.sprite.anims.stop();
+        hero.isMovingToAttack = true;
+        hero.isRetreating = false;
+        hero.startX = null;
+    });
+
+    // Repositionner et jouer anim win
+    let homes = {
+        Tidus:     { x: config.width * 0.26, y: 150 },
+        Sora:      { x: config.width * 0.24, y: 420 },
+        Lunafreya: { x: config.width * 0.22, y: 290 }
+    };
+
+    [Tidus, Sora, Lunafreya].forEach(hero => {
+        let home = homes[hero.stats.name];
+        hero.sprite.setPosition(home.x, home.y);
+        if (hero.alive) {
+            hero.sprite.anims.play(hero.stats.name + "-win");
+        }
+    });
+
+    // Cacher le HUD
+    let hud = document.querySelector(".ActionBar");
+    if (hud) hud.style.display = "none";
+
+    // Texte VICTORY style FF
+    gameScene.time.delayedCall(500, () => {
+        let victoryText = gameScene.add.text(
+            config.width / 2, config.height / 2 - 80,
+            "VICTORY!",
+            {
+                fontSize: "64px",
+                fontFamily: "Arial",
+                color: "#FFD700",
+                stroke: "#000",
+                strokeThickness: 6
+            }
+        ).setOrigin(0.5);
+
+        victoryText.setScale(0);
+        gameScene.tweens.add({
+            targets: victoryText,
+            scale: 1,
+            duration: 600,
+            ease: "Back.easeOut"
+        });
+
+        gameScene.time.delayedCall(3000, () => {
+            // window.location.href = "page-suivante.html";
+        });
+    });
+}
+
+// DÉFAITE
+if (!Tidus.alive && !Sora.alive && !Lunafreya.alive && !victoryStarted && !defeatStarted) {
+    defeatStarted = true;
+    atbPaused = true;
+    currentAction = null;
+    actionQueue = [];
+
+    // Stopper les mobs (Mibombo OU BlackKnight)
+    [Bombo1, Bombo2].forEach(mob => {
+        if (mob.alive && mob.sprite && mob.sprite.active) {
+            gameScene.tweens.killTweensOf(mob.sprite);
+            if (mob.sprite.anims) mob.sprite.anims.stop();
+
+            // Remettre le BlackKnight en idle state ou juste stopper le Mibombo
+            if (mob.mobType === "BlackKnight") {
+                mob.sprite.setTexture("BlackKnight");
+            }
+        }
+    });
+
+    // S'assurer que chaque héros mort a son sprite death
+    [Tidus, Sora, Lunafreya].forEach(hero => {
+        gameScene.tweens.killTweensOf(hero.sprite);
+        if (hero.sprite.anims) hero.sprite.anims.stop();
+        hero.sprite.setTexture(hero.stats.name + "-death");
+    });
+
+    // Cacher le HUD
+    let hud = document.querySelector(".ActionBar");
+    if (hud) hud.style.display = "none";
+
+    // Texte DEFEAT style FF
+    gameScene.time.delayedCall(500, () => {
+        let defeatText = gameScene.add.text(
+            config.width / 2, config.height / 2 - 80,
+            "DEFEAT...",
+            {
+                fontSize: "64px",
+                fontFamily: "Arial",
+                color: "#FF0000",
+                stroke: "#000",
+                strokeThickness: 6
+            }
+        ).setOrigin(0.5);
+
+        defeatText.setScale(0);
+        gameScene.tweens.add({
+            targets: defeatText,
+            scale: 1,
+            duration: 600,
+            ease: "Back.easeOut"
+        });
+
+        gameScene.time.delayedCall(3000, () => {
+            // window.location.href = "game-over.html";
+        });
+    });
+}
+
 
     // Nettoyer la queue des morts
     actionQueue = actionQueue.filter(a => {
