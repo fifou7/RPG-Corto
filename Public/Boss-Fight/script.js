@@ -161,7 +161,25 @@ function preload() {
   this.load.image("Sephiroth-atk-16", "../Images/Sephiroth-atk-16.png");
   this.load.image("Sephiroth-atk-17", "../Images/Sephiroth-atk-17.png");
   this.load.image("Sephiroth-atk-18", "../Images/Sephiroth-atk-18.png");
-  
+  this.load.image("Sephiroth-skill-1", "../Images/Sephiroth-skill-1.png");
+  this.load.image("Sephiroth-skill-2", "../Images/Sephiroth-skill-2.png");
+  this.load.image("Sephiroth-skill-3", "../Images/Sephiroth-skill-3.png");
+  this.load.image("Sephiroth-skill-4", "../Images/Sephiroth-skill-4.png");
+  this.load.image("Sephiroth-skill-5", "../Images/Sephiroth-skill-5.png");
+  this.load.image("Sephiroth-skill-6", "../Images/Sephiroth-skill-6.png");
+  this.load.image("Sephiroth-skill-7", "../Images/Sephiroth-skill-7.png");
+  this.load.image("Sephiroth-skill-8", "../Images/Sephiroth-skill-8.png");
+  this.load.image("Sephiroth-skill-9", "../Images/Sephiroth-skill-9.png");
+  this.load.image("Sephiroth-skill-10", "../Images/Sephiroth-skill-10.png");
+  this.load.image("Sephiroth-skill-11", "../Images/Sephiroth-skill-11.png");
+  this.load.image("Sephiroth-skill-12", "../Images/Sephiroth-skill-12.png");
+  this.load.image("Sephiroth-skill-13", "../Images/Sephiroth-skill-13.png");
+  this.load.image("Sephiroth-skill-14", "../Images/Sephiroth-skill-14.png");
+  this.load.image("Sephiroth-skill-15", "../Images/Sephiroth-skill-15.png");
+  this.load.image("Sephiroth-skill-16", "../Images/Sephiroth-skill-16.png");
+  this.load.image("Sephiroth-skill-17", "../Images/Sephiroth-skill-17.png");
+  this.load.image("Sephiroth-run", "../Images/Sephiroth-run.png");
+  this.load.image("Sephiroth-back", "../Images/Sephiroth-back.png");
 
 
   // Background
@@ -180,17 +198,25 @@ async function create() {
   const responseSkills = await fetch("http://localhost:3000/skills");
   const skills = await responseSkills.json();
 
+  // fetch boss
+  const responseboss = await fetch("http://localhost:3000/boss");
+  const boss = await responseboss.json();
+
   const tidusSkill = skills.find(s => s.name === "Enchainement dévastateur");
   const soraSkill = skills.find(s => s.name === "KeyBlade rush");
   const lunaSkill = skills.find(s => s.name === "Big bang");
+  const sephirothSkill = skills.find(s => s.name === "Octaslash");
 
   Tidus.skill = tidusSkill;
   Sora.skill = soraSkill;
   Lunafreya.skill = lunaSkill;
+  Sephiroth.skill = sephirothSkill;
 
   const tidusData = characters.find(c => c.name === "Tidus");
   const soraData = characters.find(c => c.name === "Sora");
   const lunaData = characters.find(c => c.name === "Lunafreya");
+
+  
 
   // ATB speeds
   TIDUS_SPEED = 100 / tidusData.atb_jauge;
