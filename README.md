@@ -63,16 +63,23 @@ services           → Logique backend
 Endpoint	Description
 
 /pnj	Récupère les PNJ
+
 /dialogues/:id	Dialogues d’un PNJ
+
 /characters	Stats des personnages
+
 /skills	Compétences
+
 /boss	Données du boss
 
 Ce projet a été conçu comme une initiation au développement full stack, en mettant en pratique :
 
 communication client / serveur
+
 structuration d’une API 
+
 gestion de données en base SQL
+
 logique de jeu côté front
 
 👥 Équipe
