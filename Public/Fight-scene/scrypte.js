@@ -655,9 +655,9 @@ function showDamage(scene, target, damage) {
 }
 
 const ATTACK_TABLE = {
-  'Tidus': { min: 50, max: 100 },
-  'Sora': { min: 90, max: 100 },
-  'Lunafreya': { min: 90, max: 100 },
+  'Tidus': { min: 1000, max: 10001 },
+  'Sora': { min: 1900, max: 10001  },
+  'Lunafreya': { min: 1990, max: 10001  },
   'mibombo': { min: 100, max: 150 },
   'Mibombo': { min: 100, max: 150 }
 };

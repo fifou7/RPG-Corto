@@ -139,6 +139,29 @@ function preload() {
   this.load.image("Lunafreya-skill-7", "../Images/Lunafreya-skill-7.png");
   this.load.image("Lunafreya-skill-8", "../Images/Lunafreya-skill-8.png");
 
+  // Sephiroth 
+  this.load.image("Sephiroth-state-1", "../Images/Sephiroth-state-1.png");
+  this.load.image("Sephiroth-state-2", "../Images/Sephiroth-state-2.png");
+  this.load.image("Sephiroth-state-3", "../Images/Sephiroth-state-3.png");
+  this.load.image("Lunafreya-win", "../Images/Lunafreya-win.png");
+  this.load.image("Lunafreya-atk-1", "../Images/Lunafreya-atk-1.png");
+  this.load.image("Lunafreya-atk-2", "../Images/Lunafreya-atk-2.png");
+  this.load.image("Lunafreya-atk-3", "../Images/Lunafreya-atk-3.png");
+  this.load.image("Lunafreya-atk-4", "../Images/Lunafreya-atk-4.png");
+  this.load.image("Lunafreya-atk-5", "../Images/Lunafreya-atk-5.png");
+  this.load.image("Lunafreya-atk-6", "../Images/Lunafreya-atk-6.png");
+  this.load.image("Lunafreya-atk-7", "../Images/Lunafreya-atk-7.png");
+  this.load.image("Lunafreya-atk-8", "../Images/Lunafreya-atk-8.png");
+  this.load.image("Lunafreya-skill-1", "../Images/Lunafreya-skill-1.png");
+  this.load.image("Lunafreya-skill-2", "../Images/Lunafreya-skill-2.png");
+  this.load.image("Lunafreya-skill-3", "../Images/Lunafreya-skill-3.png");
+  this.load.image("Lunafreya-skill-4", "../Images/Lunafreya-skill-4.png");
+  this.load.image("Lunafreya-skill-5", "../Images/Lunafreya-skill-5.png");
+  this.load.image("Lunafreya-skill-6", "../Images/Lunafreya-skill-6.png");
+  this.load.image("Lunafreya-skill-7", "../Images/Lunafreya-skill-7.png");
+  this.load.image("Lunafreya-skill-8", "../Images/Lunafreya-skill-8.png");
+
+
   // Background
   this.load.image("background-fight", "../Images/image-de-fond-fight.png");
 }
