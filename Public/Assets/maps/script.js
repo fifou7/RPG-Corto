@@ -369,6 +369,61 @@ async function create() {
     });
   };
 
+  //boss battle transition
+
+  this.startBossBattleTransition = () => {
+    if (this.isEncounterTriggered || this.isDialogueActive) return;
+
+    this.isEncounterTriggered = true;
+    this.player.setVelocity(0);
+
+    const battleData = {
+      returnX: this.player.x,
+      returnY: this.player.y,
+      returnMap: "../../assets/maps/index.html",
+      encounterType: "boss",
+      bossId: this.boss.getData("id"),
+      bossName: this.boss.getData("name"),
+    };
+
+    sessionStorage.setItem("battleData", JSON.stringify(battleData));
+
+    const camWidth = this.cameras.main.width;
+    const camHeight = this.cameras.main.height;
+
+    const flash = this.add
+      .rectangle(camWidth / 2, camHeight / 2, camWidth, camHeight, 0xffffff)
+      .setScrollFactor(0)
+      .setDepth(9999)
+      .setAlpha(0);
+
+    const black = this.add
+      .rectangle(camWidth / 2, camHeight / 2, camWidth, camHeight, 0x000000)
+      .setScrollFactor(0)
+      .setDepth(10000)
+      .setAlpha(0);
+
+    this.cameras.main.shake(250, 0.01);
+
+    this.tweens.add({
+      targets: flash,
+      alpha: 1,
+      duration: 80,
+      yoyo: true,
+      repeat: 2,
+      onComplete: () => {
+        this.tweens.add({
+          targets: black,
+          alpha: 1,
+          duration: 400,
+          onComplete: () => {
+            window.location.href = "../../Boss-Fight/index.html";
+          },
+        });
+      },
+    });
+  };
+
   // Camera
 
   this.normalCameraTop = 0;
@@ -476,7 +531,28 @@ function update(time, delta) {
     }
   });
 
+  // Boss detection
+  let nearbyBoss = null;
+
+  if (this.boss) {
+    const bossDistance = Phaser.Math.Distance.Between(
+      this.player.x,
+      this.player.y,
+      this.boss.x,
+      this.boss.y,
+    );
+
+    if (bossDistance < 100) {
+      nearbyBoss = this.boss;
+    }
+  }
+
   if (Phaser.Input.Keyboard.JustDown(this.interactKey)) {
+    if (!this.isDialogueActive && nearbyBoss) {
+      this.startBossBattleTransition();
+      return;
+    }
+
     if (!this.isDialogueActive && nearbyNpc) {
       this.loadDialogue(nearbyNpc.getData("id"));
       return;
@@ -496,23 +572,6 @@ function update(time, delta) {
         this.dialogueBox.setVisible(false);
         this.dialogueText.setVisible(false);
       }
-    }
-  }
-
-  // Boss detection
-
-  let nearbyBoss = null;
-
-  if (this.boss) {
-    const bossDistance = Phaser.Math.Distance.Between(
-      this.player.x,
-      this.player.y,
-      this.boss.x,
-      this.boss.y,
-    );
-
-    if (bossDistance < 100) {
-      nearbyBoss = this.boss;
     }
   }
 
