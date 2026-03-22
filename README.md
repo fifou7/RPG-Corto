@@ -17,19 +17,19 @@ npm i
 
 4. Configurez les migrations depuuis le terminal
 
-cd Migration
+
 
 ## Créer la base de données :
 
-Node dbCreate.js
+Node Migration/dbCreate.js
 
 ## Créer les tables
 
-Node tableCreate.js
+Node Migration/tableCreate.js
 
 ## Créer les fixtures
 
-Node fixtures.js
+Node Migration/fixtures.js
 
 4. Configuration
 
