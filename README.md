@@ -12,6 +12,7 @@ https://github.com/fifou7/RPG-Corto.git
 2. Allumer le serveur via MAMP
 
 3. Installer les dépendances
+
 npm i
 
 4. Configurez les migrations depuuis le terminal
