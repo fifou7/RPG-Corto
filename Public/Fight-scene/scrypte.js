@@ -250,6 +250,18 @@ async function create() {
 
   console.log(characters, mobs);
 
+  const responseSkills = await fetch("http://localhost:3000/skills");
+  const skills = await responseSkills.json();
+
+  const tidusSkill = skills.find(s => s.name === "Enchainement dévastateur");
+  const soraSkill = skills.find(s => s.name === "KeyBlade rush");
+  const lunaSkill = skills.find(s => s.name === "Big bang");
+
+  Tidus.skill = tidusSkill;
+  Sora.skill = soraSkill;
+  Lunafreya.skill = lunaSkill;
+  console.log(skills);
+
   // Verification
   const tidusData = characters.find(c => c.name === "Tidus");
   const soraData = characters.find(c => c.name === "Sora");
@@ -643,9 +655,9 @@ function showDamage(scene, target, damage) {
 }
 
 const ATTACK_TABLE = {
-  'Tidus': { min: 515, max: 620 },
-  'Sora': { min: 290, max: 611 },
-  'Lunafreya': { min: 411, max: 712 },
+  'Tidus': { min: 50, max: 100 },
+  'Sora': { min: 90, max: 100 },
+  'Lunafreya': { min: 90, max: 100 },
   'mibombo': { min: 100, max: 150 },
   'Mibombo': { min: 100, max: 150 }
 };
@@ -847,7 +859,6 @@ function update(time, delta) {
     }
 
     // VICTOIRE
-    // VICTOIRE
 if (!Bombo1.alive && !Bombo2.alive && !victoryStarted && !defeatStarted) {
     victoryStarted = true;
     atbPaused = true;
@@ -1027,7 +1038,7 @@ function updateCurrentAction() {
 
                     if (target.alive) {
                         let damage = calculateDamage("Lunafreya");
-                        if (Lunafreya.useSkill) damage = Math.floor(damage * 2.5);
+                       if (Lunafreya.useSkill) damage = Math.floor(damage * (1 + Lunafreya.skill.DMG / 100));
                         target.currentHP -= damage;
                         showDamage(gameScene, target, damage);
 
@@ -1137,7 +1148,8 @@ function updateCurrentAction() {
                     let damage;
                     if (isHero) {
                         damage = calculateDamage(attacker.stats.name);
-                        if (attacker.useSkill) damage = Math.floor(damage * 2.5);
+                        if (attacker.useSkill && who === "Tidus") damage = Math.floor(damage * (1 + Tidus.skill.DMG / 100));
+                        if (attacker.useSkill && who === "Sora") damage = Math.floor(damage * (1 + Sora.skill.DMG / 100));
                     } else {
                         damage = calculateDamage("Mibombo");
                     }
@@ -1264,54 +1276,55 @@ function startAction(who) {
     attacker.hasHit = false;  
   
 
-    // === TIDUS ===
-    if (who === "Tidus") {
-        Tidus.attackCount = (Tidus.attackCount || 0) + 1;
-        if (Tidus.attackCount >= 3 && Tidus.currentMana >= 30) {
-            attacker.attackCount = 0;
-            Tidus.useSkill = true;
-            Tidus.currentMana -= 30;
-            let barreMana = document.querySelector(".jaugeManaTidus");
-            if (barreMana) barreMana.style.width = Math.max(0, (Tidus.currentMana / Tidus.stats.MANA) * 100) + "%";
-        } else {
-            Tidus.useSkill = false;
-            if (Tidus.attackCount >= 3) Tidus.attackCount = 0;
-        }
-        attacker.targetX = target.sprite.x - 120;
-        attacker.targetY = target.sprite.y;
+   // === TIDUS ===
+if (who === "Tidus") {
+    Tidus.attackCount = (Tidus.attackCount || 0) + 1;
+    if (Tidus.attackCount >= 3 && Tidus.currentMana >= Tidus.skill.mana_cost) {
+        attacker.attackCount = 0;
+        Tidus.useSkill = true;
+        Tidus.currentMana -= Tidus.skill.mana_cost;
+        let barreMana = document.querySelector(".jaugeManaTidus");
+        if (barreMana) barreMana.style.width = Math.max(0, (Tidus.currentMana / Tidus.stats.MANA) * 100) + "%";
+    } else {
+        Tidus.useSkill = false;
+        if (Tidus.attackCount >= 3) Tidus.attackCount = 0;
     }
+    attacker.targetX = target.sprite.x - 120;
+    attacker.targetY = target.sprite.y;
+}
 
-    // === SORA ===
-    if (who === "Sora") {
-        Sora.attackCount = (Sora.attackCount || 0) + 1;
-        if (Sora.attackCount >= 3 && Sora.currentMana >= 30) {
-             attacker.attackCount = 0;
-            Sora.useSkill = true;
-            Sora.currentMana -= 30;
-            let barreMana = document.querySelector(".jaugeManaSora");
-            if (barreMana) barreMana.style.width = Math.max(0, (Sora.currentMana / Sora.stats.MANA) * 100) + "%";
-        } else {
-            Sora.useSkill = false;
-            if (Sora.attackCount >= 3) Sora.attackCount = 0;
-        }
-        attacker.targetX = target.sprite.x - 120;
-        attacker.targetY = target.sprite.y;
+// === SORA ===
+if (who === "Sora") {
+    Sora.attackCount = (Sora.attackCount || 0) + 1;
+    if (Sora.attackCount >= 3 && Sora.currentMana >= Sora.skill.mana_cost) {
+        attacker.attackCount = 0;
+        Sora.useSkill = true;
+        Sora.currentMana -= Sora.skill.mana_cost;
+        let barreMana = document.querySelector(".jaugeManaSora");
+        if (barreMana) barreMana.style.width = Math.max(0, (Sora.currentMana / Sora.stats.MANA) * 100) + "%";
+    } else {
+        Sora.useSkill = false;
+        if (Sora.attackCount >= 3) Sora.attackCount = 0;
     }
+    attacker.targetX = target.sprite.x - 120;
+    attacker.targetY = target.sprite.y;
+}
 
-    // === LUNAFREYA ===
-    if (who === "Lunafreya") {
-        Lunafreya.attackCount = (Lunafreya.attackCount || 0) + 1;
-        if (Lunafreya.attackCount >= 3 && Lunafreya.currentMana >= 30) {
-            attacker.attackCount = 0;
-            Lunafreya.useSkill = true;
-            Lunafreya.currentMana -= 30;
-            let barreMana = document.querySelector(".jaugeManaLunafreya");
-            if (barreMana) barreMana.style.width = Math.max(0, (Lunafreya.currentMana / Lunafreya.stats.MANA) * 100) + "%";
-        } else {
-            Lunafreya.useSkill = false;
-            if (Lunafreya.attackCount >= 3) Lunafreya.attackCount = 0;
-        }
+// === LUNAFREYA ===
+if (who === "Lunafreya") {
+    Lunafreya.attackCount = (Lunafreya.attackCount || 0) + 1;
+    if (Lunafreya.attackCount >= 3 && Lunafreya.currentMana >= Lunafreya.skill.mana_cost) {
+        attacker.attackCount = 0;
+        Lunafreya.useSkill = true;
+        Lunafreya.currentMana -= Lunafreya.skill.mana_cost;
+        let barreMana = document.querySelector(".jaugeManaLunafreya");
+        if (barreMana) barreMana.style.width = Math.max(0, (Lunafreya.currentMana / Lunafreya.stats.MANA) * 100) + "%";
+    } else {
+        Lunafreya.useSkill = false;
+        if (Lunafreya.attackCount >= 3) Lunafreya.attackCount = 0;
     }
+}
+
 
     // === BOMBO1 ===
     if (who === "Bombo1") {
