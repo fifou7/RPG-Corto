@@ -69,5 +69,6 @@ gestion de données en base SQL
 logique de jeu côté front
 
 👥 Équipe
-Benjamin
-Famah
+
+Benjamin Thevenot
+Famah Sylla
