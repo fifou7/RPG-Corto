@@ -48,15 +48,15 @@ http://localhost:8081/assets/maps/
 🧠 Architecture
 Astra/
 
-├── assets/maps        → Overworld (exploration)
+assets/maps        → Overworld (exploration)
 
-├── Boss-Fight         → Combat boss
+Boss-Fight         → Combat boss
 
-├── Fight-scene        → Combats aléatoires
+Fight-scene        → Combats aléatoires
 
-├── routes             → API endpoints
+routes             → API endpoints
 
-└──services           → Logique backend
+services           → Logique backend
 
 🔗 API
 Endpoint	Description
