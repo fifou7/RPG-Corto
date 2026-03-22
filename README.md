@@ -59,7 +59,9 @@ routes             → API endpoints
 services           → Logique backend
 
 🔗 API
+
 Endpoint	Description
+
 /pnj	Récupère les PNJ
 /dialogues/:id	Dialogues d’un PNJ
 /characters	Stats des personnages
