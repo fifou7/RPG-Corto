@@ -25,7 +25,7 @@ const config = {
   scene: {
     preload: preload,
     create: create,
-    update: update
+    update: update,
   },
 
   scale: {
@@ -34,16 +34,16 @@ const config = {
     autoCenter: Phaser.Scale.CENTER_BOTH,
     width: "100%",
     height: "100%",
-    zoom: 1
+    zoom: 1,
   },
 
   physics: {
     default: "arcade",
     arcade: {
       debug: true,
-      gravity: { y: 0 }
-    }
-  }
+      gravity: { y: 0 },
+    },
+  },
 };
 
 const game = new Phaser.Game(config);
@@ -51,7 +51,10 @@ const game = new Phaser.Game(config);
 console.log(game);
 
 function getIdleTexture(character) {
-  if (character.currentHP <= character.stats.Health / 2 && character.currentHP > 0) {
+  if (
+    character.currentHP <= character.stats.Health / 2 &&
+    character.currentHP > 0
+  ) {
     return character.stats.name + "-mid-life";
   }
   return character.stats.name;
@@ -140,7 +143,7 @@ function preload() {
   this.load.image("Lunafreya-skill-7", "../Images/Lunafreya-skill-7.png");
   this.load.image("Lunafreya-skill-8", "../Images/Lunafreya-skill-8.png");
 
-  // Sephiroth 
+  // Sephiroth
   this.load.image("Sephiroth-state-1", "../Images/Sephiroth-state-1.png");
   this.load.image("Sephiroth-state-2", "../Images/Sephiroth-state-2.png");
   this.load.image("Sephiroth-state-3", "../Images/Sephiroth-state-3.png");
@@ -182,11 +185,9 @@ function preload() {
   this.load.image("Sephiroth-run", "../Images/Sephiroth-run.png");
   this.load.image("Sephiroth-back", "../Images/Sephiroth-back.png");
 
-
   // Background
   this.load.image("background-fight", "../Images/image-de-fond-fight.png");
 }
-
 
 async function create() {
   gameScene = this;
@@ -205,25 +206,20 @@ async function create() {
 
   console.log(SephirothData);
   console.log(skills);
-  
 
-  const tidusSkill = skills.find(s => s.name === "Enchainement dévastateur");
-  const soraSkill = skills.find(s => s.name === "KeyBlade rush");
-  const lunaSkill = skills.find(s => s.name === "Big bang");
-  const sephirothSkill = skills.find(s => s.name === "Octaslash");
+  const tidusSkill = skills.find((s) => s.name === "Enchainement dévastateur");
+  const soraSkill = skills.find((s) => s.name === "KeyBlade rush");
+  const lunaSkill = skills.find((s) => s.name === "Big bang");
+  const sephirothSkill = skills.find((s) => s.name === "Octaslash");
 
   Tidus.skill = tidusSkill;
   Sora.skill = soraSkill;
   Lunafreya.skill = lunaSkill;
   Sephiroth.skill = sephirothSkill;
 
-  const tidusData = characters.find(c => c.name === "Tidus");
-  const soraData = characters.find(c => c.name === "Sora");
-  const lunaData = characters.find(c => c.name === "Lunafreya");
-
-
- 
-  
+  const tidusData = characters.find((c) => c.name === "Tidus");
+  const soraData = characters.find((c) => c.name === "Sora");
+  const lunaData = characters.find((c) => c.name === "Lunafreya");
 
   // ATB speeds
   TIDUS_SPEED = 100 / tidusData.atb_jauge;
@@ -241,9 +237,8 @@ async function create() {
 
   // ANIMATIONS
 
-
   // Sephiroth state
-this.anims.create({
+  this.anims.create({
     key: "Sephiroth-state",
     frames: [
       { key: "Sephiroth-state-1" },
@@ -251,10 +246,10 @@ this.anims.create({
       { key: "Sephiroth-state-3" },
     ],
     frameRate: 3,
-    repeat: -1
+    repeat: -1,
   });
 
-//
+  //
   this.anims.create({
     key: "Sephiroth-atk",
     frames: [
@@ -277,9 +272,8 @@ this.anims.create({
       { key: "Sephiroth-atk-19" },
     ],
     frameRate: 10,
-    repeat: -1
+    repeat: -1,
   });
-
 
   // Sora attaque
   this.anims.create({
@@ -289,10 +283,10 @@ this.anims.create({
       { key: "Sora-atk-2" },
       { key: "Sora-atk-3" },
       { key: "Sora-atk-4" },
-      { key: "Sora-atk-5" }
+      { key: "Sora-atk-5" },
     ],
     frameRate: 10,
-    repeat: 0
+    repeat: 0,
   });
 
   // Sora skill
@@ -306,10 +300,10 @@ this.anims.create({
       { key: "Sora-skill-5" },
       { key: "Sora-skill-6" },
       { key: "Sora-skill-7" },
-      { key: "Sora-skill-8" }
+      { key: "Sora-skill-8" },
     ],
     frameRate: 12,
-    repeat: 0
+    repeat: 0,
   });
 
   // Tidus attaque
@@ -322,10 +316,10 @@ this.anims.create({
       { key: "Tidus-atk-4" },
       { key: "Tidus-atk-5" },
       { key: "Tidus-atk-6" },
-      { key: "Tidus-atk-7" }
+      { key: "Tidus-atk-7" },
     ],
     frameRate: 12,
-    repeat: 0
+    repeat: 0,
   });
 
   // Tidus skill
@@ -355,10 +349,10 @@ this.anims.create({
       { key: "Tidus-skill-21" },
       { key: "Tidus-skill-22" },
       { key: "Tidus-skill-23" },
-      { key: "Tidus-skill-24" }
+      { key: "Tidus-skill-24" },
     ],
     frameRate: 12,
-    repeat: 0
+    repeat: 0,
   });
 
   // Lunafreya attaque
@@ -371,10 +365,10 @@ this.anims.create({
       { key: "Lunafreya-atk-4" },
       { key: "Lunafreya-atk-5" },
       { key: "Lunafreya-atk-6" },
-      { key: "Lunafreya-atk-7" }
+      { key: "Lunafreya-atk-7" },
     ],
     frameRate: 10,
-    repeat: 0
+    repeat: 0,
   });
 
   // Lunafreya skill
@@ -387,10 +381,10 @@ this.anims.create({
       { key: "Lunafreya-skill-4" },
       { key: "Lunafreya-skill-5" },
       { key: "Lunafreya-skill-6" },
-      { key: "Lunafreya-skill-7" }
+      { key: "Lunafreya-skill-7" },
     ],
     frameRate: 10,
-    repeat: 0
+    repeat: 0,
   });
 
   // Luna magic effects
@@ -398,14 +392,14 @@ this.anims.create({
     key: "luna-magic-effect",
     frames: [{ key: "Lunafreya-atk-8" }],
     frameRate: 6,
-    repeat: 0
+    repeat: 0,
   });
 
   this.anims.create({
     key: "luna-magic-effect-skill",
     frames: [{ key: "Lunafreya-skill-8" }],
     frameRate: 6,
-    repeat: 0
+    repeat: 0,
   });
 
   // === PERSONNAGES ===
@@ -431,39 +425,39 @@ this.anims.create({
   Sephiroth.stats = SephirothData;
   Sephiroth.currentHP = SephirothData.Health;
   Sephiroth.currentMana = SephirothData.MANA;
-  Sephiroth.sprite = this.add.sprite(config.width *0.75, 280, "Sephiroth");
+  Sephiroth.sprite = this.add.sprite(config.width * 0.75, 280, "Sephiroth");
   Sephiroth.sprite.anims.play("Sephiroth-atk");
 
-  
   sceneReady = true;
 }
 
-
 // Afficher dégâts
 function showDamage(scene, target, damage) {
-  let dmgText = scene.add.text(target.sprite.x, target.sprite.y - 50, damage, {
-    fontSize: '32px',
-    fontFamily: 'Arial',
-    color: '#ffffff',
-    stroke: '#ff0000',
-    strokeThickness: 4,
-    fontStyle: 'bold'
-  }).setOrigin(0.5);
+  let dmgText = scene.add
+    .text(target.sprite.x, target.sprite.y - 50, damage, {
+      fontSize: "32px",
+      fontFamily: "Arial",
+      color: "#ffffff",
+      stroke: "#ff0000",
+      strokeThickness: 4,
+      fontStyle: "bold",
+    })
+    .setOrigin(0.5);
 
   scene.tweens.add({
     targets: dmgText,
     y: dmgText.y - 60,
     alpha: 0,
     duration: 1000,
-    ease: 'Power2',
-    onComplete: () => dmgText.destroy()
+    ease: "Power2",
+    onComplete: () => dmgText.destroy(),
   });
 }
 
 const ATTACK_TABLE = {
-  'Tidus': { min: 50, max: 100 },
-  'Sora': { min: 90, max: 100 },
-  'Lunafreya': { min: 90, max: 100 }
+  Tidus: { min: 50, max: 100 },
+  Sora: { min: 90, max: 100 },
+  Lunafreya: { min: 90, max: 100 },
 };
 
 function calculateDamage(attackerName) {
@@ -472,12 +466,12 @@ function calculateDamage(attackerName) {
 }
 
 function moveCursor(persoName) {
-  document.querySelectorAll(".perso-ligne").forEach(ligne => {
+  document.querySelectorAll(".perso-ligne").forEach((ligne) => {
     const cursor = ligne.querySelector(".cursor");
     if (cursor) cursor.remove();
   });
 
-  document.querySelectorAll(".perso-ligne").forEach(ligne => {
+  document.querySelectorAll(".perso-ligne").forEach((ligne) => {
     const name = ligne.querySelector(".NamePerso");
     if (name && name.textContent.trim().includes(persoName)) {
       const img = document.createElement("img");
@@ -489,7 +483,7 @@ function moveCursor(persoName) {
 }
 
 function getRandomHero() {
-  let aliveHeroes = [Tidus, Sora, Lunafreya].filter(h => h.alive);
+  let aliveHeroes = [Tidus, Sora, Lunafreya].filter((h) => h.alive);
   if (aliveHeroes.length === 0) return null;
   return aliveHeroes[Math.floor(Math.random() * aliveHeroes.length)];
 }
@@ -518,19 +512,34 @@ function checkDeath(character) {
 
     let homeX, homeY;
     if (character === Tidus) {
-      homeX = config.width * 0.26; homeY = 150;
-      tidusAttacking = true; tidusATB = 0;
-      Tidus.isMovingToAttack = true; Tidus.isRetreating = false; Tidus.startX = null; Tidus.stepsMade = 0;
+      homeX = config.width * 0.26;
+      homeY = 150;
+      tidusAttacking = true;
+      tidusATB = 0;
+      Tidus.isMovingToAttack = true;
+      Tidus.isRetreating = false;
+      Tidus.startX = null;
+      Tidus.stepsMade = 0;
     }
     if (character === Sora) {
-      homeX = config.width * 0.24; homeY = 420;
-      soraAttacking = true; soraATB = 0;
-      Sora.isMovingToAttack = true; Sora.isRetreating = false; Sora.startX = null; Sora.stepsMade = 0;
+      homeX = config.width * 0.24;
+      homeY = 420;
+      soraAttacking = true;
+      soraATB = 0;
+      Sora.isMovingToAttack = true;
+      Sora.isRetreating = false;
+      Sora.startX = null;
+      Sora.stepsMade = 0;
     }
     if (character === Lunafreya) {
-      homeX = config.width * 0.22; homeY = 290;
-      lunaAttacking = true; lunaATB = 0;
-      Lunafreya.isMovingToAttack = true; Lunafreya.isRetreating = false; Lunafreya.startX = null; Lunafreya.stepsMade = 0;
+      homeX = config.width * 0.22;
+      homeY = 290;
+      lunaAttacking = true;
+      lunaATB = 0;
+      Lunafreya.isMovingToAttack = true;
+      Lunafreya.isRetreating = false;
+      Lunafreya.startX = null;
+      Lunafreya.stepsMade = 0;
     }
 
     character.sprite.setPosition(homeX, homeY);
@@ -545,7 +554,10 @@ function checkDeath(character) {
 
 function checkMidLife(character) {
   if (!character.alive) return;
-  if (character.currentHP <= character.stats.Health / 2 && character.currentHP > 0) {
+  if (
+    character.currentHP <= character.stats.Health / 2 &&
+    character.currentHP > 0
+  ) {
     let currentTexture = character.sprite.texture.key;
     let idleName = character.stats.name;
     if (currentTexture === idleName) {
@@ -557,7 +569,6 @@ function checkMidLife(character) {
 let actionQueue = [];
 let currentAction = null;
 let atbPaused = false;
-
 
 function update(time, delta) {
   if (!sceneReady) return;
@@ -618,7 +629,7 @@ function update(time, delta) {
     currentAction = null;
     actionQueue = [];
 
-    [Tidus, Sora, Lunafreya].forEach(hero => {
+    [Tidus, Sora, Lunafreya].forEach((hero) => {
       gameScene.tweens.killTweensOf(hero.sprite);
       if (hero.sprite.anims) hero.sprite.anims.stop();
       hero.sprite.setTexture(hero.stats.name + "-death");
@@ -628,24 +639,22 @@ function update(time, delta) {
     if (hud) hud.style.display = "none";
 
     gameScene.time.delayedCall(500, () => {
-      let defeatText = gameScene.add.text(
-        config.width / 2, config.height / 2 - 80,
-        "DEFEAT...",
-        {
+      let defeatText = gameScene.add
+        .text(config.width / 2, config.height / 2 - 80, "DEFEAT...", {
           fontSize: "64px",
           fontFamily: "Arial",
           color: "#FF0000",
           stroke: "#000",
-          strokeThickness: 6
-        }
-      ).setOrigin(0.5);
+          strokeThickness: 6,
+        })
+        .setOrigin(0.5);
 
       defeatText.setScale(0);
       gameScene.tweens.add({
         targets: defeatText,
         scale: 1,
         duration: 600,
-        ease: "Back.easeOut"
+        ease: "Back.easeOut",
       });
 
       gameScene.time.delayedCall(3000, () => {
@@ -655,7 +664,7 @@ function update(time, delta) {
   }
 
   // Nettoyer la queue des morts
-  actionQueue = actionQueue.filter(a => {
+  actionQueue = actionQueue.filter((a) => {
     if (a === "Tidus" && !Tidus.alive) return false;
     if (a === "Sora" && !Sora.alive) return false;
     if (a === "Lunafreya" && !Lunafreya.alive) return false;
@@ -663,15 +672,21 @@ function update(time, delta) {
   });
 }
 
-
 // === MISE À JOUR DE L'ACTION EN COURS ===
 function updateCurrentAction() {
-  let attacker, who = currentAction;
+  let attacker,
+    who = currentAction;
 
   switch (who) {
-    case "Tidus": attacker = Tidus; break;
-    case "Sora": attacker = Sora; break;
-    case "Lunafreya": attacker = Lunafreya; break;
+    case "Tidus":
+      attacker = Tidus;
+      break;
+    case "Sora":
+      attacker = Sora;
+      break;
+    case "Lunafreya":
+      attacker = Lunafreya;
+      break;
   }
 
   if (!attacker || !attacker.alive) {
@@ -687,8 +702,11 @@ function updateCurrentAction() {
       let animKey = Lunafreya.useSkill ? "Lunafreya-skill" : "Lunafreya-atk";
       Lunafreya.sprite.anims.play(animKey);
 
-      Lunafreya.sprite.once('animationcomplete', () => {
-        if (!Lunafreya.alive) { finishAction(who); return; }
+      Lunafreya.sprite.once("animationcomplete", () => {
+        if (!Lunafreya.alive) {
+          finishAction(who);
+          return;
+        }
 
         if (Lunafreya.useSkill) {
           Lunafreya.sprite.setTexture("Lunafreya-skill-7");
@@ -696,24 +714,34 @@ function updateCurrentAction() {
           Lunafreya.sprite.setTexture("Lunafreya-atk-7");
         }
 
-        let effectKey = Lunafreya.useSkill ? "luna-magic-effect-skill" : "luna-magic-effect";
-        let effectTexture = Lunafreya.useSkill ? "Lunafreya-skill-8" : "Lunafreya-atk-8";
-        let magicEffect = gameScene.add.sprite(target.sprite.x, target.sprite.y, effectTexture);
+        let effectKey = Lunafreya.useSkill
+          ? "luna-magic-effect-skill"
+          : "luna-magic-effect";
+        let effectTexture = Lunafreya.useSkill
+          ? "Lunafreya-skill-8"
+          : "Lunafreya-atk-8";
+        let magicEffect = gameScene.add.sprite(
+          target.sprite.x,
+          target.sprite.y,
+          effectTexture,
+        );
         magicEffect.setScale(0.5);
         magicEffect.anims.play(effectKey);
 
-        magicEffect.once('animationcomplete', () => {
+        magicEffect.once("animationcomplete", () => {
           magicEffect.destroy();
 
           if (target.alive) {
             let damage = calculateDamage("Lunafreya");
-            if (Lunafreya.useSkill) damage = Math.floor(damage * (1 + Lunafreya.skill.DMG / 100));
+            if (Lunafreya.useSkill)
+              damage = Math.floor(damage * (1 + Lunafreya.skill.DMG / 100));
             target.currentHP -= damage;
             showDamage(gameScene, target, damage);
 
             target.sprite.setTint(0xff0000);
             gameScene.time.delayedCall(300, () => {
-              if (target.sprite && target.sprite.active) target.sprite.clearTint();
+              if (target.sprite && target.sprite.active)
+                target.sprite.clearTint();
             });
 
             if (target.currentHP <= 0) {
@@ -766,14 +794,17 @@ function updateCurrentAction() {
       attacker.sprite.once("animationcomplete", () => {
         if (target && target.alive) {
           let damage = calculateDamage(who);
-          if (attacker.useSkill && who === "Tidus") damage = Math.floor(damage * (1 + Tidus.skill.DMG / 100));
-          if (attacker.useSkill && who === "Sora") damage = Math.floor(damage * (1 + Sora.skill.DMG / 100));
+          if (attacker.useSkill && who === "Tidus")
+            damage = Math.floor(damage * (1 + Tidus.skill.DMG / 100));
+          if (attacker.useSkill && who === "Sora")
+            damage = Math.floor(damage * (1 + Sora.skill.DMG / 100));
           target.currentHP -= damage;
           showDamage(gameScene, target, damage);
 
           target.sprite.setTint(0xff0000);
           gameScene.time.delayedCall(300, () => {
-            if (target.sprite && target.sprite.active) target.sprite.clearTint();
+            if (target.sprite && target.sprite.active)
+              target.sprite.clearTint();
           });
 
           if (target.currentHP <= 0) {
@@ -810,13 +841,11 @@ function updateCurrentAction() {
   }
 }
 
-
 // === TERMINER UNE ACTION ===
 function finishAction(who) {
   currentAction = null;
   atbPaused = false;
 }
-
 
 // === DÉMARRER UNE ACTION ===
 function startAction(who) {
@@ -845,7 +874,9 @@ function startAction(who) {
       Tidus.useSkill = true;
       Tidus.currentMana -= Tidus.skill.mana_cost;
       let barreMana = document.querySelector(".jaugeManaTidus");
-      if (barreMana) barreMana.style.width = Math.max(0, (Tidus.currentMana / Tidus.stats.MANA) * 100) + "%";
+      if (barreMana)
+        barreMana.style.width =
+          Math.max(0, (Tidus.currentMana / Tidus.stats.MANA) * 100) + "%";
     } else {
       Tidus.useSkill = false;
       if (Tidus.attackCount >= 3) Tidus.attackCount = 0;
@@ -862,7 +893,9 @@ function startAction(who) {
       Sora.useSkill = true;
       Sora.currentMana -= Sora.skill.mana_cost;
       let barreMana = document.querySelector(".jaugeManaSora");
-      if (barreMana) barreMana.style.width = Math.max(0, (Sora.currentMana / Sora.stats.MANA) * 100) + "%";
+      if (barreMana)
+        barreMana.style.width =
+          Math.max(0, (Sora.currentMana / Sora.stats.MANA) * 100) + "%";
     } else {
       Sora.useSkill = false;
       if (Sora.attackCount >= 3) Sora.attackCount = 0;
@@ -874,12 +907,18 @@ function startAction(who) {
   // === LUNAFREYA ===
   if (who === "Lunafreya") {
     Lunafreya.attackCount = (Lunafreya.attackCount || 0) + 1;
-    if (Lunafreya.attackCount >= 3 && Lunafreya.currentMana >= Lunafreya.skill.mana_cost) {
+    if (
+      Lunafreya.attackCount >= 3 &&
+      Lunafreya.currentMana >= Lunafreya.skill.mana_cost
+    ) {
       attacker.attackCount = 0;
       Lunafreya.useSkill = true;
       Lunafreya.currentMana -= Lunafreya.skill.mana_cost;
       let barreMana = document.querySelector(".jaugeManaLunafreya");
-      if (barreMana) barreMana.style.width = Math.max(0, (Lunafreya.currentMana / Lunafreya.stats.MANA) * 100) + "%";
+      if (barreMana)
+        barreMana.style.width =
+          Math.max(0, (Lunafreya.currentMana / Lunafreya.stats.MANA) * 100) +
+          "%";
     } else {
       Lunafreya.useSkill = false;
       if (Lunafreya.attackCount >= 3) Lunafreya.attackCount = 0;
