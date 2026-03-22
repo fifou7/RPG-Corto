@@ -19,7 +19,7 @@ npm i
 
 cd Migration
 
-## Créer la base de donées :
+## Créer la base de données :
 
 Node dbCreate.js
 
