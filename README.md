@@ -15,7 +15,7 @@ https://github.com/fifou7/RPG-Corto.git
 
 npm i
 
-4. Configurez les migrations depuuis le terminal
+4. Configurez les migrations depuis le terminal
 
 
 
