@@ -143,23 +143,25 @@ function preload() {
   this.load.image("Sephiroth-state-1", "../Images/Sephiroth-state-1.png");
   this.load.image("Sephiroth-state-2", "../Images/Sephiroth-state-2.png");
   this.load.image("Sephiroth-state-3", "../Images/Sephiroth-state-3.png");
-  this.load.image("Lunafreya-win", "../Images/Lunafreya-win.png");
-  this.load.image("Lunafreya-atk-1", "../Images/Lunafreya-atk-1.png");
-  this.load.image("Lunafreya-atk-2", "../Images/Lunafreya-atk-2.png");
-  this.load.image("Lunafreya-atk-3", "../Images/Lunafreya-atk-3.png");
-  this.load.image("Lunafreya-atk-4", "../Images/Lunafreya-atk-4.png");
-  this.load.image("Lunafreya-atk-5", "../Images/Lunafreya-atk-5.png");
-  this.load.image("Lunafreya-atk-6", "../Images/Lunafreya-atk-6.png");
-  this.load.image("Lunafreya-atk-7", "../Images/Lunafreya-atk-7.png");
-  this.load.image("Lunafreya-atk-8", "../Images/Lunafreya-atk-8.png");
-  this.load.image("Lunafreya-skill-1", "../Images/Lunafreya-skill-1.png");
-  this.load.image("Lunafreya-skill-2", "../Images/Lunafreya-skill-2.png");
-  this.load.image("Lunafreya-skill-3", "../Images/Lunafreya-skill-3.png");
-  this.load.image("Lunafreya-skill-4", "../Images/Lunafreya-skill-4.png");
-  this.load.image("Lunafreya-skill-5", "../Images/Lunafreya-skill-5.png");
-  this.load.image("Lunafreya-skill-6", "../Images/Lunafreya-skill-6.png");
-  this.load.image("Lunafreya-skill-7", "../Images/Lunafreya-skill-7.png");
-  this.load.image("Lunafreya-skill-8", "../Images/Lunafreya-skill-8.png");
+  this.load.image("Sephiroth-atk-1", "../Images/Sephiroth-atk-1.png");
+  this.load.image("Sephiroth-atk-2", "../Images/Sephiroth-atk-2.png");
+  this.load.image("Sephiroth-atk-3", "../Images/Sephiroth-atk-3.png");
+  this.load.image("Sephiroth-atk-4", "../Images/Sephiroth-atk-4.png");
+  this.load.image("Sephiroth-atk-5", "../Images/Sephiroth-atk-5.png");
+  this.load.image("Sephiroth-atk-6", "../Images/Sephiroth-atk-6.png");
+  this.load.image("Sephiroth-atk-7", "../Images/Sephiroth-atk-7.png");
+  this.load.image("Sephiroth-atk-8", "../Images/Sephiroth-atk-8.png");
+  this.load.image("Sephiroth-atk-9", "../Images/Sephiroth-atk-9.png");
+  this.load.image("Sephiroth-atk-10", "../Images/Sephiroth-atk-10.png");
+  this.load.image("Sephiroth-atk-11", "../Images/Sephiroth-atk-11.png");
+  this.load.image("Sephiroth-atk-12", "../Images/Sephiroth-atk-12.png");
+  this.load.image("Sephiroth-atk-13", "../Images/Sephiroth-atk-13.png");
+  this.load.image("Sephiroth-atk-14", "../Images/Sephiroth-atk-14.png");
+  this.load.image("Sephiroth-atk-15", "../Images/Sephiroth-atk-15.png");
+  this.load.image("Sephiroth-atk-16", "../Images/Sephiroth-atk-16.png");
+  this.load.image("Sephiroth-atk-17", "../Images/Sephiroth-atk-17.png");
+  this.load.image("Sephiroth-atk-18", "../Images/Sephiroth-atk-18.png");
+  
 
 
   // Background
