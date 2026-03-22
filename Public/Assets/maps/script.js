@@ -62,6 +62,9 @@ function preload() {
   this.load.image("NPC-1", "../../Images/NPC-1.png");
   this.load.image("NPC-2", "../../Images/NPC-2.png");
   this.load.image("old-man", "../../Images/old-man.png");
+
+  //boss
+  this.load.image("Sephiroth", "../../Images/Sephiroth.png");
 }
 
 async function create() {
@@ -244,7 +247,7 @@ async function create() {
     }
 
     if (pnj.id === 3) {
-      const npcSprite = this.npcs.create(1983, -415, imageKey).setScale(0.15);
+      const npcSprite = this.npcs.create(2206, 30, imageKey).setScale(0.15);
       npcSprite.refreshBody();
       npcSprite.setData("id", pnj.id);
       npcSprite.setData("name", pnj.name);
@@ -296,6 +299,23 @@ async function create() {
     .setVisible(false);
 
   this.physics.add.collider(this.player, this.npcs);
+
+  // fetch sephiroth
+
+  const responseBoss = await fetch("http://localhost:3000/boss");
+  const boss = await responseBoss.json();
+  console.log("Boss récupéré :", boss);
+
+  const bossImageKey = boss.image.replace(".png", "");
+
+  this.boss = this.physics.add.staticSprite(1965, -415, bossImageKey);
+  this.boss.setScale(1.3);
+  this.boss.refreshBody();
+  this.boss.setData("id", boss.id);
+  this.boss.setData("name", boss.name);
+  this.boss.setData("isBoss", true);
+
+  this.physics.add.collider(this.player, this.boss);
 
   // Battle transition
 
@@ -479,19 +499,36 @@ function update(time, delta) {
     }
   }
 
-  // random battle time
+  // Boss detection
+
+  let nearbyBoss = null;
+
+  if (this.boss) {
+    const bossDistance = Phaser.Math.Distance.Between(
+      this.player.x,
+      this.player.y,
+      this.boss.x,
+      this.boss.y,
+    );
+
+    if (bossDistance < 100) {
+      nearbyBoss = this.boss;
+    }
+  }
+
+  // Encounter trigger
 
   if (this.encounterGraceTime > 0) {
     this.encounterGraceTime -= delta;
   }
 
-  // test manuel avec la touche B
+  // manual fighht
   if (Phaser.Input.Keyboard.JustDown(this.debugBattleKey)) {
     this.startBattleTransition();
     return;
   }
 
-  // rencontre aléatoire seulement en déplacement
+  // random battle trigger
   if (
     moving &&
     !this.isDialogueActive &&

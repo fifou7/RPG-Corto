@@ -70,21 +70,20 @@ con.connect(function (err) {
     console.log("Table created");
   });
 
-// fixtures skills
+  // fixtures skills
 
-let sqlskills = "INSERT INTO skills (id, name, DMG, MANA_cost) VALUES ?";
+  let sqlskills = "INSERT INTO skills (id, name, DMG, MANA_cost) VALUES ?";
   let skillsValues = [
     [1, "Enchainement dévastateur", 30, 50],
     [2, "Big bang", 30, 50],
     [3, "KeyBlade rush", 30, 50],
+    [4, "Octaslash", 30, 50],
   ];
 
   con.query(sqlskills, [skillsValues], function (err) {
     if (err) throw err;
     console.log("Skills fixtures inserted");
   });
-
-
 
   // fixtures npc
 
@@ -188,8 +187,7 @@ let sqlskills = "INSERT INTO skills (id, name, DMG, MANA_cost) VALUES ?";
     console.log("Mobs fixtures inserted");
   });
 
-
-// BlackKnight
+  // BlackKnight
   let sqlBlackKnight =
     "INSERT INTO mobs (name, gender, image, category, level, ATK, DEF, Health, MANA, speed, atb_jauge, magic, spirit, dodge, accuracy, DMG) VALUES ?";
   let mobValuesBlackKnight = [
@@ -218,4 +216,33 @@ let sqlskills = "INSERT INTO skills (id, name, DMG, MANA_cost) VALUES ?";
     console.log("Mobs BlackKnight fixtures inserted");
   });
 
+  // Sephiroth
+
+  let sqlSephiroth =
+    "INSERT INTO boss (name, gender, image, category, level, ATK, DEF, Health, MANA, speed, atb_jauge, magic, spirit, dodge, accuracy, DMG) VALUES ?";
+  let SephirothValues = [
+    [
+      "Sephiroth",
+      "Other",
+      "Sephiroth.png",
+      "Enemy",
+      10,
+      250,
+      500,
+      4500,
+      500,
+      50,
+      7,
+      35,
+      25,
+      20,
+      40,
+      600,
+    ],
+  ];
+
+  con.query(sqlSephiroth, [SephirothValues], function (err) {
+    if (err) throw err;
+    console.log("Mobs Sephiroth fixtures inserted");
+  });
 });

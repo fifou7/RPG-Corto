@@ -86,4 +86,12 @@ con.connect(function (err) {
       console.log("Table created");
     },
   );
+
+  con.query(
+    "CREATE TABLE IF NOT EXISTS boss (id int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT, name varchar(25), gender enum('Man', 'Woman', 'Other'), image varchar(255), category enum('Main-Character', 'Ally', 'Enemy'), level int(99), ATK int(99), DEF int(99), Health int(99), MANA int(99), speed int(11), atb_jauge int(11), magic int(99), spirit int(99), dodge int(99), accuracy int(99), DMG int(99));",
+    function (err) {
+      if (err) throw err;
+      console.log("Table created");
+    },
+  );
 });

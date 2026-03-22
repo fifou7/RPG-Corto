@@ -8,6 +8,7 @@ const getCharactersRouter = require("./routes/getCharacters");
 const getPnjRouter = require("./routes/getPnj");
 const getDialoguesRouter = require("./routes/getDialogues");
 const getSkillsRouter = require("./routes/getSkills");
+const getBossRouter = require("./routes/getBoss");
 const corsOptions = {
   origin: "*",
   credentials: true,
@@ -26,6 +27,7 @@ app.use("/characters", getCharactersRouter);
 app.use("/pnj", getPnjRouter);
 app.use("/dialogues", getDialoguesRouter);
 app.use("/skills", getSkillsRouter);
+app.use("/boss", getBossRouter);
 // app.get("/", (req, res) => {
 //   res.send("Bonjour");
 // });
