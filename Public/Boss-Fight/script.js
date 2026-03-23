@@ -253,7 +253,7 @@ function preload() {
 async function create() {
   gameScene = this;
 
-  // fetch persos
+  // fetch characters
   const response = await fetch("http://localhost:3000/characters");
   const characters = await response.json();
 
@@ -306,7 +306,7 @@ this.sound.context.resume().then(() => {
   Sora.alive = true;
   Lunafreya.alive = true;
 
-  // ANIMATIONS
+  // ANIMATION
 
   // Sephiroth state
   this.anims.create({
@@ -375,7 +375,7 @@ this.sound.context.resume().then(() => {
   });
 
 
-  // Sora attaque
+  // Sora atk
   this.anims.create({
     key: "Sora-atk",
     frames: [
@@ -424,7 +424,7 @@ this.sound.context.resume().then(() => {
     repeat: 0,
   });
 
-  // Tidus attaque
+  // Tidus atk
   this.anims.create({
     key: "Tidus-atk",
     frames: [
@@ -473,7 +473,7 @@ this.sound.context.resume().then(() => {
     repeat: 0,
   });
 
-  // Lunafreya attaque
+  // Lunafreya atk
   this.anims.create({
     key: "Lunafreya-atk",
     frames: [
@@ -588,7 +588,7 @@ this.anims.create({
     repeat: 0,
   });
 
-  // === PERSONNAGES ===
+  // === CHARACTERS ===
   Tidus.stats = tidusData;
   Tidus.currentHP = tidusData.Health;
   Tidus.currentMana = tidusData.MANA;
@@ -625,7 +625,7 @@ this.anims.create({
   sceneReady = true;
 }
 
-// Afficher dégâts
+// DMG Display
 function showDamage(scene, target, damage) {
   let dmgText = scene.add
     .text(target.sprite.x, target.sprite.y - 50, damage, {
@@ -687,12 +687,6 @@ let tidusATB = 0;
 let lunaATB = 0;
 
 const ATB_MAX = 100;
-
-// let SORA_SPEED = 100 / 4;
-// let TIDUS_SPEED = 100 / 2;
-// let LUNA_SPEED = 100 / 3;
-// let SEPHIROTH_SPEED = 100 / SephirothData.atb_jauge;
-
 
 let soraAttacking = false;
 let tidusAttacking = false;
@@ -771,7 +765,7 @@ function update(time, delta) {
   let dt = delta / 1000;
 
   if (!atbPaused) {
-    // ATB Héros
+    // ATB Heros
     if (Tidus.alive && !tidusAttacking) {
       tidusATB += TIDUS_SPEED * dt;
       if (tidusATB >= ATB_MAX) {
@@ -813,7 +807,7 @@ if (Sephiroth.alive && !sephirothAttacking) {
   }
 }
 
-    // Barres visuelles
+    // ATB  GAUGE
     let barreATBTidus = document.querySelector(".jaugeATBTidus");
     if (barreATBTidus) barreATBTidus.style.width = tidusATB + "%";
     let barreATBSora = document.querySelector(".jaugeATBSora");
@@ -832,7 +826,7 @@ if (Sephiroth.alive && !sephirothAttacking) {
     updateCurrentAction();
   }
 
-  // === VICTOIRE ===
+  // === VICTORY ===
 if (victoryStarted && !defeatStarted) {
     victoryStarted = false;
     atbPaused = true;
@@ -840,17 +834,16 @@ if (victoryStarted && !defeatStarted) {
     actionQueue = [];
     document.querySelectorAll(".cursor").forEach(c => c.remove());
 
-    // Stopper tous les ATB
+    // Stop ATB
     tidusAttacking = true;
     soraAttacking = true;
     lunaAttacking = true;
     sephirothAttacking = true;
 
-    // Cacher le HUD combat
+    // HIDE HUD 
     let hud = document.querySelector(".ActionBar");
     if (hud) hud.style.display = "none";
 
-    // Changer les sprites des héros vivants en pose victoire
     if (Tidus.alive) {
     gameScene.tweens.killTweensOf(Tidus.sprite);
     Tidus.sprite.anims.play("Tidus-win");
@@ -863,7 +856,7 @@ if (Lunafreya.alive) {
     gameScene.tweens.killTweensOf(Lunafreya.sprite);
     Lunafreya.sprite.anims.play("Lunafreya-win");
 }
-    // Fond noir progressif
+
     let blackOverlay = gameScene.add.rectangle(
         config.width / 2, config.height / 2,
         config.width, config.height,
@@ -877,7 +870,7 @@ if (Lunafreya.alive) {
         ease: "Power2",
     });
 
-    // Texte VICTORY
+    // VICTORY Text 
     gameScene.time.delayedCall(1000, () => {
         let victoryText = gameScene.add.text(
             config.width / 2, config.height / 2 - 50,
@@ -900,14 +893,13 @@ if (Lunafreya.alive) {
             ease: "Back.easeOut",
         });
 
-        // Redirection après 3 secondes
         gameScene.time.delayedCall(3000, () => {
-            // window.location.href = "victory.html";
+            
         });
     });
 }
 
-// === DÉFAITE ===
+// === DEFEATE ===
 let allDead = !Tidus.alive && !Sora.alive && !Lunafreya.alive;
 if (allDead && !defeatStarted && !victoryStarted) {
     defeatStarted = true;
@@ -917,15 +909,14 @@ if (allDead && !defeatStarted && !victoryStarted) {
     actionQueue = [];
     sephirothAttacking = true;
 
-    // Cacher le HUD combat
+    // HIDE HUD 
     let hud = document.querySelector(".ActionBar");
     if (hud) hud.style.display = "none";
 
-    // Sephiroth retourne en idle
+    // Sephiroth idle
     Sephiroth.sprite.setPosition(config.width * 0.75, 280);
     Sephiroth.sprite.anims.play("Sephiroth-state");
 
-    // Fond noir progressif
     let blackOverlay = gameScene.add.rectangle(
         config.width / 2, config.height / 2,
         config.width, config.height,
@@ -939,7 +930,7 @@ if (allDead && !defeatStarted && !victoryStarted) {
         ease: "Power2",
     });
 
-    // Texte GAME OVER
+    //  GAME OVER Text
     gameScene.time.delayedCall(1000, () => {
         let defeatText = gameScene.add.text(
             config.width / 2, config.height / 2 - 50,
@@ -963,12 +954,12 @@ if (allDead && !defeatStarted && !victoryStarted) {
         });
 
         gameScene.time.delayedCall(3000, () => {
-            // window.location.href = "game-over.html";
+            
         });
     });
 }
 
-  // Nettoyer la queue des morts
+  // CLEAN queue 
   actionQueue = actionQueue.filter((a) => {
     if (a === "Tidus" && !Tidus.alive) return false;
     if (a === "Sora" && !Sora.alive) return false;
@@ -977,7 +968,7 @@ if (allDead && !defeatStarted && !victoryStarted) {
   });
 }
 
-// === MISE À JOUR DE L'ACTION EN COURS ===
+// === updateCurrentAction ===
 function updateCurrentAction() {
   let attacker, who = currentAction;
 
@@ -993,7 +984,7 @@ function updateCurrentAction() {
     return;
   }
 
-  // === LUNAFREYA (attaque à distance) ===
+  // === LUNAFREYA (LONG RANGE) ===
 if (who === "Lunafreya") {
     if (!Lunafreya.hasHit) {
       Lunafreya.hasHit = true;
@@ -1013,10 +1004,10 @@ if (who === "Lunafreya") {
           return;
         }
 
-        // Luna reste sur frame 7
+        // Luna frame 7
         Lunafreya.sprite.setTexture("Lunafreya-skill-7");
 
-        // Effet magique sur Sephiroth
+        // MAGIC EFFECT 
         let effectKey = Lunafreya.useSkill
           ? "luna-magic-effect-skill"
           : "luna-magic-effect";
@@ -1080,7 +1071,7 @@ if (who === "Lunafreya") {
 }
 
 
-  // === SEPHIROTH (mêlée boss) ===
+  // === SEPHIROTH (CLOSE RANGE) ===
   if (who === "Sephiroth") {
     let moveSpeed = 5;
     let target = attacker.attackTarget;
@@ -1166,7 +1157,7 @@ if (who === "Lunafreya") {
     return;
   }
 
-  // === PERSONNAGES MÊLÉE (Tidus, Sora) ===
+  // === Tidus Sora (CLOSE RANGE)===
   let moveSpeed = 5;
   let runTexture, atkAnim, backTexture;
 
@@ -1180,7 +1171,7 @@ if (who === "Lunafreya") {
     backTexture = "Sora-back";
   }
 
-  // PHASE 1 : Avancer vers la cible
+  // PHASE 1 
   if (attacker.isMovingToAttack) {
     if (!attacker.runStarted) {
       attacker.runStarted = true;
@@ -1199,7 +1190,7 @@ if (who === "Lunafreya") {
       attacker.sprite.x += (dx / dist) * moveSpeed;
       attacker.sprite.y += (dy / dist) * moveSpeed;
     } else {
-      // Arrivé à destination - lancer l'attaque UNE SEULE FOIS
+      
       if (!attacker.attackStarted) {
         attacker.attackStarted = true;
         attacker.isMovingToAttack = false;
@@ -1226,7 +1217,7 @@ if (who === "Lunafreya") {
                 target.sprite.clearTint();
             });
 
-            // Mise à jour barre PV boss
+            // UPDATE PV boss
             let barrePV = document.querySelector(".jaugePV" + target.stats.name);
             if (barrePV) {
               barrePV.style.width =
@@ -1251,7 +1242,7 @@ if (who === "Lunafreya") {
     return;
   }
 
-  // PHASE 2 : Retour à la position initiale
+  // PHASE 2 
   if (attacker.isRetreating) {
     let dx = attacker.startX - attacker.sprite.x;
     let dy = attacker.startY - attacker.sprite.y;
@@ -1275,7 +1266,7 @@ if (who === "Lunafreya") {
 }
 
 
-// === TERMINER UNE ACTION ===
+// === FINISH ACTION ===
 function finishAction(who) {
   if (who === "Tidus") {
     tidusAttacking = false;
@@ -1304,7 +1295,7 @@ function finishAction(who) {
   atbPaused = false;
 }
 
-// === DÉMARRER UNE ACTION ===
+// === START ACTION ===
 function startAction(who) {
   if (who === "Tidus") tidusATB = 0;
   if (who === "Sora") soraATB = 0;
@@ -1317,7 +1308,7 @@ function startAction(who) {
   if (who === "Lunafreya") attacker = Lunafreya;
   if (who === "Sephiroth") attacker = Sephiroth;
 
-  // Pour les héros, cible = Sephiroth
+  
   if (who !== "Sephiroth") {
     attacker.attackTarget = Sephiroth;
   }
@@ -1403,7 +1394,7 @@ function startAction(who) {
       Lunafreya.useSkill = false;
       if (Lunafreya.attackCount >= 3) Lunafreya.attackCount = 0;
     }
-    // Luna ne bouge pas, elle cast à distance
+    // Luna STILL POSITION
     attacker.targetX = Lunafreya.sprite.x;
     attacker.targetY = Lunafreya.sprite.y;
   }

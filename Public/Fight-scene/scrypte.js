@@ -1,5 +1,3 @@
-console.log("yo");
-
 let gameScene;
 let sceneReady = false;
 let defeatStarted = false;
@@ -54,7 +52,7 @@ const game = new Phaser.Game(config);
 
 console.log(game);
 
-// Fonction helper pour récupérer le bon sprite idle (normal ou mid-life)
+// Good sprite idle (Basic or mid-life)
 function getIdleTexture(character) {
   if (
     character.currentHP <= character.stats.Health / 2 &&
@@ -218,7 +216,7 @@ function preload() {
   this.load.image("BlackKnight-1", "../Images/BlackKnight-1.png");
   this.load.image("BlackKnight-2", "../Images/BlackKnight-2.png");
 
-  //  Mob - BlackKnight - State
+  //  Mob - BlackKnight - atk 
   this.load.image("BlackKnight-atk-1", "../Images/BlackKnight-atk-1.png");
   this.load.image("BlackKnight-atk-2", "../Images/BlackKnight-atk-2.png");
   this.load.image("BlackKnight-atk-3", "../Images/BlackKnight-atk-3.png");
@@ -233,6 +231,7 @@ function preload() {
   this.load.image("BlackKnight-run", "../Images/BlackKnight-run.png");
   this.load.image("BlackKnight-back", "../Images/BlackKnight-back.png");
 
+// Sound 
   this.load.audio('Fight-scene-theme', '../Audio/Fight-scene-theme.mp3');
 }
 
@@ -240,13 +239,12 @@ function preload() {
 async function create() {
   gameScene = this;
   const battleData = JSON.parse(sessionStorage.getItem("battleData") || "{}");
-  console.log("battleData reçu :", battleData);
 
   // fetch
   const response = await fetch("http://localhost:3000/characters");
   const characters = await response.json();
 
-  // fetch des mobs
+  // fetch mobs
   const responseMobs = await fetch("http://localhost:3000/mobs");
   const mobsRaw = await responseMobs.json();
   const mobs = Array.isArray(mobsRaw)
@@ -276,13 +274,13 @@ async function create() {
   const blackKnightData = mobs.find((m) => m.name === "BlackKnight");
 
   const mobPool = [bomboData, blackKnightData];
-  // Tirer 2 mobs aléatoires
+  // Mob lottery 
   let mob1Data = mobPool[Math.floor(Math.random() * mobPool.length)];
   let mob2Data = mobPool[Math.floor(Math.random() * mobPool.length)];
 
-  console.log("Mob1:", mob1Data.name, "Mob2:", mob2Data.name);
+  
 
-  // Positions des slots
+  // Positions slots
   const slot1 = { x: config.width * 0.75, y: 150 };
   const slot2 = { x: config.width * 0.75, y: 400 };
 
@@ -313,7 +311,7 @@ this.sound.context.resume().then(() => {
 
   // ANIMATIONS
 
-  // Sora attaque
+  // Sora atk
   this.anims.create({
     key: "Sora-atk",
     frames: [
@@ -382,7 +380,7 @@ this.sound.context.resume().then(() => {
     repeat: 0,
   });
 
-  // Tidus attaque
+  // Tidus atk
   this.anims.create({
     key: "Tidus-atk",
     frames: [
@@ -450,7 +448,7 @@ this.sound.context.resume().then(() => {
     repeat: 0,
   });
 
-  // Lunafreya attaque
+  // Lunafreya atk
   this.anims.create({
     key: "Lunafreya-atk",
     frames: [
@@ -466,7 +464,7 @@ this.sound.context.resume().then(() => {
     repeat: 0,
   });
 
-  // Effet magique de Luna sur le mob
+  // Magic effect
   this.anims.create({
     key: "luna-magic-effect",
     frames: [{ key: "Lunafreya-atk-8" }, { key: "Lunafreya-atk-9" }],
@@ -490,7 +488,7 @@ this.sound.context.resume().then(() => {
     repeat: 0,
   });
 
-  // Effet magique de Luna sur le mob pour le skill
+  // Magic effect skill
   this.anims.create({
     key: "luna-magic-effect-skill",
     frames: [
@@ -525,7 +523,7 @@ this.sound.context.resume().then(() => {
     repeat: 0,
   });
 
-  // Fireball des Bombos
+  // Fireball Bombos
   this.anims.create({
     key: "fireball-anim",
     frames: [
@@ -643,7 +641,7 @@ this.sound.context.resume().then(() => {
   sceneReady = true;
 }
 
-//afficher dmg
+// dmg display
 function showDamage(scene, target, damage) {
   let dmgText = scene.add
     .text(target.sprite.x, target.sprite.y - 50, damage, {
@@ -681,7 +679,7 @@ function calculateDamage(attackerName) {
 
 function killMob(scene, mob) {
   mob.alive = false;
-  // Effet de disparition style FF
+  // Disappearance efect 
   scene.tweens.add({
     targets: mob.sprite,
     alpha: 0,
@@ -712,7 +710,7 @@ function returnToMap(result) {
   window.location.href = battleData.returnMap || "../assets/maps/index.html";
 }
 
-// Fonction pour déplacer le curseur
+// Cursor auto
 function moveCursor(persoName) {
   document.querySelectorAll(".perso-ligne").forEach((ligne) => {
     const cursor = ligne.querySelector(".cursor");
@@ -772,11 +770,11 @@ function checkDeath(character) {
     character.alive = false;
     character.currentHP = 0;
 
-    // Stopper TOUT
+    // Stop
     gameScene.tweens.killTweensOf(character.sprite);
     if (character.sprite.anims) character.sprite.anims.stop();
 
-    // Retour position initiale + sprite mort
+    // back position 
     let homeX, homeY;
     if (character === Tidus) {
       homeX = config.width * 0.26;
@@ -812,7 +810,7 @@ function checkDeath(character) {
     character.sprite.setPosition(homeX, homeY);
     character.sprite.setTexture(character.stats.name + "-death");
 
-    // Barre PV à 0
+    // pv = 0
     let barre = document.querySelector(".jaugePV" + character.stats.name);
     if (barre) barre.style.width = "0%";
     let barreATB = document.querySelector(".jaugeATB" + character.stats.name);
@@ -820,26 +818,26 @@ function checkDeath(character) {
   }
 }
 
-// Vérifie et applique le sprite mid-life
+// Check sprite mid-life
 function checkMidLife(character) {
   if (!character.alive) return;
   if (
     character.currentHP <= character.stats.Health / 2 &&
     character.currentHP > 0
   ) {
-    // Seulement changer si en idle
+   
     let currentTexture = character.sprite.texture.key;
     let idleName = character.stats.name;
-    // Si le sprite actuel est le idle normal
+
     if (currentTexture === idleName) {
       character.sprite.setTexture(idleName + "-mid-life");
     }
   }
 }
 
-let actionQueue = []; // File d'attente des actions
-let currentAction = null; // L'action en cours
-let atbPaused = false; // Pause pendant une action
+let actionQueue = []; // File actions
+let currentAction = null; // in action
+let atbPaused = false; // Pause in action
 
 function update(time, delta) {
   if (!sceneReady) return;
@@ -882,7 +880,7 @@ function update(time, delta) {
       }
     }
 
-    // Barres visuelles
+    // ATB Gauge
     let barreATBTidus = document.querySelector(".jaugeATBTidus");
     if (barreATBTidus) barreATBTidus.style.width = tidusATB + "%";
     let barreATBSora = document.querySelector(".jaugeATBSora");
@@ -897,12 +895,12 @@ function update(time, delta) {
     }
   }
 
-  // APPEL de updateCurrentAction
+  // Call updateCurrentAction
   if (currentAction) {
     updateCurrentAction();
   }
 
-  // VICTOIRE
+  // Victory
   if (!Bombo1.alive && !Bombo2.alive && !victoryStarted && !defeatStarted) {
     victoryStarted = true;
     gameScene.battleMusic.stop();
@@ -910,7 +908,7 @@ function update(time, delta) {
     currentAction = null;
     actionQueue = [];
 
-    // Stopper les héros
+    // Stop hero 
     [Tidus, Sora, Lunafreya].forEach((hero) => {
       gameScene.tweens.killTweensOf(hero.sprite);
       if (hero.sprite.anims) hero.sprite.anims.stop();
@@ -919,7 +917,7 @@ function update(time, delta) {
       hero.startX = null;
     });
 
-    // Repositionner et jouer anim win
+    //  anim win
     let homes = {
       Tidus: { x: config.width * 0.26, y: 150 },
       Sora: { x: config.width * 0.24, y: 420 },
@@ -934,11 +932,11 @@ function update(time, delta) {
       }
     });
 
-    // Cacher le HUD
+    // hide HUD
     let hud = document.querySelector(".ActionBar");
     if (hud) hud.style.display = "none";
 
-    // Texte VICTORY style FF
+    // VICTORY style FF
     gameScene.time.delayedCall(500, () => {
       let victoryText = gameScene.add
         .text(config.width / 2, config.height / 2 - 80, "VICTORY!", {
@@ -964,7 +962,7 @@ function update(time, delta) {
     });
   }
 
-  // DÉFAITE
+  // DEFEATE
   if (
     !Tidus.alive &&
     !Sora.alive &&
@@ -978,31 +976,31 @@ function update(time, delta) {
     currentAction = null;
     actionQueue = [];
 
-    // Stopper les mobs (Mibombo OU BlackKnight)
+    // Stop mobs (Mibombo or BlackKnight)
     [Bombo1, Bombo2].forEach((mob) => {
       if (mob.alive && mob.sprite && mob.sprite.active) {
         gameScene.tweens.killTweensOf(mob.sprite);
         if (mob.sprite.anims) mob.sprite.anims.stop();
 
-        // Remettre le BlackKnight en idle state ou juste stopper le Mibombo
+        // Reset BlackKnight idle state
         if (mob.mobType === "BlackKnight") {
           mob.sprite.setTexture("BlackKnight");
         }
       }
     });
 
-    // S'assurer que chaque héros mort a son sprite death
+    // sprite death
     [Tidus, Sora, Lunafreya].forEach((hero) => {
       gameScene.tweens.killTweensOf(hero.sprite);
       if (hero.sprite.anims) hero.sprite.anims.stop();
       hero.sprite.setTexture(hero.stats.name + "-death");
     });
 
-    // Cacher le HUD
+    // hide HUD
     let hud = document.querySelector(".ActionBar");
     if (hud) hud.style.display = "none";
 
-    // Texte DEFEAT style FF
+    //DEFEAT style FF
     gameScene.time.delayedCall(500, () => {
       let defeatText = gameScene.add
         .text(config.width / 2, config.height / 2 - 80, "DEFEAT...", {
@@ -1028,7 +1026,7 @@ function update(time, delta) {
     });
   }
 
-  // Nettoyer la queue des morts
+  // clean queue 
   actionQueue = actionQueue.filter((a) => {
     if (a === "Tidus" && !Tidus.alive) return false;
     if (a === "Sora" && !Sora.alive) return false;
@@ -1039,7 +1037,7 @@ function update(time, delta) {
   });
 }
 
-// === MISE À JOUR DE L'ACTION EN COURS ===
+// === CurrentAction ===
 function updateCurrentAction() {
   let attacker,
     who = currentAction;
@@ -1067,7 +1065,7 @@ function updateCurrentAction() {
     return;
   }
 
-  // === LUNAFREYA (attaque à distance, pas de déplacement) ===
+  // === LUNAFREYA (long range) ===
   if (who === "Lunafreya") {
     if (!Lunafreya.hasHit) {
       Lunafreya.hasHit = true;
@@ -1122,7 +1120,6 @@ function updateCurrentAction() {
             }
           }
 
-          // Remettre Luna en idle
           Lunafreya.sprite.setTexture(getIdleTexture(Lunafreya));
           finishAction(who);
         });
@@ -1131,7 +1128,7 @@ function updateCurrentAction() {
     return;
   }
 
-  // === BOMBO MIBOMBO (attaque à distance fireball) ===
+  // === BOMBO MIBOMBO (fireball) ===
   let isMibombo =
     (who === "Bombo1" && Bombo1.mobType === "Mibombo") ||
     (who === "Bombo2" && Bombo2.mobType === "Mibombo");
@@ -1186,7 +1183,7 @@ function updateCurrentAction() {
     return;
   }
 
-  // === PERSONNAGES MÊLÉE (Tidus, Sora, BlackKnight) ===
+  // === Tidus, Sora, BlackKnight (close range) ===
   let moveSpeed = 5;
   let runTexture, atkAnim, backTexture;
   let isHero = who === "Tidus" || who === "Sora";
@@ -1208,7 +1205,7 @@ function updateCurrentAction() {
     backTexture = "BlackKnight-back";
   }
 
-  // PHASE 1 : Déplacement vers la cible
+  // PHASE 1 
   if (attacker.isMovingToAttack && !attacker.isRetreating) {
     let dx = attacker.targetX - attacker.sprite.x;
     let dy = attacker.targetY - attacker.sprite.y;
@@ -1245,12 +1242,11 @@ function updateCurrentAction() {
               target.sprite.clearTint();
           });
 
-          // Mise à jour barre PV
+          
           if (isHero) {
-            // Cible = mob
             if (target.currentHP <= 0) killMob(gameScene, target);
           } else {
-            // Cible = héros
+
             let pvPercent = Math.max(
               0,
               (target.currentHP / target.stats.Health) * 100,
@@ -1268,7 +1264,7 @@ function updateCurrentAction() {
     }
   }
 
-  // PHASE 2 : Retour à la position initiale
+  // PHASE 2 
   if (attacker.isRetreating) {
     let dx = attacker.startX - attacker.sprite.x;
     let dy = attacker.startY - attacker.sprite.y;
@@ -1284,7 +1280,7 @@ function updateCurrentAction() {
       attacker.isMovingToAttack = true;
       attacker.startX = null;
 
-      // Remettre le sprite idle
+      // sprite idle
       if (isHero) {
         attacker.sprite.setTexture(getIdleTexture(attacker));
       } else if (isBK) {
@@ -1296,15 +1292,15 @@ function updateCurrentAction() {
   }
 }
 
-// === TERMINER UNE ACTION ===
+// === FINISH ACTION ===
 function finishAction(who) {
   currentAction = null;
   atbPaused = false;
 }
 
-// === DÉMARRER UNE ACTION ===
+// === START ACTION ===
 function startAction(who) {
-  // Reset ATB du personnage qui agit
+  // Reset ATB in action
   if (who === "Tidus") tidusATB = 0;
   if (who === "Sora") soraATB = 0;
   if (who === "Lunafreya") lunaATB = 0;
@@ -1344,7 +1340,7 @@ function startAction(who) {
     return;
   }
 
-  // Stocker les infos de l'action
+  // Stock information
   if (who === "Tidus" || who === "Sora") {
     attacker.sprite.setTexture(attacker.stats.name + "-run");
   } else if (
