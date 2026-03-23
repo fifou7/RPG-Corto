@@ -125,39 +125,6 @@ con.connect(function (err) {
     console.log("Dialogues fixtures inserted");
   });
 
-  // fixtures items
-  let sqlItems =
-    "INSERT INTO items (name, category, description, image, ATK_bonus, DEF_bonus, MANA_bonus, Health_bonus, Speed_bonus) VALUES ?";
-  let itemValues = [
-    [
-      "Gants de voyageur",
-      "armor",
-      "Une paire de gants donnée aux voyageurs pour partir à l'aventure.",
-      "gloves.png",
-      5,
-      5,
-      0,
-      0,
-      0,
-    ],
-    [
-      "Epée de l'ancien héros",
-      "weapon",
-      "Une épée très cool utilisée par un ancien héros.",
-      "cool-sword.png",
-      15,
-      0,
-      0,
-      0,
-      0,
-    ],
-  ];
-
-  con.query(sqlItems, [itemValues], function (err) {
-    if (err) throw err;
-    console.log("Items fixtures inserted");
-  });
-
   // Bombo
   let sqlMobs =
     "INSERT INTO mobs (name, gender, image, category, level, ATK, DEF, Health, MANA, speed, atb_jauge, magic, spirit, dodge, accuracy, DMG) VALUES ?";
