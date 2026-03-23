@@ -255,7 +255,7 @@ async function create() {
   const battleData = JSON.parse(sessionStorage.getItem("battleData") || "null");
   console.log("Données reçues depuis la map :", battleData);
 
-  // fetch characters
+  // fetch persos
   const response = await fetch("http://localhost:3000/characters");
   const characters = await response.json();
 
@@ -308,7 +308,7 @@ async function create() {
   Sora.alive = true;
   Lunafreya.alive = true;
 
-  // ANIMATION
+  // ANIMATIONS
 
   // Sephiroth state
   this.anims.create({
@@ -424,7 +424,7 @@ async function create() {
     repeat: 0,
   });
 
-  // Tidus atk
+  // Tidus attaque
   this.anims.create({
     key: "Tidus-atk",
     frames: [
@@ -473,7 +473,7 @@ async function create() {
     repeat: 0,
   });
 
-  // Lunafreya atk
+  // Lunafreya attaque
   this.anims.create({
     key: "Lunafreya-atk",
     frames: [
@@ -583,7 +583,7 @@ async function create() {
     repeat: 0,
   });
 
-  // === CHARACTERS ===
+  // === PERSONNAGES ===
   Tidus.stats = tidusData;
   Tidus.currentHP = tidusData.Health;
   Tidus.currentMana = tidusData.MANA;
@@ -620,7 +620,7 @@ async function create() {
   sceneReady = true;
 }
 
-// DMG Display
+// Afficher dégâts
 function showDamage(scene, target, damage) {
   let dmgText = scene.add
     .text(target.sprite.x, target.sprite.y - 50, damage, {
@@ -785,7 +785,7 @@ function update(time, delta) {
   let dt = delta / 1000;
 
   if (!atbPaused) {
-    // ATB Heros
+    // ATB Héros
     if (Tidus.alive && !tidusAttacking) {
       tidusATB += TIDUS_SPEED * dt;
       if (tidusATB >= ATB_MAX) {
@@ -853,16 +853,17 @@ function update(time, delta) {
     actionQueue = [];
     document.querySelectorAll(".cursor").forEach((c) => c.remove());
 
-    // Stop ATB
+    // Stopper tous les ATB
     tidusAttacking = true;
     soraAttacking = true;
     lunaAttacking = true;
     sephirothAttacking = true;
 
-    // HIDE HUD 
+    // Cacher le HUD combat
     let hud = document.querySelector(".ActionBar");
     if (hud) hud.style.display = "none";
 
+    // Changer les sprites des héros vivants en pose victoire
     if (Tidus.alive) {
       gameScene.tweens.killTweensOf(Tidus.sprite);
       Tidus.sprite.anims.play("Tidus-win");
@@ -894,7 +895,7 @@ function update(time, delta) {
       ease: "Power2",
     });
 
-    // VICTORY Text 
+    // Texte VICTORY
     gameScene.time.delayedCall(1000, () => {
       let victoryText = gameScene.add
         .text(config.width / 2, config.height / 2 - 50, "VICTORY", {
@@ -932,11 +933,11 @@ function update(time, delta) {
     actionQueue = [];
     sephirothAttacking = true;
 
-    // HIDE HUD 
+    // Cacher le HUD combat
     let hud = document.querySelector(".ActionBar");
     if (hud) hud.style.display = "none";
 
-    // Sephiroth idle
+    // Sephiroth retourne en idle
     Sephiroth.sprite.setPosition(config.width * 0.75, 280);
     Sephiroth.sprite.anims.play("Sephiroth-state");
 
@@ -959,7 +960,7 @@ function update(time, delta) {
       ease: "Power2",
     });
 
-    //  GAME OVER Text
+    // Texte GAME OVER
     gameScene.time.delayedCall(1000, () => {
       let defeatText = gameScene.add
         .text(config.width / 2, config.height / 2 - 50, "GAME OVER", {
@@ -986,7 +987,7 @@ function update(time, delta) {
     });
   }
 
-  // CLEAN queue 
+  // Nettoyer la queue des morts
   actionQueue = actionQueue.filter((a) => {
     if (a === "Tidus" && !Tidus.alive) return false;
     if (a === "Sora" && !Sora.alive) return false;
@@ -995,7 +996,7 @@ function update(time, delta) {
   });
 }
 
-// === updateCurrentAction ===
+// === MISE À JOUR DE L'ACTION EN COURS ===
 function updateCurrentAction() {
   let attacker,
     who = currentAction;
@@ -1040,10 +1041,10 @@ function updateCurrentAction() {
           return;
         }
 
-        // Luna frame 7
+        // Luna reste sur frame 7
         Lunafreya.sprite.setTexture("Lunafreya-skill-7");
 
-        // MAGIC EFFECT 
+        // Effet magique sur Sephiroth
         let effectKey = Lunafreya.useSkill
           ? "luna-magic-effect-skill"
           : "luna-magic-effect";
@@ -1202,7 +1203,7 @@ function updateCurrentAction() {
     return;
   }
 
-  // === Tidus Sora (CLOSE RANGE)===
+  // === PERSONNAGES MÊLÉE (Tidus, Sora) ===
   let moveSpeed = 5;
   let runTexture, atkAnim, backTexture;
 
@@ -1216,7 +1217,7 @@ function updateCurrentAction() {
     backTexture = "Sora-back";
   }
 
-  // PHASE 1 
+  // PHASE 1 : Avancer vers la cible
   if (attacker.isMovingToAttack) {
     if (!attacker.runStarted) {
       attacker.runStarted = true;
@@ -1235,7 +1236,7 @@ function updateCurrentAction() {
       attacker.sprite.x += (dx / dist) * moveSpeed;
       attacker.sprite.y += (dy / dist) * moveSpeed;
     } else {
-      
+      // Arrivé à destination - lancer l'attaque UNE SEULE FOIS
       if (!attacker.attackStarted) {
         attacker.attackStarted = true;
         attacker.isMovingToAttack = false;
@@ -1290,7 +1291,7 @@ function updateCurrentAction() {
     return;
   }
 
-  // PHASE 2 
+  // PHASE 2 : Retour à la position initiale
   if (attacker.isRetreating) {
     let dx = attacker.startX - attacker.sprite.x;
     let dy = attacker.startY - attacker.sprite.y;
@@ -1341,7 +1342,7 @@ function finishAction(who) {
   atbPaused = false;
 }
 
-// === START ACTION ===
+// === DÉMARRER UNE ACTION ===
 function startAction(who) {
   if (who === "Tidus") tidusATB = 0;
   if (who === "Sora") soraATB = 0;
@@ -1354,7 +1355,7 @@ function startAction(who) {
   if (who === "Lunafreya") attacker = Lunafreya;
   if (who === "Sephiroth") attacker = Sephiroth;
 
-  
+  // Pour les héros, cible = Sephiroth
   if (who !== "Sephiroth") {
     attacker.attackTarget = Sephiroth;
   }
@@ -1447,7 +1448,7 @@ function startAction(who) {
       Lunafreya.useSkill = false;
       if (Lunafreya.attackCount >= 3) Lunafreya.attackCount = 0;
     }
-    // Luna STILL POSITION
+    // Luna ne bouge pas, elle cast à distance
     attacker.targetX = Lunafreya.sprite.x;
     attacker.targetY = Lunafreya.sprite.y;
   }
