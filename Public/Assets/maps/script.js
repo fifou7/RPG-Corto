@@ -56,9 +56,18 @@ function preload() {
   this.load.image("tidus_back_t1", "../../Images/Tidus_walking_back_t1.png");
   this.load.image("tidus_back_t2", "../../Images/Tidus_walking_back_t2.png");
   this.load.image("tidus_back_t3", "../../Images/Tidus_walking_back_t3.png");
+
+  //npc
+
+  this.load.image("NPC-1", "../../Images/NPC-1.png");
+  this.load.image("NPC-2", "../../Images/NPC-2.png");
+  this.load.image("old-man", "../../Images/old-man.png");
+
+  //boss
+  this.load.image("Sephiroth", "../../Images/Sephiroth.png");
 }
 
-function create() {
+async function create() {
   // img map size
   const mapScale = 3.1;
 
@@ -75,9 +84,28 @@ function create() {
     .setOrigin(0)
     .setScale(mapScale);
 
+  //fight return
+
+  const battleReturn = JSON.parse(
+    sessionStorage.getItem("battleReturn") || "null",
+  );
+
+  let startX = 120;
+  let startY = 220;
+
+  if (battleReturn) {
+    startX = battleReturn.returnX ?? startX;
+    startY = battleReturn.returnY ?? startY;
+
+    console.log("Retour de combat :", battleReturn.result);
+
+    sessionStorage.removeItem("battleReturn");
+    sessionStorage.removeItem("battleData");
+  }
+
   //player
 
-  this.player = this.physics.add.sprite(120, 220, "tidus_right");
+  this.player = this.physics.add.sprite(startX, startY, "tidus_right");
   this.player.setScale(0.6);
   this.player.setCollideWorldBounds(true);
   this.direction = "right";
@@ -147,7 +175,21 @@ function create() {
   // Map 3 border
   addWall(1983, -630, 790, 45); // Up
   addWall(1983, 135, 795, 20); // Bottom
-  addWall(2355, -250, 45, 600); // Right
+  addWall(2355, -241, 45, 732); // Right
+  addWall(1609, -300, 45, 615); // Left
+
+  // Pillars
+  addWall(1760, -352, 52, 100);
+  addWall(1760, -154, 52, 100);
+  addWall(2206, -352, 52, 100);
+  addWall(2206, -154, 52, 100);
+
+  // broken pillars
+  addWall(1760, -30, 52, 50);
+  addWall(2206, -30, 52, 50);
+
+  // hero statue
+  addWall(1982, -518, 80, 130);
 
   // player collision
   this.walls.children.each((wall) => {
@@ -162,6 +204,225 @@ function create() {
     down: Phaser.Input.Keyboard.KeyCodes.S,
     right: Phaser.Input.Keyboard.KeyCodes.D,
   });
+
+  // Battle trigger
+
+  this.debugBattleKey = this.input.keyboard.addKey(
+    Phaser.Input.Keyboard.KeyCodes.B,
+  );
+
+  this.isEncounterTriggered = false;
+  this.encounterTimer = 0;
+  this.encounterGraceTime = battleReturn ? 3000 : 0;
+
+  // interraction npc
+
+  this.interactKey = this.input.keyboard.addKey(
+    Phaser.Input.Keyboard.KeyCodes.E,
+  );
+
+  //fetch npc
+
+  const response = await fetch("http://localhost:3000/pnj");
+  const pnjs = await response.json();
+  console.log("PNJ récupérés :", pnjs);
+
+  this.npcs = this.physics.add.staticGroup();
+
+  pnjs.forEach((pnj) => {
+    const imageKey = pnj.image.replace(".png", "");
+
+    if (pnj.id === 1) {
+      const npcSprite = this.npcs.create(230, 100, imageKey).setScale(0.65);
+      npcSprite.refreshBody();
+      npcSprite.setData("id", pnj.id);
+      npcSprite.setData("name", pnj.name);
+    }
+
+    if (pnj.id === 2) {
+      const npcSprite = this.npcs.create(1365, 32, imageKey).setScale(0.65);
+      npcSprite.refreshBody();
+      npcSprite.setData("id", pnj.id);
+      npcSprite.setData("name", pnj.name);
+    }
+
+    if (pnj.id === 3) {
+      const npcSprite = this.npcs.create(2206, 30, imageKey).setScale(0.15);
+      npcSprite.refreshBody();
+      npcSprite.setData("id", pnj.id);
+      npcSprite.setData("name", pnj.name);
+    }
+  });
+
+  this.loadDialogue = async (npcId) => {
+    const response = await fetch(`http://localhost:3000/dialogues/${npcId}`);
+    const dialogues = await response.json();
+
+    this.currentDialogue = dialogues;
+    this.currentDialogueIndex = 0;
+
+    if (this.currentDialogue.length > 0) {
+      this.isDialogueActive = true;
+      this.dialogueBox.setVisible(true);
+      this.dialogueText.setVisible(true);
+      this.dialogueText.setText(this.currentDialogue[0].text);
+    }
+    console.log("dialogues récupérés :", dialogues);
+  };
+
+  // Dialogue box
+
+  const camWidth = this.cameras.main.width;
+  const camHeight = this.cameras.main.height;
+
+  this.dialogueBox = this.add
+    .rectangle(
+      camWidth / 2,
+      camHeight - 100,
+      camWidth - 100,
+      140,
+      0x000000,
+      0.7,
+    )
+    .setScrollFactor(0)
+    .setDepth(1000)
+    .setVisible(false);
+
+  this.dialogueText = this.add
+    .text(80, camHeight - 145, "", {
+      fontSize: "28px",
+      fill: "#ffffff",
+      wordWrap: { width: camWidth - 160 },
+    })
+    .setScrollFactor(0)
+    .setDepth(1001)
+    .setVisible(false);
+
+  this.physics.add.collider(this.player, this.npcs);
+
+  // fetch sephiroth
+
+  const responseBoss = await fetch("http://localhost:3000/boss");
+  const boss = await responseBoss.json();
+  console.log("Boss récupéré :", boss);
+
+  const bossImageKey = boss.image.replace(".png", "");
+
+  this.boss = this.physics.add.staticSprite(1965, -415, bossImageKey);
+  this.boss.setScale(1.3);
+  this.boss.refreshBody();
+  this.boss.setData("id", boss.id);
+  this.boss.setData("name", boss.name);
+  this.boss.setData("isBoss", true);
+
+  this.physics.add.collider(this.player, this.boss);
+
+  // Battle transition
+
+  this.startBattleTransition = () => {
+    if (this.isEncounterTriggered || this.isDialogueActive) return;
+
+    this.isEncounterTriggered = true;
+    this.player.setVelocity(0);
+
+    const battleData = {
+      returnX: this.player.x,
+      returnY: this.player.y,
+      returnMap: "../../assets/maps/index.html",
+    };
+
+    sessionStorage.setItem("battleData", JSON.stringify(battleData));
+
+    const camWidth = this.cameras.main.width;
+    const camHeight = this.cameras.main.height;
+
+    const flash = this.add
+      .rectangle(camWidth / 2, camHeight / 2, camWidth, camHeight, 0xffffff)
+      .setScrollFactor(0)
+      .setDepth(9999)
+      .setAlpha(0);
+
+    const black = this.add
+      .rectangle(camWidth / 2, camHeight / 2, camWidth, camHeight, 0x000000)
+      .setScrollFactor(0)
+      .setDepth(10000)
+      .setAlpha(0);
+
+    this.cameras.main.shake(250, 0.01);
+
+    this.tweens.add({
+      targets: flash,
+      alpha: 1,
+      duration: 80,
+      yoyo: true,
+      repeat: 2,
+      onComplete: () => {
+        this.tweens.add({
+          targets: black,
+          alpha: 1,
+          duration: 400,
+          onComplete: () => {
+            window.location.href = "../../Fight-scene/index.html";
+          },
+        });
+      },
+    });
+  };
+
+  //boss battle transition
+
+  this.startBossBattleTransition = () => {
+    if (this.isEncounterTriggered || this.isDialogueActive) return;
+
+    this.isEncounterTriggered = true;
+    this.player.setVelocity(0);
+
+    const battleData = {
+      returnX: this.player.x,
+      returnY: this.player.y,
+      returnMap: "../../assets/maps/index.html",
+      encounterType: "boss",
+      bossId: this.boss.getData("id"),
+      bossName: this.boss.getData("name"),
+    };
+
+    sessionStorage.setItem("battleData", JSON.stringify(battleData));
+
+    const camWidth = this.cameras.main.width;
+    const camHeight = this.cameras.main.height;
+
+    const flash = this.add
+      .rectangle(camWidth / 2, camHeight / 2, camWidth, camHeight, 0xffffff)
+      .setScrollFactor(0)
+      .setDepth(9999)
+      .setAlpha(0);
+
+    const black = this.add
+      .rectangle(camWidth / 2, camHeight / 2, camWidth, camHeight, 0x000000)
+      .setScrollFactor(0)
+      .setDepth(10000)
+      .setAlpha(0);
+
+    this.cameras.main.shake(250, 0.01);
+
+    this.tweens.add({
+      targets: flash,
+      alpha: 1,
+      duration: 80,
+      yoyo: true,
+      repeat: 2,
+      onComplete: () => {
+        this.tweens.add({
+          targets: black,
+          alpha: 1,
+          duration: 400,
+          onComplete: () => {
+            window.location.href = "../../Boss-Fight/index.html";
+          },
+        });
+      },
+    });
+  };
 
   // Camera
 
@@ -179,32 +440,36 @@ function create() {
 }
 
 function update(time, delta) {
+  if (!this.keys || !this.interactKey || !this.npcs) return;
+
   const speed = 200;
   let moving = false;
 
   this.player.setVelocity(0);
 
+  if (!this.isDialogueActive) {
+    if (this.keys.left.isDown) {
+      this.player.setVelocityX(-speed);
+      this.direction = "left";
+      moving = true;
+    } else if (this.keys.right.isDown) {
+      this.player.setVelocityX(speed);
+      this.direction = "right";
+      moving = true;
+    }
+
+    if (this.keys.up.isDown) {
+      this.player.setVelocityY(-speed);
+      this.direction = "back";
+      moving = true;
+    } else if (this.keys.down.isDown) {
+      this.player.setVelocityY(speed);
+      this.direction = "front";
+      moving = true;
+    }
+  }
+
   // walking animation
-
-  if (this.keys.left.isDown) {
-    this.player.setVelocityX(-speed);
-    this.direction = "left";
-    moving = true;
-  } else if (this.keys.right.isDown) {
-    this.player.setVelocityX(speed);
-    this.direction = "right";
-    moving = true;
-  }
-
-  if (this.keys.up.isDown) {
-    this.player.setVelocityY(-speed);
-    this.direction = "back";
-    moving = true;
-  } else if (this.keys.down.isDown) {
-    this.player.setVelocityY(speed);
-    this.direction = "front";
-    moving = true;
-  }
 
   if (moving) {
     this.frameTimer += delta;
@@ -248,5 +513,100 @@ function update(time, delta) {
       this.physics.world.bounds.width,
       this.map1.displayHeight,
     );
+  }
+
+  // Detection NPCs interaction
+  let nearbyNpc = null;
+
+  this.npcs.children.each((npc) => {
+    const distance = Phaser.Math.Distance.Between(
+      this.player.x,
+      this.player.y,
+      npc.x,
+      npc.y,
+    );
+
+    if (distance < 80) {
+      nearbyNpc = npc;
+    }
+  });
+
+  // Boss detection
+  let nearbyBoss = null;
+
+  if (this.boss) {
+    const bossDistance = Phaser.Math.Distance.Between(
+      this.player.x,
+      this.player.y,
+      this.boss.x,
+      this.boss.y,
+    );
+
+    if (bossDistance < 100) {
+      nearbyBoss = this.boss;
+    }
+  }
+
+  if (Phaser.Input.Keyboard.JustDown(this.interactKey)) {
+    if (!this.isDialogueActive && nearbyBoss) {
+      this.startBossBattleTransition();
+      return;
+    }
+
+    if (!this.isDialogueActive && nearbyNpc) {
+      this.loadDialogue(nearbyNpc.getData("id"));
+      return;
+    }
+
+    if (this.isDialogueActive) {
+      this.currentDialogueIndex++;
+
+      if (this.currentDialogueIndex < this.currentDialogue.length) {
+        this.dialogueText.setText(
+          this.currentDialogue[this.currentDialogueIndex].text,
+        );
+      } else {
+        this.isDialogueActive = false;
+        this.currentDialogue = [];
+        this.currentDialogueIndex = 0;
+        this.dialogueBox.setVisible(false);
+        this.dialogueText.setVisible(false);
+      }
+    }
+  }
+
+  // Encounter trigger
+
+  if (this.encounterGraceTime > 0) {
+    this.encounterGraceTime -= delta;
+  }
+
+  // manual fighht
+  if (Phaser.Input.Keyboard.JustDown(this.debugBattleKey)) {
+    this.startBattleTransition();
+    return;
+  }
+
+  // random battle trigger
+  if (
+    moving &&
+    !this.isDialogueActive &&
+    !this.isEncounterTriggered &&
+    this.encounterGraceTime <= 0
+  ) {
+    this.encounterTimer += delta;
+
+    if (this.encounterTimer >= 800) {
+      const chance = Math.random();
+
+      if (chance < 0.08) {
+        this.startBattleTransition();
+        return;
+      }
+
+      this.encounterTimer = 0;
+    }
+  } else {
+    this.encounterTimer = 0;
   }
 }
