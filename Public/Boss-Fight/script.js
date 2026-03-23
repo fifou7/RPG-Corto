@@ -247,11 +247,13 @@ function preload() {
   // Background
   this.load.image("background-fight", "../Images/Boss-fight-background.jpg");
 
-  this.load.audio('Boss-fight-theme', '../Audio/Boss-fight-theme.mp3');
+  this.load.audio("Boss-fight-theme", "../Audio/Boss-fight-theme.mp3");
 }
 
 async function create() {
   gameScene = this;
+  const battleData = JSON.parse(sessionStorage.getItem("battleData") || "null");
+  console.log("Données reçues depuis la map :", battleData);
 
   // fetch characters
   const response = await fetch("http://localhost:3000/characters");
@@ -289,13 +291,13 @@ async function create() {
   SEPHIROTH_SPEED = 100 / SephirothData.atb_jauge;
   Sephiroth.atbSpeed = SEPHIROTH_SPEED;
 
-  this.battleMusic = this.sound.add('Boss-fight-theme', {
+  this.battleMusic = this.sound.add("Boss-fight-theme", {
     loop: true,
-    volume: 0.5
-});
-this.sound.context.resume().then(() => {
+    volume: 0.5,
+  });
+  this.sound.context.resume().then(() => {
     this.battleMusic.play();
-});
+  });
 
   // Background
   var backgroundImage = this.add.sprite(0, 0, "background-fight");
@@ -340,14 +342,13 @@ this.sound.context.resume().then(() => {
       { key: "Sephiroth-atk-16" },
       { key: "Sephiroth-atk-17" },
       { key: "Sephiroth-atk-18" },
-      { key: "Sephiroth-atk-19" }
+      { key: "Sephiroth-atk-19" },
     ],
     frameRate: 10,
     repeat: 0,
   });
 
-
-// Sephiroth skill
+  // Sephiroth skill
   this.anims.create({
     key: "Sephiroth-skill",
     frames: [
@@ -368,14 +369,13 @@ this.sound.context.resume().then(() => {
       { key: "Sephiroth-skill-17" },
       { key: "Sephiroth-skill-18" },
       { key: "Sephiroth-skill-19" },
-      { key: "Sephiroth-skill-20" }
+      { key: "Sephiroth-skill-20" },
     ],
     frameRate: 10,
     repeat: 0,
   });
 
-
-  // Sora atk
+  // Sora attaque
   this.anims.create({
     key: "Sora-atk",
     frames: [
@@ -418,7 +418,7 @@ this.sound.context.resume().then(() => {
       { key: "Sora-skill-23" },
       { key: "Sora-skill-25" },
       { key: "Sora-skill-26" },
-      { key: "Sora-skill-27" }
+      { key: "Sora-skill-27" },
     ],
     frameRate: 6,
     repeat: 0,
@@ -487,11 +487,10 @@ this.sound.context.resume().then(() => {
     ],
     frameRate: 6,
     repeat: 0,
-});
-
+  });
 
   // Lunafreya skill
- this.anims.create({
+  this.anims.create({
     key: "Lunafreya-skill",
     frames: [
       { key: "Lunafreya-skill-1" },
@@ -504,20 +503,17 @@ this.sound.context.resume().then(() => {
     ],
     frameRate: 6,
     repeat: 0,
-});
+  });
 
- this.anims.create({
+  this.anims.create({
     key: "luna-magic-effect",
-    frames: [
-      { key: "Lunafreya-atk-8" },
-      { key: "Lunafreya-atk-9" },
-    ],
+    frames: [{ key: "Lunafreya-atk-8" }, { key: "Lunafreya-atk-9" }],
     frameRate: 6,
     repeat: 0,
-});
+  });
 
-// Luna magic effect SKILL 
-this.anims.create({
+  // Luna magic effect SKILL
+  this.anims.create({
     key: "luna-magic-effect-skill",
     frames: [
       { key: "Lunafreya-skill-8" },
@@ -533,10 +529,9 @@ this.anims.create({
     ],
     frameRate: 6,
     repeat: 0,
-});
+  });
 
-
-// Lunafreya win
+  // Lunafreya win
   this.anims.create({
     key: "Lunafreya-win",
     frames: [
@@ -676,6 +671,26 @@ function moveCursor(persoName) {
   });
 }
 
+// map return
+
+function returnToMap(result) {
+  const battleData = JSON.parse(sessionStorage.getItem("battleData") || "null");
+
+  const returnPayload = {
+    result: result,
+    returnX: battleData?.returnX ?? 120,
+    returnY: battleData?.returnY ?? 220,
+    encounterType: battleData?.encounterType ?? "boss",
+    bossId: battleData?.bossId ?? null,
+    bossName: battleData?.bossName ?? null,
+  };
+
+  sessionStorage.setItem("battleReturn", JSON.stringify(returnPayload));
+
+  const returnUrl = battleData?.returnMap || "../../assets/maps/index.html";
+  window.location.href = returnUrl;
+}
+
 function getRandomHero() {
   let aliveHeroes = [Tidus, Sora, Lunafreya].filter((h) => h.alive);
   if (aliveHeroes.length === 0) return null;
@@ -687,6 +702,11 @@ let tidusATB = 0;
 let lunaATB = 0;
 
 const ATB_MAX = 100;
+
+// let SORA_SPEED = 100 / 4;
+// let TIDUS_SPEED = 100 / 2;
+// let LUNA_SPEED = 100 / 3;
+// let SEPHIROTH_SPEED = 100 / SephirothData.atb_jauge;
 
 let soraAttacking = false;
 let tidusAttacking = false;
@@ -782,7 +802,7 @@ function update(time, delta) {
         soraATB = ATB_MAX;
         soraAttacking = true;
         actionQueue.push("Sora");
-         moveCursor("Sora");
+        moveCursor("Sora");
       }
     }
 
@@ -793,21 +813,20 @@ function update(time, delta) {
         lunaAttacking = true;
         actionQueue.push("Lunafreya");
         moveCursor("Lunafreya");
-
       }
     }
 
-  // ATB Sephiroth
-if (Sephiroth.alive && !sephirothAttacking) {
-  sephirothATB += Sephiroth.atbSpeed * dt;
-  if (sephirothATB >= ATB_MAX) {
-    sephirothATB = ATB_MAX;
-    sephirothAttacking = true;
-    actionQueue.push("Sephiroth");
-  }
-}
+    // ATB Sephiroth
+    if (Sephiroth.alive && !sephirothAttacking) {
+      sephirothATB += Sephiroth.atbSpeed * dt;
+      if (sephirothATB >= ATB_MAX) {
+        sephirothATB = ATB_MAX;
+        sephirothAttacking = true;
+        actionQueue.push("Sephiroth");
+      }
+    }
 
-    // ATB  GAUGE
+    // Barres visuelles
     let barreATBTidus = document.querySelector(".jaugeATBTidus");
     if (barreATBTidus) barreATBTidus.style.width = tidusATB + "%";
     let barreATBSora = document.querySelector(".jaugeATBSora");
@@ -826,13 +845,13 @@ if (Sephiroth.alive && !sephirothAttacking) {
     updateCurrentAction();
   }
 
-  // === VICTORY ===
-if (victoryStarted && !defeatStarted) {
+  // === VICTOIRE ===
+  if (victoryStarted && !defeatStarted) {
     victoryStarted = false;
     atbPaused = true;
     currentAction = null;
     actionQueue = [];
-    document.querySelectorAll(".cursor").forEach(c => c.remove());
+    document.querySelectorAll(".cursor").forEach((c) => c.remove());
 
     // Stop ATB
     tidusAttacking = true;
@@ -845,63 +864,67 @@ if (victoryStarted && !defeatStarted) {
     if (hud) hud.style.display = "none";
 
     if (Tidus.alive) {
-    gameScene.tweens.killTweensOf(Tidus.sprite);
-    Tidus.sprite.anims.play("Tidus-win");
-}
-if (Sora.alive) {
-    gameScene.tweens.killTweensOf(Sora.sprite);
-    Sora.sprite.anims.play("Sora-win");
-}
-if (Lunafreya.alive) {
-    gameScene.tweens.killTweensOf(Lunafreya.sprite);
-    Lunafreya.sprite.anims.play("Lunafreya-win");
-}
-
-    let blackOverlay = gameScene.add.rectangle(
-        config.width / 2, config.height / 2,
-        config.width, config.height,
-        0x000000, 0
-    ).setDepth(100);
+      gameScene.tweens.killTweensOf(Tidus.sprite);
+      Tidus.sprite.anims.play("Tidus-win");
+    }
+    if (Sora.alive) {
+      gameScene.tweens.killTweensOf(Sora.sprite);
+      Sora.sprite.anims.play("Sora-win");
+    }
+    if (Lunafreya.alive) {
+      gameScene.tweens.killTweensOf(Lunafreya.sprite);
+      Lunafreya.sprite.anims.play("Lunafreya-win");
+    }
+    // Fond noir progressif
+    let blackOverlay = gameScene.add
+      .rectangle(
+        config.width / 2,
+        config.height / 2,
+        config.width,
+        config.height,
+        0x000000,
+        0,
+      )
+      .setDepth(100);
 
     gameScene.tweens.add({
-        targets: blackOverlay,
-        alpha: 0.6,
-        duration: 1500,
-        ease: "Power2",
+      targets: blackOverlay,
+      alpha: 0.6,
+      duration: 1500,
+      ease: "Power2",
     });
 
     // VICTORY Text 
     gameScene.time.delayedCall(1000, () => {
-        let victoryText = gameScene.add.text(
-            config.width / 2, config.height / 2 - 50,
-            "VICTORY",
-            {
-                fontSize: "72px",
-                fontFamily: "Arial",
-                color: "#FFD700",
-                stroke: "#000000",
-                strokeThickness: 6,
-                fontStyle: "bold",
-            }
-        ).setOrigin(0.5).setDepth(101);
+      let victoryText = gameScene.add
+        .text(config.width / 2, config.height / 2 - 50, "VICTORY", {
+          fontSize: "72px",
+          fontFamily: "Arial",
+          color: "#FFD700",
+          stroke: "#000000",
+          strokeThickness: 6,
+          fontStyle: "bold",
+        })
+        .setOrigin(0.5)
+        .setDepth(101);
 
-        victoryText.setScale(0);
-        gameScene.tweens.add({
-            targets: victoryText,
-            scale: 1,
-            duration: 600,
-            ease: "Back.easeOut",
-        });
+      victoryText.setScale(0);
+      gameScene.tweens.add({
+        targets: victoryText,
+        scale: 1,
+        duration: 600,
+        ease: "Back.easeOut",
+      });
 
-        gameScene.time.delayedCall(3000, () => {
-            
-        });
+      gameScene.time.delayedCall(3000, () => {
+        returnToMap("victory");
+      });
     });
-}
+  }
 
-// === DEFEATE ===
-let allDead = !Tidus.alive && !Sora.alive && !Lunafreya.alive;
-if (allDead && !defeatStarted && !victoryStarted) {
+  // === DÉFAITE ===
+  let allDead = !Tidus.alive && !Sora.alive && !Lunafreya.alive;
+  if (allDead && !defeatStarted && !victoryStarted) {
     defeatStarted = true;
     gameScene.battleMusic.stop();
     atbPaused = true;
@@ -917,47 +940,51 @@ if (allDead && !defeatStarted && !victoryStarted) {
     Sephiroth.sprite.setPosition(config.width * 0.75, 280);
     Sephiroth.sprite.anims.play("Sephiroth-state");
 
-    let blackOverlay = gameScene.add.rectangle(
-        config.width / 2, config.height / 2,
-        config.width, config.height,
-        0x000000, 0
-    ).setDepth(100);
+    // Fond noir progressif
+    let blackOverlay = gameScene.add
+      .rectangle(
+        config.width / 2,
+        config.height / 2,
+        config.width,
+        config.height,
+        0x000000,
+        0,
+      )
+      .setDepth(100);
 
     gameScene.tweens.add({
-        targets: blackOverlay,
-        alpha: 0.7,
-        duration: 1500,
-        ease: "Power2",
+      targets: blackOverlay,
+      alpha: 0.7,
+      duration: 1500,
+      ease: "Power2",
     });
 
     //  GAME OVER Text
     gameScene.time.delayedCall(1000, () => {
-        let defeatText = gameScene.add.text(
-            config.width / 2, config.height / 2 - 50,
-            "GAME OVER",
-            {
-                fontSize: "72px",
-                fontFamily: "Arial",
-                color: "#FF0000",
-                stroke: "#000000",
-                strokeThickness: 6,
-                fontStyle: "bold",
-            }
-        ).setOrigin(0.5).setDepth(101);
+      let defeatText = gameScene.add
+        .text(config.width / 2, config.height / 2 - 50, "GAME OVER", {
+          fontSize: "72px",
+          fontFamily: "Arial",
+          color: "#FF0000",
+          stroke: "#000000",
+          strokeThickness: 6,
+          fontStyle: "bold",
+        })
+        .setOrigin(0.5)
+        .setDepth(101);
 
-        defeatText.setScale(0);
-        gameScene.tweens.add({
-            targets: defeatText,
-            scale: 1,
-            duration: 600,
-            ease: "Back.easeOut",
-        });
-
-        gameScene.time.delayedCall(3000, () => {
-            
-        });
+      defeatText.setScale(0);
+      gameScene.tweens.add({
+        targets: defeatText,
+        scale: 1,
+        duration: 600,
+        ease: "Back.easeOut",
+      });
+      gameScene.time.delayedCall(3000, () => {
+        returnToMap("defeat");
+      });
     });
-}
+  }
 
   // CLEAN queue 
   actionQueue = actionQueue.filter((a) => {
@@ -970,13 +997,22 @@ if (allDead && !defeatStarted && !victoryStarted) {
 
 // === updateCurrentAction ===
 function updateCurrentAction() {
-  let attacker, who = currentAction;
+  let attacker,
+    who = currentAction;
 
   switch (who) {
-    case "Tidus": attacker = Tidus; break;
-    case "Sora": attacker = Sora; break;
-    case "Lunafreya": attacker = Lunafreya; break;
-    case "Sephiroth": attacker = Sephiroth; break;
+    case "Tidus":
+      attacker = Tidus;
+      break;
+    case "Sora":
+      attacker = Sora;
+      break;
+    case "Lunafreya":
+      attacker = Lunafreya;
+      break;
+    case "Sephiroth":
+      attacker = Sephiroth;
+      break;
   }
 
   if (!attacker || !attacker.alive) {
@@ -984,8 +1020,8 @@ function updateCurrentAction() {
     return;
   }
 
-  // === LUNAFREYA (LONG RANGE) ===
-if (who === "Lunafreya") {
+  // === LUNAFREYA (attaque à distance) ===
+  if (who === "Lunafreya") {
     if (!Lunafreya.hasHit) {
       Lunafreya.hasHit = true;
       Lunafreya.animDone = false;
@@ -1018,7 +1054,7 @@ if (who === "Lunafreya") {
         let magicEffect = gameScene.add.sprite(
           target.sprite.x,
           target.sprite.y,
-          effectTexture
+          effectTexture,
         );
         magicEffect.setScale(0.8);
         magicEffect.anims.play(effectKey);
@@ -1039,10 +1075,13 @@ if (who === "Lunafreya") {
                 target.sprite.clearTint();
             });
 
-            let barrePV = document.querySelector(".jaugePV" + target.stats.name);
+            let barrePV = document.querySelector(
+              ".jaugePV" + target.stats.name,
+            );
             if (barrePV) {
               barrePV.style.width =
-                Math.max(0, (target.currentHP / target.stats.Health) * 100) + "%";
+                Math.max(0, (target.currentHP / target.stats.Health) * 100) +
+                "%";
             }
 
             checkDeath(target);
@@ -1068,17 +1107,18 @@ if (who === "Lunafreya") {
       });
     }
     return;
-}
+  }
 
-
-  // === SEPHIROTH (CLOSE RANGE) ===
+  // === SEPHIROTH (mêlée boss) ===
   if (who === "Sephiroth") {
     let moveSpeed = 5;
     let target = attacker.attackTarget;
 
     if (attacker.isMovingToAttack) {
-      if (attacker.sprite.anims.isPlaying &&
-          attacker.sprite.anims.currentAnim.key === "Sephiroth-state") {
+      if (
+        attacker.sprite.anims.isPlaying &&
+        attacker.sprite.anims.currentAnim.key === "Sephiroth-state"
+      ) {
         attacker.sprite.anims.stop();
         attacker.sprite.setTexture("Sephiroth-run");
       }
@@ -1105,7 +1145,8 @@ if (who === "Lunafreya") {
           if (target && target.alive) {
             let minDmg = Sephiroth.stats.ATK;
             let maxDmg = Sephiroth.stats.DMG;
-            let damage = Math.floor(Math.random() * (maxDmg - minDmg + 1)) + minDmg;
+            let damage =
+              Math.floor(Math.random() * (maxDmg - minDmg + 1)) + minDmg;
 
             if (attacker.useSkill) {
               damage = Math.floor(damage * (1 + Sephiroth.skill.DMG / 100));
@@ -1116,13 +1157,17 @@ if (who === "Lunafreya") {
 
             target.sprite.setTint(0xff0000);
             gameScene.time.delayedCall(300, () => {
-              if (target.sprite && target.sprite.active) target.sprite.clearTint();
+              if (target.sprite && target.sprite.active)
+                target.sprite.clearTint();
             });
 
-            let barrePV = document.querySelector(".jaugePV" + target.stats.name);
+            let barrePV = document.querySelector(
+              ".jaugePV" + target.stats.name,
+            );
             if (barrePV) {
               barrePV.style.width =
-                Math.max(0, (target.currentHP / target.stats.Health) * 100) + "%";
+                Math.max(0, (target.currentHP / target.stats.Health) * 100) +
+                "%";
             }
 
             checkDeath(target);
@@ -1217,11 +1262,14 @@ if (who === "Lunafreya") {
                 target.sprite.clearTint();
             });
 
-            // UPDATE PV boss
-            let barrePV = document.querySelector(".jaugePV" + target.stats.name);
+            // Mise à jour barre PV boss
+            let barrePV = document.querySelector(
+              ".jaugePV" + target.stats.name,
+            );
             if (barrePV) {
               barrePV.style.width =
-                Math.max(0, (target.currentHP / target.stats.Health) * 100) + "%";
+                Math.max(0, (target.currentHP / target.stats.Health) * 100) +
+                "%";
             }
 
             if (target.currentHP <= 0) {
@@ -1265,8 +1313,7 @@ if (who === "Lunafreya") {
   }
 }
 
-
-// === FINISH ACTION ===
+// === TERMINER UNE ACTION ===
 function finishAction(who) {
   if (who === "Tidus") {
     tidusAttacking = false;
@@ -1284,12 +1331,11 @@ function finishAction(who) {
     Lunafreya.startX = null;
   }
   if (who === "Sephiroth") {
-  sephirothAttacking = false;
-  sephirothATB = 0;
-  Sephiroth.startX = config.width * 0.75;
-  Sephiroth.startY = 280;
-}
-
+    sephirothAttacking = false;
+    sephirothATB = 0;
+    Sephiroth.startX = config.width * 0.75;
+    Sephiroth.startY = 280;
+  }
 
   currentAction = null;
   atbPaused = false;
@@ -1327,7 +1373,10 @@ function startAction(who) {
     attacker.attackTarget = target;
 
     Sephiroth.attackCount = (Sephiroth.attackCount || 0) + 1;
-    if (Sephiroth.attackCount >= 3 && Sephiroth.currentMana >= Sephiroth.skill.mana_cost) {
+    if (
+      Sephiroth.attackCount >= 3 &&
+      Sephiroth.currentMana >= Sephiroth.skill.mana_cost
+    ) {
       Sephiroth.attackCount = 0;
       Sephiroth.useSkill = true;
       Sephiroth.currentMana -= Sephiroth.skill.mana_cost;
@@ -1360,7 +1409,7 @@ function startAction(who) {
     attacker.targetY = Sephiroth.sprite.y;
   }
 
-  // === SORA === 
+  // === SORA ===
   if (who === "Sora") {
     Sora.attackCount = (Sora.attackCount || 0) + 1;
     if (Sora.attackCount >= 3 && Sora.currentMana >= Sora.skill.mana_cost) {
@@ -1382,14 +1431,18 @@ function startAction(who) {
   // === LUNAFREYA ===
   if (who === "Lunafreya") {
     Lunafreya.attackCount = (Lunafreya.attackCount || 0) + 1;
-    if (Lunafreya.attackCount >= 3 && Lunafreya.currentMana >= Lunafreya.skill.mana_cost) {
+    if (
+      Lunafreya.attackCount >= 3 &&
+      Lunafreya.currentMana >= Lunafreya.skill.mana_cost
+    ) {
       attacker.attackCount = 0;
       Lunafreya.useSkill = true;
       Lunafreya.currentMana -= Lunafreya.skill.mana_cost;
       let barreMana = document.querySelector(".jaugeManaLunafreya");
       if (barreMana)
         barreMana.style.width =
-          Math.max(0, (Lunafreya.currentMana / Lunafreya.stats.MANA) * 100) + "%";
+          Math.max(0, (Lunafreya.currentMana / Lunafreya.stats.MANA) * 100) +
+          "%";
     } else {
       Lunafreya.useSkill = false;
       if (Lunafreya.attackCount >= 3) Lunafreya.attackCount = 0;
@@ -1398,7 +1451,4 @@ function startAction(who) {
     attacker.targetX = Lunafreya.sprite.x;
     attacker.targetY = Lunafreya.sprite.y;
   }
-
-
 }
-
