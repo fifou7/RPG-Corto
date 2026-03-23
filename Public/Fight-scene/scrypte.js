@@ -232,7 +232,10 @@ function preload() {
   //  Mob - BlackKnight - run and back
   this.load.image("BlackKnight-run", "../Images/BlackKnight-run.png");
   this.load.image("BlackKnight-back", "../Images/BlackKnight-back.png");
+
+  this.load.audio('Fight-scene-theme', '../Audio/Fight-scene-theme.mp3');
 }
+
 
 async function create() {
   gameScene = this;
@@ -289,6 +292,15 @@ async function create() {
   LUNA_SPEED = 100 / lunaData.atb_jauge;
   BOMBO1_SPEED = 100 / mob1Data.atb_jauge;
   BOMBO2_SPEED = 100 / mob2Data.atb_jauge;
+
+  this.battleMusic = this.sound.add('Fight-scene-theme', {
+    loop: true,
+    volume: 0.5
+});
+
+this.sound.context.resume().then(() => {
+    this.battleMusic.play();
+});
 
   // Background
   var backgroundImage = this.add.sprite(0, 0, "background-fight");
@@ -655,9 +667,9 @@ function showDamage(scene, target, damage) {
 }
 
 const ATTACK_TABLE = {
-  Tidus: { min: 1000, max: 10001 },
-  Sora: { min: 1900, max: 10001 },
-  Lunafreya: { min: 1990, max: 10001 },
+  Tidus: { min: 250, max: 450 },
+  Sora: { min: 250, max: 400 },
+  Lunafreya: { min: 250, max: 500 },
   mibombo: { min: 100, max: 150 },
   Mibombo: { min: 100, max: 150 },
 };
@@ -893,6 +905,7 @@ function update(time, delta) {
   // VICTOIRE
   if (!Bombo1.alive && !Bombo2.alive && !victoryStarted && !defeatStarted) {
     victoryStarted = true;
+    gameScene.battleMusic.stop();
     atbPaused = true;
     currentAction = null;
     actionQueue = [];
@@ -960,6 +973,7 @@ function update(time, delta) {
     !defeatStarted
   ) {
     defeatStarted = true;
+    gameScene.battleMusic.stop();
     atbPaused = true;
     currentAction = null;
     actionQueue = [];
