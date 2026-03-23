@@ -126,7 +126,7 @@ async function create() {
   this.walls = this.add.group();
 
   const addWall = (x, y, width, height) => {
-    const wall = this.add.rectangle(x, y, width, height, 0xff0000, 0.3);
+    const wall = this.add.rectangle(x, y, width, height, 0xff0000, 0);
     this.physics.add.existing(wall, true);
     this.walls.add(wall);
     return wall;
